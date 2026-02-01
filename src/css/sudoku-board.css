@@ -20,7 +20,7 @@
   margin: 0 auto 15px auto;
   border: none; /* 보드 전체 테두리 제거 */
   border-radius: 10px;
-  background-image: url('/images/btn/card_back_patten3.png');
+  background-image: url('/public/images/btn/card_back_patten3.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* 검은색 그림자 효과 */
@@ -36,7 +36,7 @@
 .cell {
   width: 100%;
   aspect-ratio: 1 / 1; /* 셀 자체를 정사각형으로 만듦 */
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   border-radius: 8px; /* 라운드 값 0으로 설정 */
@@ -109,7 +109,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3열로 균등 분할 */
   gap: 4px;
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   padding: 8px;

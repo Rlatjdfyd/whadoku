@@ -15,8 +15,7 @@
   flex-direction: column; /* column -> row로 변경 */
   align-items: center;
   justify-content: center;
-  height: 50px; /* 대략적인 높이 */
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   border-radius: 6px;
@@ -67,7 +66,7 @@
   flex-direction: row;
   gap: 5px;
   padding: 5px;
-  background-image: url('/images/btn/card_back_patten6.png');
+  background-image: url('/public/images/btn/card_back_patten6.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   border-radius: 6px;
@@ -134,7 +133,7 @@
   min-width: 320px; /* 스도쿠 보드와 동일한 최소 너비 */
   margin: 0 auto 15px auto;
   padding: 8px 5px;
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   border-radius: 6px;
@@ -192,7 +191,7 @@
 }
 
 #main-menu-btn {
-  background-image: url('/images/btn/고급.png');
+  background-image: url('/public/images/btn/고급.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-color: white;
@@ -200,7 +199,7 @@
 }
 
 #retry-game-btn {
-  background-image: url('/images/btn/F5.png');
+  background-image: url('/public/images/btn/F5.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-color: white; /* Match the original F5 button style */
@@ -248,7 +247,7 @@
   top: 60px; /* 상단에서 20px 아래 */
   left: 50%;
   transform: translateX(-50%); /* 가로 중앙 정렬만 유지 */
-  background-image: url('/images/btn/card_back_patten6.png');
+  background-image: url('/public/images/btn/card_back_patten6.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #fff9c4; /* 기존 배경색 유지 (패턴 위에 덮이지 않도록) */
@@ -291,7 +290,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #ffebee; /* 연한 빨강 */
@@ -321,7 +320,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-image: url('/images/btn/card_back_patten4.png'); /* 다른 모달과 동일한 패턴 */
+  background-image: url('/public/images/btn/card_back_patten4.png'); /* 다른 모달과 동일한 패턴 */
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -358,7 +357,7 @@
   font-size: 1rem; /* 글자 크기 유지 */
   font-weight: bold;
   color: #fff;
-  background-image: url('/images/btn/card_back_patten5.png'); /* 배경 이미지 적용 */
+  background-image: url('/public/images/btn/card_back_patten5.png'); /* 배경 이미지 적용 */
   background-size: 5px 5px; /* 패턴 크기 조정 */
   background-repeat: repeat; /* 패턴 반복 */
   background-color: #ffb300; /* 배경 이미지 없을 경우 또는 투명도 조절 시 사용 */
@@ -373,7 +372,7 @@
 }
 
 #use-hint-btn:hover {
-  background-image: url('/images/btn/card_back_patten6.png'); /* 배경 이미지 적용 */
+  background-image: url('/public/images/btn/card_back_patten6.png'); /* 배경 이미지 적용 */
   background-size: 5px 5px; /* 패턴 크기 유지 */
   background-repeat: repeat; /* 패턴 반복 */
   background-color: #ffa000; /* 배경 이미지 없을 경우 또는 투명도 조절 시 사용 */

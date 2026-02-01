@@ -49,7 +49,7 @@ export function createBoard(
               // 위치(row, col)에 따라 1-9 사이의 숫자를 결정론적으로 생성
               const deterministicNum = ((row * 3 + col) % 9) + 1;
               const randomVariant = Math.floor(Math.random() * 3) + 1;
-              cell.innerHTML = `<img src="images/hwatu/${deterministicNum}-${randomVariant}.png" alt="${deterministicNum}">`;
+              cell.innerHTML = `<img src="public/images/hwatu/${deterministicNum}-${randomVariant}.png" alt="${deterministicNum}">`;
             }
             // 첫 화면에서는 클릭 이벤트 없음
           } else {
@@ -103,7 +103,7 @@ export function renderMiniPalette(mode, options) {
       numberEl.classList.add('mini-number');
       numberEl.dataset.number = i;
 
-      const imgSrc = `images/hwatu/${i}-1.png`;
+      const imgSrc = `public/images/hwatu/${i}-1.png`;
       const innerHTML = `<img src="${imgSrc}" alt="${i}">`;
       numberEl.innerHTML = innerHTML;
 
@@ -119,7 +119,7 @@ export function renderMiniPalette(mode, options) {
       numberEl.classList.add('mini-number');
       numberEl.dataset.number = numberToShow;
       numberEl.dataset.variant = variant;
-      numberEl.innerHTML = `<img src="images/hwatu/${numberToShow}-${variant}.png" alt="${numberToShow}-${variant}">`;
+      numberEl.innerHTML = `<img src="public/images/hwatu/${numberToShow}-${variant}.png" alt="${numberToShow}-${variant}">`;
       miniPalette.appendChild(numberEl);
     }
   }
@@ -211,7 +211,7 @@ export function getValue(row, col, num, currentTheme, cellImageVariants) {
   }
   const variant =
     cellImageVariants[row] && cellImageVariants[row][col] ? cellImageVariants[row][col] : 1;
-  return `<img src="images/hwatu/${num}-${variant}.png" alt="${num}">`;
+  return `<img src="public/images/hwatu/${num}-${variant}.png" alt="${num}">`;
 }
 
 /**
@@ -256,16 +256,16 @@ export function updateJokboModal(currentTheme, jokboData) {
       let imageHTML = '';
       if (entry.cards === 'pi') {
         imageHTML =
-          '<img src="images/hwatu/1-3.png" alt="피"> <span style="font-size:12px;">등 피카드</span>';
+          '<img src="public/images/hwatu/1-3.png" alt="피"> <span style="font-size:12px;">등 피카드</span>';
       } else if (entry.cards === 'tti') {
         imageHTML =
-          '<img src="images/hwatu/1-2.png" alt="띠"> <span style="font-size:12px;">등 띠카드</span>';
+          '<img src="public/images/hwatu/1-2.png" alt="띠"> <span style="font-size:12px;">등 띠카드</span>';
       } else if (entry.cards) {
         imageHTML = entry.cards
           .slice(0, 6)
           .map(
             (card) =>
-              `<img src="images/hwatu/${card.num}-${card.variant}.png" alt="${entry.name}">`
+              `<img src="public/images/hwatu/${card.num}-${card.variant}.png" alt="${entry.name}">`
           )
           .join('');
         if (entry.cards.length > 6) {
@@ -686,7 +686,7 @@ export function showHintPalette(cell, numberToShow, onHintPaletteClick) {
     numberEl.classList.add('mini-number');
     numberEl.dataset.number = numberToShow;
     numberEl.dataset.variant = variant;
-    numberEl.innerHTML = `<img src="images/hwatu/${numberToShow}-${variant}.png" alt="${numberToShow}-${variant}">`;
+    numberEl.innerHTML = `<img src="public/images/hwatu/${numberToShow}-${variant}.png" alt="${numberToShow}-${variant}">`;
           numberEl.addEventListener('click', (e) => {
             if (gameState.isSoundEnabled) {
               document.getElementById('click-sound').play();
@@ -862,7 +862,7 @@ export function updateAchievedJokboDisplay(dailyJokboCounts, jokboData) {
       itemDiv.title = `${name} (${jokboCounts[name]}개)`; // 툴팁에 개수 표시
 
       const img = document.createElement('img');
-      img.src = `images/hwatu/${jokboImageMap.get(name)}`;
+      img.src = `public/images/hwatu/${jokboImageMap.get(name)}`;
       img.alt = name;
 
       const countSpan = document.createElement('span');

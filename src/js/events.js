@@ -745,7 +745,7 @@ export function initializeEventListeners() {
       if (cell.innerHTML.trim() === '') {
         const randomImage = fruitImages[Math.floor(Math.random() * fruitImages.length)];
         const img = document.createElement('img');
-        img.src = `/images/hwatu/${randomImage}`;
+        img.src = `/public/images/hwatu/${randomImage}`;
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'cover';
