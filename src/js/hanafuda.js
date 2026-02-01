@@ -54,10 +54,10 @@ export const rankRanges = [
 export function getRankImage(score) {
   for (const range of rankRanges) {
     if (score >= range.min && score <= range.max) {
-      return `images/ranks/rank${range.rank}.png`;
+      return `public/images/ranks/rank${range.rank}.png`;
     }
   }
-  return 'images/ranks/rank1.png'; // 기본값 (점수가 어떤 범위에도 속하지 않을 경우)
+  return 'public/images/ranks/rank1.png'; // 기본값 (점수가 어떤 범위에도 속하지 않을 경우)
 }
 
 /**

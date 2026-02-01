@@ -24,7 +24,7 @@ body {
   justify-content: center; /* 추가: 수직 가운데 정렬 */
   min-height: 100dvh; /* 최소 높이를 동적 뷰포트 높이로 설정 */
   color: #015958;
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-attachment: fixed;

@@ -29,7 +29,7 @@
 }
 
 #jokbo-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -120,7 +120,7 @@
 }
 
 #jokbo-close-btn {
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 (패턴 위에 덮이지 않도록) */
@@ -134,7 +134,7 @@
 }
 
 #jokbo-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
 
@@ -157,7 +157,7 @@
 }
 
 #rank-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -231,7 +231,7 @@
 }
 
 #rank-close-btn {
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -245,7 +245,7 @@
 }
 
 #rank-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
 
@@ -268,7 +268,7 @@
 }
 
 #completion-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -350,7 +350,7 @@
 }
 
 #completion-close-btn {
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -365,7 +365,7 @@
 }
 
 #completion-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
 
@@ -388,7 +388,7 @@
 }
 
 #high-score-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -441,7 +441,7 @@
 }
 
 #high-score-close-btn {
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -455,7 +455,7 @@
 }
 
 #high-score-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
 
@@ -478,7 +478,7 @@
 }
 
 #help-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0; /* 기존 배경색 유지 */
@@ -529,7 +529,7 @@
   display: block;
   width: 100px;
   margin: 25px auto 0 auto;
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -543,7 +543,7 @@
 }
 
 #help-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
 
@@ -566,7 +566,7 @@
 }
 
 #info-content {
-  background-image: url('/images/btn/card_back_patten4.png');
+  background-image: url('/public/images/btn/card_back_patten4.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #e0e0e0;
@@ -598,7 +598,7 @@
   display: block;
   width: 100px;
   margin: 25px auto 0 auto;
-  background-image: url('/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161;
@@ -612,6 +612,6 @@
 }
 
 #info-close-btn:hover {
-  background-image: url('/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }

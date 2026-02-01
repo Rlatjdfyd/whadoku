@@ -18,7 +18,7 @@
   margin: 0 auto 2px auto;
   border: none;
   border-radius: 10px;
-  background-image: url('/images/btn/card_back_patten3.png'); /* Same as sudoku-board background */
+  background-image: url('/public/images/btn/card_back_patten3.png'); /* Same as sudoku-board background */
   background-repeat: repeat;
   background-size: 5px 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
@@ -54,7 +54,7 @@
   width: 100%;
   height: 100%;
   aspect-ratio: 1 / 1; /* 셀 자체를 정사각형으로 만듦 */
-  background-image: url('/images/btn/card_back_patten4.png'); /* 추가: 이미지가 없는 셀은 기본 이미지로 채움 */
+  background-image: url('/public/images/btn/card_back_patten4.png'); /* 추가: 이미지가 없는 셀은 기본 이미지로 채움 */
   background-repeat: repeat; /* 이미지가 셀에 맞게 */
   background-size: 5px 5px; /* 이미지가 셀에 맞게 */
   background-position: center; /* 이미지를 중앙에 배치 */
