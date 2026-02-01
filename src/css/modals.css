@@ -1,0 +1,617 @@
+/* src/css/modals.css */
+
+/*
+  모달창 스타일
+  - #jokbo-modal: 족보 모달
+  - #rank-modal: 랭킹 모달
+  - #completion-modal: 게임 완성 모달
+  - #high-score-modal: 최고 점수 모달
+  - #help-modal: 도움말 모달
+  - #info-modal: 정보 모달
+*/
+
+/* 족보 모달 */
+#jokbo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#jokbo-modal.hidden {
+  display: none;
+}
+
+#jokbo-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 300px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#jokbo-content h2 {
+  margin-top: 0;
+  color: #00ff00; /* 밝은 녹색 */
+  font-size: 1.2rem;
+}
+
+#jokbo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.jokbo-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 12px 0;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.jokbo-entry:hover {
+  background: rgba(25, 118, 210, 0.05);
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.jokbo-entry.achieved {
+  background: rgba(76, 175, 80, 0.1);
+  border-left: 4px solid #4caf50;
+  padding-left: 12px;
+}
+
+.jokbo-entry:last-child {
+  border-bottom: none;
+}
+
+.jokbo-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.jokbo-entry h4 {
+  margin: 0;
+  color: #00ff00; /* 밝은 녹색 */
+  font-size: 14px; /* 크기 증가 */
+  font-weight: bold;
+}
+
+.jokbo-score {
+  font-size: 12px; /* 크기 증가 */
+  color: #cccccc; /* 밝은 회색 */
+  margin-top: 4px; /* 간격 조정 */
+}
+
+.jokbo-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* 간격 조정 */
+  justify-content: flex-end;
+}
+
+.jokbo-images img {
+  width: 32px; /* 크기 증가 */
+  height: 32px; /* 크기 증가 */
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+#jokbo-close-btn {
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 배경색 유지 (패턴 위에 덮이지 않도록) */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+}
+
+#jokbo-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}
+
+/* 랭크 모달 */
+#rank-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#rank-modal.hidden {
+  display: none;
+}
+
+#rank-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 300px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#rank-content h2 {
+  margin-top: 0;
+  color: #00ff00; /* 밝은 녹색 */
+  font-size: 1.2rem;
+}
+
+#rank-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.rank-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 12px 0;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.rank-entry:hover {
+  background: rgba(25, 118, 210, 0.05);
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.rank-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.rank-info h4 {
+  margin: 0;
+  color: #015958;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.rank-score-range {
+  font-size: 10px;
+  color: #cccccc; /* 밝은 회색 */
+  margin-top: 2px;
+}
+
+.rank-image-display img {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+#rank-close-btn {
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 배경색 유지 */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+}
+
+#rank-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}
+
+/* 완성 모달 */
+#completion-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#completion-modal.hidden {
+  display: none;
+}
+
+#completion-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 340px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 각 섹션 사이의 간격 */
+}
+
+/* 최종 점수 스타일 */
+#completion-score {
+  text-align: center;
+  border-bottom: 1px solid #444;
+  padding-bottom: 15px;
+}
+#completion-score .score-label {
+  display: block;
+  font-size: 1.2rem;
+  color: #aaa;
+}
+#completion-score .score-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00ff00; /* 밝은 녹색으로 강조 */
+  line-height: 1.2;
+}
+
+/* 점수 상세 내역 컨테이너 */
+#completion-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+/* 각 상세 섹션 */
+.detail-section h4 {
+  font-size: 1rem;
+  color: #ddd;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+.detail-section p,
+.detail-section li {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin: 4px 0;
+}
+.detail-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 보너스 및 감점 텍스트 강조 */
+.bonus-item {
+  font-weight: bold;
+}
+.difficulty-bonus {
+  color: #81d4fa; /* 하늘색 */
+}
+.specialist-bonus {
+  color: #ffd54f; /* 노란색 */
+}
+.lucky-bonus {
+  color: #abeb4b; /* 행운의 녹색 */
+}
+.penalty-score p {
+  color: #ff8a80; /* 붉은색 */
+  font-weight: bold;
+}
+
+#completion-close-btn {
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 배경색 유지 */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px; /* 위쪽 간격 조정 */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#completion-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}
+
+/* 최고 점수 모달 */
+#high-score-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#high-score-modal.hidden {
+  display: none;
+}
+
+#high-score-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 340px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#high-score-content h2 {
+  margin-top: 0;
+  color: #00ff00; /* 밝은 녹색 */
+  font-size: 1.2rem;
+}
+
+#high-score-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+#high-score-content th,
+#high-score-content td {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+#high-score-content th {
+  background-color: rgba(25, 118, 210, 0.1);
+  color: #00ff00; /* 밝은 녹색 */
+  font-weight: bold;
+}
+
+#high-score-content td {
+  color: #cccccc; /* 밝은 회색 */
+}
+
+#high-score-content tr:last-child td {
+  border-bottom: none;
+}
+
+#high-score-content tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+#high-score-close-btn {
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 배경색 유지 */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+}
+
+#high-score-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}
+
+/* 도움말 모달 */
+#help-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110; /* 다른 모달보다 위에 표시 */
+}
+
+#help-modal.hidden {
+  display: none;
+}
+
+#help-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  width: 90%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#help-content h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #00ff00; /* 밝은 녹색 */
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+#help-content h3 {
+  color: #00ff00;
+  font-size: 1rem;
+  border-bottom: 2px solid #00ff00;
+  padding-bottom: 5px;
+  margin-top: 20px;
+}
+
+#help-content p,
+#help-content ul {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #cccccc;
+}
+
+#help-content ul {
+  padding-left: 20px;
+  list-style-type: '🎴';
+  margin-left: 10px;
+}
+
+#help-content li {
+  margin-bottom: 8px;
+}
+
+#help-close-btn {
+  display: block;
+  width: 100px;
+  margin: 25px auto 0 auto;
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 배경색 유지 */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+}
+
+#help-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}
+
+/* Info Modal */
+#info-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110;
+}
+
+#info-modal.hidden {
+  display: none;
+}
+
+#info-content {
+  background-image: url('/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#info-content h2 {
+  margin-top: 0;
+  color: #00ff00;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+#info-content p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 10px;
+}
+
+#info-close-btn {
+  display: block;
+  width: 100px;
+  margin: 25px auto 0 auto;
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#info-close-btn:hover {
+  background-image: url('/images/btn/card_back_patten.png');
+  background-color: #424242;
+}

@@ -1,0 +1,215 @@
+/* src/css/responsive.css */
+
+/*
+  반응형 디자인 스타일 (모바일 대응)
+  - @media (max-width: 480px)
+*/
+
+@media (max-width: 480px) {
+  #setup-container {
+    width: 90vw; /* 96vw에서 90vw로 변경하여 양옆 여백 증가 */
+    min-width: 0;
+    max-width: 360px;
+    padding: 8px 4px;
+    margin: 0 auto;
+  }
+
+  #number-palette {
+    width: 96vw;
+    min-width: 0;
+    max-width: 360px;
+    padding: 8px 0;
+  }
+
+  .control-group {
+    width: 100vw;
+    min-width: 0;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #difficulty-buttons,
+  #theme-buttons,
+  #action-buttons {
+    width: 100vw;
+    min-width: 0;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px 6px;
+    justify-content: center;
+  }
+
+  #difficulty-buttons button,
+  #theme-buttons button,
+  #action-buttons button,
+  .number {
+    font-size: 0.95rem;
+    border-radius: 5px;
+    box-shadow:
+      2px 2px 8px #a0a0a0,
+      -2px -2px 8px #f0f0f0;
+  }
+
+  .cell {
+    font-size: 0.95rem;
+  }
+
+  #sudoku-board {
+    display: grid; /* 추가 */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3x3 블록을 위한 3열 */
+    gap: 3px; /* 모바일에서도 3x3 블록 사이의 간격 */
+    width: 96vw;
+    aspect-ratio: 1 / 1; /* 비율 고정 */
+    min-width: 0;
+    max-width: 360px;
+    margin: 0 auto 16px auto;
+    border: none; /* 9x9 블록 전체 테두리 제거 */
+    border-radius: 8px;
+    background-color: transparent; /* 배경이 보이도록 투명으로 변경 */ /* 보드 배경색 */
+    box-shadow: 0 0 8px #021a10;
+  }
+
+  .sudoku-block {
+    border-radius: 4px;
+    padding: 0px;
+    border: none; /* 모바일 3x3 블록 테두리 제거 */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3x3 셀을 위한 3열 */
+  }
+
+  .cell img {
+    width: 100%;
+    height: 100%;
+  }
+
+  #number-palette {
+    grid-template-columns: repeat(3, 32px) repeat(3, 32px) repeat(3, 32px);
+    grid-template-rows: 32px;
+    gap: 2px 6px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    box-shadow:
+      4px 4px 12px #a0a0a0,
+      -4px -4px 12px #f0f0f0;
+  }
+
+  .number img {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
+  /* 모바일에서 점수 표시 조정 */
+  #score-display {
+    width: 96vw; /* 스도쿠 보드와 동일한 너비 */
+    max-width: 360px; /* 스도쿠 보드와 동일한 최대 너비 */
+    margin: 0 auto 8px auto; /* 중앙 정렬 및 하단 여백 */
+    padding: 8px 12px;
+    min-width: 0; /* min-width를 0으로 설정하여 유연하게 */
+    font-size: 0.9rem;
+  }
+
+  .jokbo-notification {
+    padding: 15px 20px;
+    font-size: 1rem;
+    max-width: 280px;
+  }
+
+  #jokbo-content {
+    padding: 16px;
+    max-width: 320px;
+  }
+
+  .jokbo-entry h4 {
+    font-size: 11px;
+  }
+
+  .jokbo-images img {
+    width: 20px;
+    height: 20px;
+  }
+
+  #high-score-content {
+    max-height: 50vh; /* 모바일에서 최대 높이 조정 */
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  }
+
+  #high-score-content tbody {
+    display: block; /* tbody를 블록 레벨 요소로 만들어 스크롤 가능하게 함 */
+    max-height: calc(50vh - 100px); /* 헤더 및 푸터 높이를 고려하여 조정 */
+    overflow-y: auto;
+  }
+
+  #high-score-content th,
+  #high-score-content td {
+    font-size: 0.7rem; /* 모바일에서 텍스트 크기 조정 */
+  }
+
+  #high-score-content thead,
+  #high-score-content tbody tr {
+    display: table; /* 테이블 헤더와 행을 테이블 디스플레이로 유지 */
+    width: 100%;
+    table-layout: fixed; /* 열 너비 고정 */
+  }
+
+  #main-controls {
+    gap: 8px; /* 모바일에서 메뉴바 요소 간 간격 줄임 */
+  }
+
+  #current-rank-alias {
+    font-size: 0.7rem; /* 모바일에서 랭킹 별칭 폰트 크기 줄임 */
+  }
+
+  #high-score-content th,
+  #high-score-content td {
+    font-size: 0.7rem; /* 모바일에서 텍스트 크기 조정 */
+  }
+
+  /* 상단 점수판 버튼 크기 조정 */
+  #score-display button {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    min-height: 36px;
+    max-height: 36px;
+  }
+
+  /* 하단 족보 아이템 크기 조정 */
+  .jokbo-display-item {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* 힌트 버튼 크기 조정 */
+  #use-hint-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* 랭크 이미지 크기 조정 */
+  .score-section img {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* from main-menu.css */
+@media (max-width: 480px) {
+  #main-menu-screen {
+    width: 96vw;
+    gap: 3px;
+    max-width: 360px;
+    border-radius: 8px;
+    background-color: transparent; /* Matches existing sudoku-board mobile background */
+    box-shadow: 0 0 8px #021a10;
+  }
+
+  .sudoku-block-menu-item {
+    font-size: 1rem;
+    border-radius: 4px;
+    background-color: transparent; /* Transparent background for items */
+  }
+
+  .sudoku-block-menu-item[data-menu-id="logo"] {
+    font-size: 1.5rem;
+  }
+}

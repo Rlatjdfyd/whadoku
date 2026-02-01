@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>화도쿠</title>
+    <link rel="stylesheet" href="/src/css/base.css" />
+    <link rel="stylesheet" href="/src/css/layout.css" />
+    <link rel="stylesheet" href="/src/css/animations.css" />
+    <link rel="stylesheet" href="/src/css/main-menu.css" />
+    <link rel="stylesheet" href="/src/css/sudoku-board.css" />
+    <link rel="stylesheet" href="/src/css/controls.css" />
+    <link rel="stylesheet" href="/src/css/components.css" />
+    <link rel="stylesheet" href="/src/css/modals.css" />
+    <link rel="stylesheet" href="/src/css/responsive.css" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+  </head>
+  <body>
+    <header>
+      <h1></h1>
+    </header>
+
+    <main>
+      <div id="main-menu-screen">
+        <div class="sudoku-block-menu-item" data-menu-id="difficulty">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="theme">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="settings">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="records">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="logo">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="info">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="exit">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="guide">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+        <div class="sudoku-block-menu-item" data-menu-id="start">
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+          <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
+        </div>
+      </div>
+
+
+            <div id="score-display" class="hidden">
+              <button id="main-menu-btn"></button>
+
+              <!-- NEW High Score Structure -->
+              <div class="score-section" id="high-score-display">
+                <img id="high-score-rank-image" src="/images/ranks/rank1.png" alt="최고 점수 랭크" />
+                <div class="score-text-group">
+                  <span class="score-label">최고점수</span>
+                  <span id="high-score-value" class="score-value">0</span>
+                </div>
+              </div>
+
+              <!-- NEW Current Score Structure -->
+              <div class="score-section" id="current-score-display">
+                <div class="score-text-group">
+                  <span class="score-label">현재점수</span>
+                  <span id="current-score-value" class="score-value">0</span>
+                </div>
+                <img id="current-score-rank-image" src="/images/ranks/rank1.png" alt="현재 점수 랭크" />
+              </div>
+
+              <button id="retry-game-btn"></button>
+            </div>
+
+      <div id="sudoku-board" class="hidden"></div>
+      
+      <div id="game-controls-wrapper">
+        <div id="jokbo-display-container" class="hidden">
+            <!-- Jokbo count cells will be rendered here -->
+        </div>
+
+        <div id="hint-container" class="hidden">
+          <button id="use-hint-btn"><span id="hint-count">0</span></button>
+        </div>
+      </div>
+
+      <div id="jokbo-modal" class="hidden">
+        <div id="jokbo-content">
+          <h2>점수</h2>
+          <div id="jokbo-grid"></div>
+          <button id="jokbo-close-btn">닫기</button>
+        </div>
+      </div>
+
+      <div id="rank-modal" class="hidden">
+        <div id="rank-content">
+          <h2>랭크 정보</h2>
+          <div id="rank-grid"></div>
+          <button id="rank-close-btn">닫기</button>
+        </div>
+      </div>
+
+      <div id="completion-modal" class="hidden">
+        <div id="completion-content">
+          <div id="completion-score"></div>
+          <div id="completion-details"></div>
+          <button id="completion-close-btn">닫기</button>
+        </div>
+      </div>
+
+      <div id="high-score-modal" class="hidden">
+        <div id="high-score-content">
+          <h2>최고 점수 TOP 10</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>순위</th>
+                <th>점수</th>
+                <th>난이도</th>
+                <th>날짜</th>
+              </tr>
+            </thead>
+            <tbody id="high-score-table-body">
+              <!-- 점수 내역이 여기에 동적으로 추가됩니다 -->
+            </tbody>
+          </table>
+          <button id="high-score-close-btn">닫기</button>
+        </div>
+      </div>
+
+      <div id="help-modal" class="hidden">
+        <div id="help-content" class="highlight-guide">
+          <h2>도움말</h2>
+          <p><strong>화도쿠(Whadoku)</strong>는 스도쿠와 화투의 족보 시스템을 결합한 게임입니다.</p>
+          <h3>기본 규칙</h3>
+          <ul>
+            <li>가로, 세로, 3x3 블록에 1부터 9까지의 숫자를 겹치지 않게 채워주세요.</li>
+            <li>숫자를 맞히면 점수를 얻고, 틀리면 감점됩니다.</li>
+          </ul>
+          <h3>족보 시스템</h3>
+          <ul>
+            <li>가로줄, 세로줄, 3x3 블록 단위로 화투 족보가 완성되면 추가 점수를 얻습니다.</li>
+            <li>족보의 종류와 점수는 '족보' 버튼을 통해 확인할 수 있습니다.</li>
+          </ul>
+          <p></p>
+
+          <button id="help-close-btn">닫기</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="info-modal" class="hidden">
+      <div id="info-content">
+        <h2>화도쿠 정보</h2>
+        <p>버전: 1.0.0</p>
+        <p>개발: Gemini Agent</p>
+        <p>아이디어: 공작왕님</p>
+        <p>오픈소스 라이선스: MIT</p>
+        <button id="info-close-btn">닫기</button>
+      </div>
+    </div>
+
+    <div id="mini-palette" class="hidden"></div>
+
+    <script type="module" src="/src/js/main.js"></script>
+    <audio id="click-sound" src="/sounds/click.mp3"></audio>
+    <audio id="error-sound" src="/sounds/error.mp3"></audio>
+    <audio id="f5-sound" src="/sounds/f5.mp3" preload="auto"></audio>
+    <audio id="jokbo-sound" src="/sounds/jokbo.mp3"></audio>
+    <footer>
+      <p>■ 2025 WHADOKU ■</p>
+    </footer>
+  </body>
+</html>

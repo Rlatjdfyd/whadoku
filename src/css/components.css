@@ -1,0 +1,389 @@
+﻿/* src/css/components.css */
+
+/*
+  재사용 가능하거나 독립적인 UI 요소 스타일
+  - #rank-display-area: 상단 랭킹 표시 영역
+  - #jokbo-display-container: 족보 달성 현황 이미지
+  - #score-display: 점수판
+  - .jokbo-notification, .penalty-notification, .specialist-bonus-notification: 각종 알림창
+  - #hint-container: 힌트 버튼 영역
+*/
+
+/* 랭킹 표시 영역 */
+#rank-display-area {
+  display: flex;
+  flex-direction: column; /* column -> row로 변경 */
+  align-items: center;
+  justify-content: center;
+  height: 50px; /* 대략적인 높이 */
+  background-image: url('/images/btn/card_back_patten.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  border-radius: 6px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+#current-rank-image {
+  border-radius: 6px; /* 원형 -> 사각형으로 변경 */
+  animation: rank-shining-border 2s infinite alternate ease-in-out;
+  background-color: yellow;
+}
+
+#high-score-rank-image {
+  border-radius: 6px; /* 원형 -> 사각형으로 변경 */
+  /* animation: rank-shining-border 2s infinite alternate ease-in-out; */ /* 효과 삭제 */
+  background-color: white;
+}
+
+#current-score-rank-image {
+  background-color: white;
+  border-radius: 6px;
+}
+
+#current-rank-alias {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #00ff00;
+}
+
+/* 게임 컨트롤 래퍼 */
+#game-controls-wrapper {
+  width: 90vw; /* 스도쿠 보드와 동일한 상대 너비 */
+  max-width: 540px; /* 스도쿠 보드와 동일한 최대 너비 */
+  min-width: 320px; /* 스도쿠 보드와 동일한 최소 너비 */
+  margin: 0 auto 8px auto; /* 중앙 정렬, 상단/하단 여백 */
+  display: flex; /* 내부 요소들을 가로로 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 족보 컨테이너는 왼쪽, 힌트 컨테이너는 오른쪽 끝으로 정렬 */
+  gap: 10px; /* 요소들 사이의 간격 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+  padding: 0 5px; /* 좌우 패딩 추가 */
+}
+
+/* 족보 메인 이미지 컨테이너 */
+#jokbo-display-container {
+  display: flex; /* Keep flex for internal items */
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px;
+  background-image: url('/images/btn/card_back_patten6.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  justify-content: flex-start; /* 내부 아이템 왼쪽 정렬 */
+  max-width: calc(100% - 50px - 10px - 10px); /* 힌트 버튼(50px)과 gap(10px)을 제외한 공간 확보, 추가 패딩(5px * 2) 고려 */
+  /* 540px (game-controls-wrapper max-width) - 50px (hint-btn) - 10px (gap) = 480px, 여기서 족보 컨테이너 내부의 padding 5px*2를 제외 */
+  /* 최종적으로 max-width를 470px 정도로 설정하는 것이 안전할 듯 합니다. */
+}
+
+.jokbo-display-item {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative; /* 자식 요소의 absolute positioning을 위한 기준점 */
+}
+
+.jokbo-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.jokbo-display-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 족보 달성 횟수별 하이라이트 */
+.jokbo-display-item.jokbo-highlight-10x {
+  box-shadow: 0 0 8px 3px rgb(0, 255, 255, 0.7); /* 청록색 발광 */
+  border: 2px solid rgb(0, 255, 0, 0.7); /* 청록색 테두리 */
+  transform: scale(1.05); /* 살짝 확대 */
+}
+
+.jokbo-display-item.jokbo-highlight-20x {
+  box-shadow: 0 0 10px 4px rgba(255, 69, 0, 0.8); /* 붉은색 발광 (OrangeRed 계열) */
+  border: 2px solid orangered; /* 붉은색 테두리 */
+  transform: scale(1.1); /* 더 크게 확대 */
+}
+
+/* 점수 표시 */
+#score-display {
+  width: 90vw; /* 스도쿠 보드와 동일한 상대 너비 */
+  max-width: 540px; /* 스도쿠 보드와 동일한 최대 너비 */
+  min-width: 320px; /* 스도쿠 보드와 동일한 최소 너비 */
+  margin: 0 auto 15px auto;
+  padding: 8px 5px;
+  background-image: url('/images/btn/card_back_patten.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* 검정색 그림자 효과 */
+  display: flex;
+  justify-content: space-between; /* Changed back to space-between */
+  align-items: center;
+  font-family: 'Verdana', 'Geneva', 'Tahoma', sans-serif;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+#score-display button {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  max-width: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s,
+    background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000; /* Default text color, will be transparent if image is used */
+  box-shadow: 2px 2px 5px #000000;
+}
+
+#score-display button:hover {
+  box-shadow:
+    0 0 8px 2px rgba(255, 215, 0, 0.6),
+    2px 2px 5px #000000;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+
+#main-menu-btn,
+#retry-game-btn {
+  background-color: #00ff00; /* Green background */
+  color: #000000; /* Black text */
+  font-weight: bold;
+  font-size: 0.8em; /* Adjust as needed */
+  /* Remove background image properties */
+  background-image: none;
+  background-size: auto;
+  background-repeat: unset;
+}
+
+#main-menu-btn {
+  background-image: url('/images/btn/고급.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: white;
+  color: transparent;
+}
+
+#retry-game-btn {
+  background-image: url('/images/btn/F5.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: white; /* Match the original F5 button style */
+  color: transparent; /* Hide text, show image */
+}
+
+
+/* UNIFIED SCORE SECTION STYLES */
+.score-section {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Gap between image and text */
+}
+
+/* This rule applies to the rank images in BOTH score sections */
+.score-section img {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0; /* Prevents the image from disappearing in a flex container */
+  border-radius: 6px;
+  background-color: white;
+}
+
+/* This rule applies to the text group in BOTH score sections */
+.score-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Consistent left-alignment for text */
+}
+
+.score-label {
+  font-size: 0.8rem;
+  color: #cacaca;
+}
+
+.score-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #cacaca;
+}
+
+/* 족보 달성 알림 */
+.jokbo-notification {
+  position: fixed;
+  top: 60px; /* 상단에서 20px 아래 */
+  left: 50%;
+  transform: translateX(-50%); /* 가로 중앙 정렬만 유지 */
+  background-image: url('/images/btn/card_back_patten6.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #fff9c4; /* 기존 배경색 유지 (패턴 위에 덮이지 않도록) */
+  padding: 10px 15px; /* 패딩 줄여서 크기 축소 */
+  border-radius: 10px; /* 모서리 둥글기 조절 */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* 그림자 효과 조절 */
+  font-size: 0.5rem; /* 폰트 크기 축소 */
+  font-weight: bold;
+  color: #000000; /* 텍스트 색상 변경 */
+  text-align: center;
+  z-index: 200;
+  animation: jokbo-popup 2s ease-out forwards;
+  max-width: 80%; /* 최대 너비 설정 (모바일 대응) */
+  white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
+}
+
+.jokbo-notification-title {
+  font-size: 1rem; /* 족보 달성! 텍스트 */
+  margin-bottom: 8px;
+  color: #000000; /* 기본 색상 유지 */
+}
+
+.jokbo-notification-names {
+  font-size: 0.8rem; /* 족보 이름 텍스트 */
+  font-weight: bold;
+  color: #00ff00; /* 녹색 유지 */
+}
+
+.jokbo-notification-score {
+  font-size: 0.8rem; /* 점수 텍스트 */
+  margin-top: 8px;
+  color: #015958; /* 색상 유지 */
+}
+
+/* 감점 알림 스타일 */
+.penalty-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url('/images/btn/card_back_patten.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #ffebee; /* 연한 빨강 */
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  z-index: 200;
+  animation: penalty-popup 1.5s ease-out forwards;
+}
+
+.penalty-notification .penalty-amount {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffffff; /* 흰색 */
+}
+
+.penalty-notification .penalty-text {
+  font-size: 1rem;
+  margin-top: 4px;
+  color: #e0e0e0; /* 밝은 회색 */
+}
+
+/* 전문가 보너스 알림 */
+.specialist-bonus-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url('/images/btn/card_back_patten4.png'); /* 다른 모달과 동일한 패턴 */
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 배경색 유지 */
+  padding: 25px 35px;
+  border-radius: 20px;
+  border: 2px solid #ffd600;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #015958; /* 텍스트 색상 변경 */
+  text-align: center;
+  z-index: 210; /* 다른 알림보다 위에 표시 */
+  animation: specialist-popup 2.5s ease-out forwards;
+}
+
+/* 힌트 컨테이너 스타일 */
+#hint-container {
+  margin: 0; /* 부모 flex 컨테이너에 의해 정렬되므로 margin 조정 */
+  flex-shrink: 0; /* 힌트 버튼이 줄어들지 않도록 */
+}
+
+#hint-container:not(.hidden) {
+  display: flex;
+}
+
+#hint-container.hidden {
+  display: none;
+}
+
+#use-hint-btn {
+  width: 48px; /* 가로 크기 42px */
+  height: 48px; /* 세로 크기 42px */
+  padding: 0; /* 패딩 제거 또는 최소화하여 텍스트 정렬 */
+  font-size: 1rem; /* 글자 크기 유지 */
+  font-weight: bold;
+  color: #fff;
+  background-image: url('/images/btn/card_back_patten5.png'); /* 배경 이미지 적용 */
+  background-size: 5px 5px; /* 패턴 크기 조정 */
+  background-repeat: repeat; /* 패턴 반복 */
+  background-color: #ffb300; /* 배경 이미지 없을 경우 또는 투명도 조절 시 사용 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px #000000;
+  transition: all 0.2s;
+  display: flex; /* 내부 텍스트 중앙 정렬을 위해 flexbox 사용 */
+  align-items: center;
+  justify-content: center;
+}
+
+#use-hint-btn:hover {
+  background-image: url('/images/btn/card_back_patten6.png'); /* 배경 이미지 적용 */
+  background-size: 5px 5px; /* 패턴 크기 유지 */
+  background-repeat: repeat; /* 패턴 반복 */
+  background-color: #ffa000; /* 배경 이미지 없을 경우 또는 투명도 조절 시 사용 */
+  box-shadow:  2px 2px 5px #000000;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+
+#use-hint-btn:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+  box-shadow: none;
+}

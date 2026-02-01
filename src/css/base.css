@@ -1,0 +1,47 @@
+/* src/css/base.css */
+
+/*
+  기본 스타일 및 전역 설정
+  - 전체 선택자 (*)
+  - html, body, h1 등 기본 태그 스타일
+  - .hidden과 같은 전역 유틸리티 클래스
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Verdana', 'Geneva', 'Tahoma', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 추가: 수직 가운데 정렬 */
+  min-height: 100dvh; /* 최소 높이를 동적 뷰포트 높이로 설정 */
+  color: #015958;
+  background-image: url('/images/btn/card_back_patten2.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: #4d01ff;
+  text-shadow:
+    2px 2px #fff,
+    3px 3px #015958;
+  margin-bottom: 20px;
+}
+
+/* Global hidden class to ensure elements are truly hidden */
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
