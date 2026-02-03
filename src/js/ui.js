@@ -835,12 +835,16 @@ export function showSpecialistBonusNotification(title, bonusAmount) {
  * 달성된 족보를 메인 화면에 표시하고, 족보별 개수를 함께 보여줍니다.
  * @param {object} dailyJokboCounts - 일일 족보 달성 횟수 객체 (누적)
  */
-export function updateAchievedJokboDisplay(dailyJokboCounts, jokboData) {
+export function updateAchievedJokboDisplay(
+  totalJokboCounts,
+  blockJokboCounts,
+  jokboData
+) {
   const jokboDisplayContainer = document.getElementById('jokbo-display-container');
   jokboDisplayContainer.innerHTML = ''; // 이전 내용 초기화
 
   // 족보 이름별로 개수를 집계합니다. (이미 집계된 dailyJokboCounts 사용)
-  const jokboCounts = dailyJokboCounts;
+  const jokboCounts = totalJokboCounts;
 
   // 족보 데이터에서 대표 이미지를 찾기 위한 맵을 생성합니다.
   const jokboImageMap = new Map();
@@ -859,7 +863,7 @@ export function updateAchievedJokboDisplay(dailyJokboCounts, jokboData) {
       // 피, 띠, 끗 족보 제외
       const itemDiv = document.createElement('div');
       itemDiv.classList.add('jokbo-display-item');
-      itemDiv.title = `${name} (${jokboCounts[name]}개)`; // 툴팁에 개수 표시
+      itemDiv.title = `${name} (${blockJokboCounts[name] || 0}개)`; // 툴팁에 블록 족보 개수 표시
 
       const img = document.createElement('img');
       img.src = `public/images/hwatu/${jokboImageMap.get(name)}`;
@@ -867,19 +871,15 @@ export function updateAchievedJokboDisplay(dailyJokboCounts, jokboData) {
 
       const countSpan = document.createElement('span');
       countSpan.classList.add('jokbo-count');
-      countSpan.textContent = jokboCounts[name];
+      countSpan.textContent = blockJokboCounts[name] || 0; // 아이콘에 블록 족보 개수 표시
 
       itemDiv.appendChild(img);
       itemDiv.appendChild(countSpan);
 
       // 여기에 하이라이트 로직 추가
-      const targetJokbosForHighlight = ['홍단', '청단', '초단', '고도리', '3광'];
-      if (targetJokbosForHighlight.includes(name)) { // 특정 족보에만 적용
-        if (jokboCounts[name] >= 20) {
-          itemDiv.classList.add('jokbo-highlight-20x');
-        } else if (jokboCounts[name] >= 10) {
-          itemDiv.classList.add('jokbo-highlight-10x');
-        }
+      const highlightCount = blockJokboCounts[name] || 0; // 블록 족보 카운트로 하이라이트
+      if (highlightCount >= 5) {
+        itemDiv.classList.add('jokbo-individual-highlight');
       }
 
       jokboDisplayContainer.appendChild(itemDiv);
@@ -890,5 +890,25 @@ export function updateAchievedJokboDisplay(dailyJokboCounts, jokboData) {
     jokboDisplayContainer.classList.remove('hidden');
   } else {
     jokboDisplayContainer.classList.add('hidden');
+  }
+}
+
+/**
+ * 게임 보드에서 보너스 블록을 하이라이트합니다.
+ * @param {object} bonusBlock - 보너스 블록의 {row, col} 인덱스 (0-2)
+ */
+export function highlightBonusBlock(bonusBlock) {
+  // 기존 하이라이트 제거
+  document.querySelectorAll('.sudoku-block.bonus-block-highlight').forEach(block => {
+    block.classList.remove('bonus-block-highlight');
+  });
+
+  if (bonusBlock && bonusBlock.row !== -1 && bonusBlock.col !== -1) {
+    const targetBlock = document.querySelector(
+      `.sudoku-block[data-block-row="${bonusBlock.row}"][data-block-col="${bonusBlock.col}"]`
+    );
+    if (targetBlock) {
+      targetBlock.classList.add('bonus-block-highlight');
+    }
   }
 }

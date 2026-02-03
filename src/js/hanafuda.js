@@ -91,7 +91,7 @@ export const jokboData = [
     name: '3광',
     score: 10000,
     mainImage: '1-1.png',
-    specialistThreshold: 10,
+    specialistThreshold: 5,
     specialistBonus: 0.3,
     specialistTitle: '✨ 삼광의 지배자',
     cards: [
@@ -104,7 +104,7 @@ export const jokboData = [
     name: '고도리',
     score: 5000,
     mainImage: '2-1.png',
-    specialistThreshold: 10,
+    specialistThreshold: 5,
     specialistBonus: 0.2,
     specialistTitle: '🕊️ 고도리 장인',
     cards: [
@@ -117,7 +117,7 @@ export const jokboData = [
     name: '홍단',
     score: 3000,
     mainImage: '1-2.png',
-    specialistThreshold: 10,
+    specialistThreshold: 5,
     specialistBonus: 0.1,
     specialistTitle: '🧧 홍단 전문가',
     cards: [
@@ -130,7 +130,7 @@ export const jokboData = [
     name: '초단',
     score: 3000,
     mainImage: '4-2.png',
-    specialistThreshold: 10,
+    specialistThreshold: 5,
     specialistBonus: 0.1,
     specialistTitle: '☘️ 초단 전문가',
     cards: [
@@ -143,7 +143,7 @@ export const jokboData = [
     name: '청단',
     score: 3000,
     mainImage: '6-2.png',
-    specialistThreshold: 10,
+    specialistThreshold: 5,
     specialistBonus: 0.1,
     specialistTitle: '🦋 청단 전문가',
     cards: [
@@ -300,7 +300,7 @@ function calculateScoreForCards(cards) {
  * @param {number[][]} cellImageVariants - 셀별 이미지 variant 정보
  * @returns {{totalScore: number, achievedJokbo: Array<object>, detailedAchievedJokbos: Array<object>}} 최종 점수, 집계된 족보, 상세 족보 목록
  */
-export function calculateScore(currentTheme, board, cellImageVariants) {
+export function calculateScore(currentTheme, board, cellImageVariants, bonusBlock) {
   if (currentTheme !== 'hwatu')
     return { totalScore: 0, achievedJokbo: [], detailedAchievedJokbos: [] };
 
@@ -327,6 +327,20 @@ export function calculateScore(currentTheme, board, cellImageVariants) {
 
       if (blockCards.length > 0) {
         const blockResult = calculateScoreForCards(blockCards);
+
+        // 보너스 블록 점수 2배 적용 로직
+        const currentBlockRow = blockRow / 3;
+        const currentBlockCol = blockCol / 3;
+        if (
+          bonusBlock &&
+          bonusBlock.row === currentBlockRow &&
+          bonusBlock.col === currentBlockCol &&
+          blockResult.totalScore > 0
+        ) {
+          blockResult.totalScore *= 2;
+          blockResult.achievedJokbo.forEach((jokbo) => (jokbo.score *= 2));
+        }
+
         finalTotalScore += blockResult.totalScore;
         blockTotalScore += blockResult.totalScore;
 

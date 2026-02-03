@@ -26,6 +26,27 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* 검은색 그림자 효과 */
 }
 
+/* 보너스 블록 하이라이트 */
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.7); /* 금색 발광 시작 (약함) */
+  }
+  50% {
+    box-shadow: 0 0 25px 8px rgba(255, 215, 0, 1); /* 금색 발광 최대 (강함) */
+  }
+  100% {
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.7); /* 금색 발광 끝 (약함) */
+  }
+}
+
+.sudoku-block.bonus-block-highlight {
+  /* box-shadow: 0 0 15px 5px rgba(0, 255, 0, 0.7); */ /* 기존 밝은 녹색 발광 효과 주석 처리 */
+  transform: scale(1.02); /* 살짝 확대 */
+  /* transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; */ /* transition 대신 animation 사용 */
+  z-index: 1; /* 다른 블록보다 위에 표시 */
+  animation: pulse-gold 1.5s infinite ease-in-out; /* 금색 맥박 애니메이션 적용 */
+}
+
 .sudoku-block {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3x3 셀을 위한 3열 */
@@ -157,3 +178,5 @@
   object-fit: cover;
   pointer-events: none; /* 이미지 클릭시 이벤트가 mini-number로 가도록 */
 }
+
+

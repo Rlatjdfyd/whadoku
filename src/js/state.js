@@ -23,6 +23,8 @@ export const gameState = {
   dailyJokboCounts: {},
   achievedSpecialistBonuses: [],
   lastScoreResult: null, // lastScoreResult 추가
+  isFiveSetBonusAchieved: false,
+  bonusBlock: { row: -1, col: -1 },
   isSoundEnabled: JSON.parse(localStorage.getItem('isSoundEnabled')) ?? true, // Sound state
 };
 

@@ -18,6 +18,7 @@ import {
   clearAllHighlights,
   showSpecialistBonusNotification,
   updateAchievedJokboDisplay,
+  highlightBonusBlock,
 } from './ui.js';
 import {
   getRankName,
@@ -49,7 +50,7 @@ function loadDailyJokboCounts() {
 
   // If there's no stored data, nothing to load, return empty.
   if (!stored.date) {
-    return {};
+    return { totalCounts: {}, blockCounts: {} };
   }
 
   // --- Weekly Reset Logic (every Monday) ---
@@ -69,10 +70,13 @@ function loadDailyJokboCounts() {
 
   // If the stored date is before the most recent Monday, reset the counts.
   if (storedDate < lastMonday) {
-    return {}; // Reset for the new week
+    return { totalCounts: {}, blockCounts: {} }; // Reset for the new week
   } else {
     // Otherwise, it's from the current week, so load the counts.
-    return stored.counts || {};
+    return {
+      totalCounts: stored.counts || {},
+      blockCounts: stored.blockCounts || {},
+    };
   }
 }
 
@@ -80,7 +84,11 @@ function saveDailyJokboCounts() {
   const today = new Date().toISOString().split('T')[0];
   localStorage.setItem(
     'daily-jokbo-counts',
-    JSON.stringify({ date: today, counts: gameState.dailyJokboCounts })
+    JSON.stringify({
+      date: today,
+      counts: gameState.dailyJokboCounts,
+      blockCounts: gameState.dailyBlockJokboCounts,
+    })
   );
 }
 
@@ -90,8 +98,10 @@ export function initGame() {
   const loadedState = loadGameState();
 
   if (loadedState) {
-    Object.assign(gameState, loadedState);
-  }
+        Object.assign(gameState, loadedState);
+        gameState.isFiveSetBonusAchieved = loadedState.isFiveSetBonusAchieved || false;
+        gameState.bonusBlock = loadedState.bonusBlock || { row: -1, col: -1 };
+      }
 
   const savedHighScore = localStorage.getItem('sudokuHighScore');
 
@@ -137,13 +147,26 @@ export function startNewGame() {
   gameState.penaltyScore = 0;
   gameState.hintCount = 3;
   gameState.lastScoreTier = 0;
+  gameState.isFiveSetBonusAchieved = false;
+  // 보너스 블록 무작위 선택
+  gameState.bonusBlock = {
+    row: Math.floor(Math.random() * 3), // 0, 1, 2
+    col: Math.floor(Math.random() * 3), // 0, 1, 2
+  };
+  highlightBonusBlock(gameState.bonusBlock); // ui.js에 추가 예정
   gameState.isHintMode = false;
   updateHintCount(gameState.hintCount);
   undimAllCells();
   clearAllHighlights();
   gameState.achievedSpecialistBonuses = [];
-  gameState.dailyJokboCounts = loadDailyJokboCounts();
-  updateAchievedJokboDisplay(gameState.dailyJokboCounts, jokboData);
+  const { totalCounts, blockCounts } = loadDailyJokboCounts();
+  gameState.dailyJokboCounts = totalCounts;
+  gameState.dailyBlockJokboCounts = blockCounts;
+  updateAchievedJokboDisplay(
+    gameState.dailyJokboCounts,
+    gameState.dailyBlockJokboCounts,
+    jokboData
+  );
   saveGameState();
 }
 
@@ -239,7 +262,8 @@ export function updateHanafudaScore() {
   const scoreResult = calculateScore(
     gameState.theme,
     gameState.board,
-    gameState.cellImageVariants
+    gameState.cellImageVariants,
+    gameState.bonusBlock
   );
   setCurrentScore(scoreResult.totalScore - gameState.penaltyScore);
   gameState.lastScoreResult = scoreResult;
@@ -283,6 +307,15 @@ export function updateHanafudaScore() {
       gameState.dailyJokboCounts[jokbo.name] =
         (gameState.dailyJokboCounts[jokbo.name] || 0) + 1;
     });
+
+    // 블록 족보만 따로 카운트합니다.
+    newJokboDetailed.forEach((jokbo) => {
+      if (jokbo.type === 'block') {
+        gameState.dailyBlockJokboCounts[jokbo.name] =
+          (gameState.dailyBlockJokboCounts[jokbo.name] || 0) + 1;
+      }
+    });
+
     saveDailyJokboCounts();
 
     jokboData.forEach((jokboEntry) => {
@@ -298,8 +331,27 @@ export function updateHanafudaScore() {
       }
     });
 
-    updateAchievedJokboDisplay(gameState.dailyJokboCounts, jokboData);
+    updateAchievedJokboDisplay(
+      gameState.dailyJokboCounts,
+      gameState.dailyBlockJokboCounts,
+      jokboData
+    );
     document.getElementById('jokbo-display-container').classList.remove('hidden');
+
+    // 5x5 세트 완성 보너스 로직
+    if (!gameState.isFiveSetBonusAchieved) {
+      const targetJokbos = ['홍단', '청단', '초단', '고도리', '3광'];
+      const allTargetsMet = targetJokbos.every(
+        (jokboName) => (gameState.dailyBlockJokboCounts[jokboName] || 0) >= 5
+      );
+
+      if (allTargetsMet) {
+        const bonusScore = 50000;
+        setCurrentScore(gameState.currentScore + bonusScore);
+        gameState.isFiveSetBonusAchieved = true;
+        // 새로운 UI 함수 호출 (ui.js에 추가 예정)
+      }
+    }
   }
   gameState.lastAchievedJokbo = [...scoreResult.detailedAchievedJokbos];
 }

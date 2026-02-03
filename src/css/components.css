@@ -82,12 +82,25 @@
   height: 42px;
   display: flex;
   justify-content: center;
-  align-items: center;
   background-color: white;
   border-radius: 4px;
   overflow: hidden;
   position: relative; /* 자식 요소의 absolute positioning을 위한 기준점 */
+  /* border: 2px solid transparent; */ /* 하이라이트 클래스에서 직접 제어 */
+  /* transition: transform 0.2s ease-in-out; */ /* 하이라이트 클래스에서 직접 제어 */
 }
+
+/* 세트 완성 하이라이트 효과 (이전 버전 - 삭제됨) */
+
+/* 개별 족보 5회 달성 하이라이트 효과 (밝은 녹색 발광) */
+.jokbo-display-item.jokbo-individual-highlight {
+  border: 2px solid transparent; /* 무지개색 그림자를 위해 투명 테두리 유지 */
+  transform: scale(1.1); /* 확대 효과 */
+  transition: transform 0.2s ease-in-out; /* 확대 애니메이션 */
+  box-shadow: 0 0 12px 4px rgb(0, 255, 0, 0.6),
+              0 0 20px 8px rgb(0, 255, 0, 0.3); /* 밝은 녹색 발광 효과 */
+}
+
 
 .jokbo-count {
   position: absolute;
@@ -113,18 +126,7 @@
   object-fit: cover;
 }
 
-/* 족보 달성 횟수별 하이라이트 */
-.jokbo-display-item.jokbo-highlight-10x {
-  box-shadow: 0 0 8px 3px rgb(0, 255, 255, 0.7); /* 청록색 발광 */
-  border: 2px solid rgb(0, 255, 0, 0.7); /* 청록색 테두리 */
-  transform: scale(1.05); /* 살짝 확대 */
-}
-
-.jokbo-display-item.jokbo-highlight-20x {
-  box-shadow: 0 0 10px 4px rgba(255, 69, 0, 0.8); /* 붉은색 발광 (OrangeRed 계열) */
-  border: 2px solid orangered; /* 붉은색 테두리 */
-  transform: scale(1.1); /* 더 크게 확대 */
-}
+/* 족보 달성 횟수별 하이라이트 (이전 버전 - 삭제됨) */
 
 /* 점수 표시 */
 #score-display {
