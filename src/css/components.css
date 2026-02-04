@@ -1,4 +1,4 @@
-﻿/* src/css/components.css */
+/* src/css/components.css */
 
 /*
   재사용 가능하거나 독립적인 UI 요소 스타일
@@ -387,4 +387,18 @@
   background: #bdbdbd;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+#random-passage {
+  text-align: center;
+  padding: 0; /* Remove padding */
+  font-size: 0.9rem; /* Smaller font size */
+  color: #90ee90; /* Light green color */
+  background-color: transparent; /* Remove background */
+  border-bottom: none; /* Remove border */
+  margin: 8px auto; /* Keep centered margin */
+  max-width: 90vw; /* Keep general layout width */
+  min-width: 320px;
+  box-sizing: border-box; /* Keep box-sizing */
+  line-height: 1.4; /* Keep line-height for readability */
 }

@@ -19,6 +19,7 @@ import {
   showSpecialistBonusNotification,
   updateAchievedJokboDisplay,
   highlightBonusBlock,
+  displayRandomPassage, // Add this import
 } from './ui.js';
 import {
   getRankName,
@@ -128,6 +129,7 @@ export function initGame() {
 }
 
 export function startNewGame() {
+  displayRandomPassage(); // Call displayRandomPassage here
   gameState.solution = generateSudoku();
   gameState.board = createPuzzle(gameState.solution, gameState.difficulty);
   gameState.cellImageVariants = Array(BOARD_SIZE)

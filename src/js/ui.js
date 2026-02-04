@@ -912,3 +912,31 @@ export function highlightBonusBlock(bonusBlock) {
     }
   }
 }
+
+/**
+ * passages.json 파일을 불러와 랜덤 글귀를 화면에 표시하는 함수
+ */
+export async function displayRandomPassage() {
+  try {
+    // 1. passages.json 파일 가져오기
+    const response = await fetch('./public/data/passages.json');
+    const passages = await response.json();
+
+    if (passages.length === 0) {
+      console.warn("passages.json 파일에 글귀가 없습니다.");
+      return;
+    }
+
+    // 2. 랜덤 글귀 선택하기
+    const randomIndex = Math.floor(Math.random() * passages.length);
+    const randomPassage = passages[randomIndex];
+
+    // 3. HTML 요소에 글귀 표시하기
+    const passageElement = document.getElementById('random-passage');
+    if (passageElement) {
+      passageElement.textContent = `"${randomPassage.text}" - ${randomPassage.author}`;
+    }
+  } catch (error) {
+    console.error('글귀를 불러오는 데 실패했습니다:', error);
+  }
+}
