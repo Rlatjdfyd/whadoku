@@ -157,9 +157,23 @@ function isSafeInCol(board, col, num) {
  * @returns {number[][]} 빈 칸이 있는 9x9 스도쿠 퍼즐
  */
 
-export function createPuzzle(board, difficulty) {
+export function createPuzzle(board, difficultyOrCluesCount) {
   let puzzle = JSON.parse(JSON.stringify(board));
-  let cellsToRemove = 81 - difficulties[difficulty];
+  let cellsToKeep;
+
+  if (typeof difficultyOrCluesCount === 'string') {
+    // If it's a difficulty string, look up in difficulties map
+    cellsToKeep = difficulties[difficultyOrCluesCount];
+  } else if (typeof difficultyOrCluesCount === 'number') {
+    // If it's a number, use it directly as cellsToKeep
+    cellsToKeep = difficultyOrCluesCount;
+  } else {
+    // Default or error handling
+    console.error("Invalid difficultyOrCluesCount provided to createPuzzle.");
+    cellsToKeep = difficulties['medium']; // Fallback
+  }
+
+  let cellsToRemove = 81 - cellsToKeep;
   while (cellsToRemove > 0) {
     let row = Math.floor(Math.random() * 9);
     let col = Math.floor(Math.random() * 9);

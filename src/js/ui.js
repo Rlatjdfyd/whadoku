@@ -18,13 +18,15 @@ export function createBoard(
   currentTheme,
   cellImageVariants,
   onCellClick,
-  isInitial = false
+  isInitial = false,
+  quoteCellMap = undefined // Changed from quoteChars to quoteCellMap
 ) {
   const sudokuBoard = document.getElementById('sudoku-board');
-  sudokuBoard.style.visibility = 'hidden'; // 보드를 다시 그리는 동안 숨김
+  sudokuBoard.style.visibility = 'hidden';
   sudokuBoard.innerHTML = '';
 
-  const fragment = document.createDocumentFragment(); // DocumentFragment 생성
+  const fragment = document.createDocumentFragment();
+  // let quoteCharIndex = 0; // No longer needed
 
   // 3x3 블록을 생성
   for (let blockRow = 0; blockRow < 3; blockRow++) {
@@ -53,7 +55,7 @@ export function createBoard(
             }
             // 첫 화면에서는 클릭 이벤트 없음
           } else {
-            // 일반 게임 화면일 경우
+            // 일반 게임 화면일 경우 또는 랜덤 모드
             if (currentBoard[row][col] !== 0) {
               // 고정된 숫자(기본 제공 퍼즐)
               cellImageVariants[row][col] = Math.floor(Math.random() * 3) + 1;
@@ -65,8 +67,13 @@ export function createBoard(
                 cellImageVariants
               );
               cell.classList.add('fixed');
-            } else {
-              // 사용자가 채워야 하는 빈 칸
+            } else { // 사용자가 채워야 하는 빈 칸
+              // Check if this empty cell should display a quote character
+              const cellKey = `${row}-${col}`;
+              if (quoteCellMap && quoteCellMap.has(cellKey)) {
+                cell.textContent = quoteCellMap.get(cellKey);
+                cell.classList.add('cell-quote-char'); // Add a class for styling
+              }
             }
           }
 
@@ -226,6 +233,12 @@ export function renderCell(row, col, num, currentTheme, cellImageVariants) {
   const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
   if (cell) {
     cell.innerHTML = getValue(row, col, num, currentTheme, cellImageVariants);
+    
+    // If a number is being rendered, remove the 'cell-quote-char' class
+    if (num !== 0 && cell.classList.contains('cell-quote-char')) {
+        cell.classList.remove('cell-quote-char');
+    }
+
     // 애니메이션 클래스 추가
     cell.classList.add('card-place-anim');
     // 애니메이션이 끝난 후 클래스 제거
@@ -535,11 +548,7 @@ export function updateHintCount(count) {
   }
 
   if (hintContainer) {
-    if (count > 0) {
-      hintContainer.classList.remove('hidden');
-    } else {
-      hintContainer.classList.add('hidden');
-    }
+    hintContainer.classList.remove('hidden'); // 힌트 컨테이너는 항상 보이도록
   }
 }
 
@@ -557,7 +566,8 @@ export function showCompletionModal(
   penaltyScore,
   achievedSpecialistBonuses,
   jokboData,
-  showFortuneFn
+  showFortuneFn,
+  selectedPassage // <--- NEW PARAMETER
 ) {
   const completionModal = document.getElementById('completion-modal');
   const completionScore = document.getElementById('completion-score');
@@ -569,6 +579,7 @@ export function showCompletionModal(
     easy: Math.floor(finalScoreData.totalScore * 0.5),
     medium: Math.floor(finalScoreData.totalScore * 1.0),
     hard: Math.floor(finalScoreData.totalScore * 2.0),
+    random: Math.floor(finalScoreData.totalScore * 1.5), // Bonus for random mode
   };
 
   let totalSpecialistBonus = 0;
@@ -604,61 +615,71 @@ export function showCompletionModal(
   // --- 점수 상세 내역 HTML 생성 ---
   let detailsHTML = '';
 
-  // 1. 감점 섹션
-  if (penaltyScore > 0) {
+  if (difficulty === 'random') {
+    // Only show completed passage for random mode
     detailsHTML += `
-      <div class="detail-section penalty-score">
-        <p>🚨 총 감점: -${penaltyScore.toLocaleString()}점</p>
+      <div class="detail-section passage-display">
+        <h4>완료된 글귀</h4>
+        <p>"${selectedPassage.text}" - ${selectedPassage.author}</p>
       </div>
     `;
-  }
-
-  // 2. 족보 점수 섹션
-  detailsHTML += `
-    <div class="detail-section jokbo-summary">
-      <h4>🏆 족보 점수</h4>
-      <p>3x3셀: ${finalScoreData.blockScore.toLocaleString()}점</p>
-      <p>가로셀: ${finalScoreData.rowScore.toLocaleString()}점</p>
-      <p>세로셀: ${finalScoreData.colScore.toLocaleString()}점</p>
-    </div>
-  `;
-
-  // 3. 달성 족보 상세 섹션
-  if (finalScoreData.achievedJokbo.length > 0) {
-    detailsHTML += `
-      <div class="detail-section jokbo-list">
-        <h4>🏆 족보 상세</h4>
-        <ul>
-          ${finalScoreData.achievedJokbo
-            .map((j) => `<li>• ${j.name}: ${j.score.toLocaleString()}점</li>`)
-            .join('')}
-        </ul>
-      </div>
-    `;
-  }
-  
-  // 4. 보너스 섹션 (난이도, 전문가, 행운)
-  let bonusHTML = '';
-  if (difficultyBonus[difficulty] > 0) {
-    bonusHTML += `<p class="bonus-item difficulty-bonus">💎 난이도 보너스: +${difficultyBonus[difficulty].toLocaleString()}점</p>`;
-  }
-  if (totalSpecialistBonus > 0) {
-     specialistBonusDetails.forEach(detail => {
-        bonusHTML += `<p class="bonus-item specialist-bonus">✨ ${detail.title}: +${detail.amount.toLocaleString()}점</p>`;
-     });
-  }
-  if (luckyBonusAmount > 0) {
-    let bonusText = luckyBonusInfo.justAchieved 
-      ? '🏆 오늘의 행운 보너스 첫 달성!' 
-      : '🍀 오늘의 행운 보너스 적용!';
-    bonusHTML += `<p class="bonus-item lucky-bonus">${bonusText} +${luckyBonusAmount.toLocaleString()}점</p>`;
-    if (typeof showFortuneFn === 'function') { // 함수인지 확인
-      showFortuneFn();
+  } else {
+    // 1. 감점 섹션
+    if (penaltyScore > 0) {
+      detailsHTML += `
+        <div class="detail-section penalty-score">
+          <p>🚨 총 감점: -${penaltyScore.toLocaleString()}점</p>
+        </div>
+      `;
     }
-  }
 
-  if (bonusHTML) {
-    detailsHTML += `<div class="detail-section bonus-list">${bonusHTML}</div>`;
+    // 2. 족보 점수 섹션
+    detailsHTML += `
+      <div class="detail-section jokbo-summary">
+        <h4>🏆 족보 점수</h4>
+        <p>3x3셀: ${finalScoreData.blockScore.toLocaleString()}점</p>
+        <p>가로셀: ${finalScoreData.rowScore.toLocaleString()}점</p>
+        <p>세로셀: ${finalScoreData.colScore.toLocaleString()}점</p>
+      </div>
+    `;
+
+    // 3. 달성 족보 상세 섹션
+    if (finalScoreData.achievedJokbo.length > 0) {
+      detailsHTML += `
+        <div class="detail-section jokbo-list">
+          <h4>🏆 족보 상세</h4>
+          <ul>
+            ${finalScoreData.achievedJokbo
+              .map((j) => `<li>• ${j.name}: ${j.score.toLocaleString()}점</li>`)
+              .join('')}
+          </ul>
+        </div>
+      `;
+    }
+    
+    // 4. 보너스 섹션 (난이도, 전문가, 행운)
+    let bonusHTML = '';
+    if (difficultyBonus[difficulty] > 0) {
+      bonusHTML += `<p class="bonus-item difficulty-bonus">💎 난이도 보너스: +${difficultyBonus[difficulty].toLocaleString()}점</p>`;
+    }
+    if (totalSpecialistBonus > 0) {
+       specialistBonusDetails.forEach(detail => {
+          bonusHTML += `<p class="bonus-item specialist-bonus">✨ ${detail.title}: +${detail.amount.toLocaleString()}점</p>`;
+       });
+    }
+    if (luckyBonusAmount > 0) {
+      let bonusText = luckyBonusInfo.justAchieved 
+        ? '🏆 오늘의 행운 보너스 첫 달성!' 
+        : '🍀 오늘의 행운 보너스 적용!';
+      bonusHTML += `<p class="bonus-item lucky-bonus">${bonusText} +${luckyBonusAmount.toLocaleString()}점</p>`;
+      if (typeof showFortuneFn === 'function') { // 함수인지 확인
+        showFortuneFn();
+      }
+    }
+
+    if (bonusHTML) {
+      detailsHTML += `<div class="detail-section bonus-list">${bonusHTML}</div>`;
+    }
   }
 
   // 생성된 HTML을 completion-details 컨테이너에 삽입
@@ -712,7 +733,7 @@ export function showHighScoreModal(highScores) {
   } else {
     highScores.forEach((record, index) => {
       const row = document.createElement('tr');
-      const difficultyMap = { easy: '쉬움', medium: '보통', hard: '어려움' };
+      const difficultyMap = { easy: '쉬움', medium: '보통', hard: '어려움', random: '랜덤' };
 
       row.innerHTML = `
                 <td>${index + 1}</td>
@@ -751,9 +772,11 @@ export function highlightGuideCells(clickedRow, clickedCol, clickedNum) {
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
       const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-      const cellImage = cell ? cell.querySelector('img') : null;
-      if (cellImage && cellImage.alt === String(clickedNum)) {
-        cell.classList.add('highlight-guide-glow');
+      if (cell) {
+        // Use gameState.board for checking the actual number value
+        if (gameState.board[r][c] === clickedNum && gameState.board[r][c] !== 0) {
+            cell.classList.add('highlight-guide-glow');
+        }
       }
     }
   }
@@ -938,5 +961,20 @@ export async function displayRandomPassage() {
     }
   } catch (error) {
     console.error('글귀를 불러오는 데 실패했습니다:', error);
+  }
+}
+
+/**
+ * 랜덤 글귀를 표시하는 요소의 가시성을 설정합니다.
+ * @param {boolean} show - 글귀를 표시할지 숨길지 여부
+ */
+export function setPassageVisibility(show) {
+  const passageElement = document.getElementById('random-passage');
+  if (passageElement) {
+    if (show) {
+      passageElement.classList.remove('hidden');
+    } else {
+      passageElement.classList.add('hidden');
+    }
   }
 }

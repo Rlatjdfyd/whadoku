@@ -17,6 +17,7 @@ import {
   updateRankModal, // Added
   showRankModal,   // Added
   hideRankModal,   // Added
+  setPassageVisibility, // Added
 } from './ui.js';
 import {
   jokboData,
@@ -120,32 +121,33 @@ export function initializeEventListeners() {
   function handleCellClick(cell) {
     const row = parseInt(cell.dataset.row);
     const col = parseInt(cell.dataset.col);
-    const isAlreadyHighlighted = cell.classList.contains('highlight-guide-glow');
+    const wasActiveCell = (gameState.activeCell.row === row && gameState.activeCell.col === col);
+    const isFixed = cell.classList.contains('fixed');
+    // Capture whether the *clicked cell* was highlighted BEFORE clearing all highlights
+    const clickedCellWasHighlighted = cell.classList.contains('highlight-guide-glow'); 
 
-    clearAllHighlights();
+    clearAllHighlights(); // Always clear all existing highlights
+    clearActiveCellSelection(); // Always clear any previous active cell selection
+    hideMiniPalette(); // Always hide palette first
 
-    if (isAlreadyHighlighted) {
-      clearActiveCellSelection();
-      hideMiniPalette();
-      return;
+    // If the clicked cell was:
+    // 1. The active cell (non-fixed), clicked again to deselect
+    // 2. Or a fixed cell that was already highlighted, clicked again to turn off its highlight
+    // Then simply return, leaving everything cleared.
+    if ( (wasActiveCell && !isFixed) || (clickedCellWasHighlighted && isFixed) ) {
+        return; 
     }
 
-    if (cell.classList.contains('fixed') || gameState.board[row][col] !== 0) {
+    // If we reach here, it's a new selection, or re-highlighting a fixed cell that wasn't the active one.
+    // Apply highlighting
+    if (isFixed || gameState.board[row][col] !== 0) {
       highlightGuideCells(row, col, gameState.board[row][col]);
     }
 
-    if (!cell.classList.contains('fixed')) {
-      if (
-        gameState.activeCell.row === row &&
-        gameState.activeCell.col === col
-      ) {
-        clearActiveCellSelection();
-        hideMiniPalette();
-      } else {
-        selectNewCell(cell, row, col);
-      }
-    }
-  }
+        // If the cell is empty (0), make it the active cell and show the palette
+        if (gameState.board[row][col] === 0) {
+          selectNewCell(cell, row, col);
+        }  }
 
   // handleDifficultyChange function removed
 
@@ -160,7 +162,6 @@ export function initializeEventListeners() {
     updateHintCount(gameState.hintCount);
     const correctNumber = gameState.solution[row][col];
     setCellValue(row, col, correctNumber);
-    cell.classList.add('fixed');
     clearActiveCellSelection();
     hideMiniPalette();
   }
@@ -254,6 +255,7 @@ export function initializeEventListeners() {
     sudokuBoard.classList.add('hidden');
     hintContainer.classList.add('hidden');
     document.getElementById('jokbo-display-container').classList.add('hidden');
+    setPassageVisibility(false); // 상단 글귀 숨기기
 
     // Show main menu
     mainMenuScreen.classList.remove('hidden');
@@ -488,11 +490,13 @@ export function initializeEventListeners() {
       { label: '초급', value: 'easy' },
       { label: '중급', value: 'medium' },
       { label: '고급', value: 'hard' },
+      { label: '랜덤', value: 'random' },
     ];
 
-    // Place options in the middle row (indices 3, 4, 5)
+    // Place options in a plus-sign shape (indices 1, 3, 4, 5)
+    const cellIndices = [3, 4, 5, 1]; // 초급, 중급, 고급, 랜덤 순서
     difficultyOptions.forEach((option, index) => {
-      const cell = subCells[index + 3];
+      const cell = subCells[cellIndices[index]];
       if (cell) {
         cell.textContent = option.label;
         cell.dataset.difficultyLevel = option.value;

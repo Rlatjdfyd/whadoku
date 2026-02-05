@@ -19,7 +19,7 @@ import {
   showSpecialistBonusNotification,
   updateAchievedJokboDisplay,
   highlightBonusBlock,
-  displayRandomPassage, // Add this import
+  setPassageVisibility, // Add this
 } from './ui.js';
 import {
   getRankName,
@@ -41,6 +41,21 @@ import {
   resetScore,
   BOARD_SIZE,
 } from './state.js';
+
+let allPassages = []; // To store passages once fetched
+
+async function fetchPassages() {
+  if (allPassages.length === 0) {
+    try {
+      const response = await fetch('./public/data/passages.json');
+      allPassages = await response.json();
+    } catch (error) {
+      console.error('Failed to fetch passages:', error);
+      allPassages = []; // Ensure it's an empty array on error
+    }
+  }
+  return allPassages;
+}
 
 // --- Helper Functions ---
 
@@ -102,6 +117,12 @@ export function initGame() {
         Object.assign(gameState, loadedState);
         gameState.isFiveSetBonusAchieved = loadedState.isFiveSetBonusAchieved || false;
         gameState.bonusBlock = loadedState.bonusBlock || { row: -1, col: -1 };
+        // Ensure quoteChars and quoteLength are reset or handled if loaded state was from random mode
+        if (loadedState.difficulty !== 'random') {
+          delete gameState.quoteChars;
+          delete gameState.quoteLength;
+          delete gameState.quoteCellMap;
+        }
       }
 
   const savedHighScore = localStorage.getItem('sudokuHighScore');
@@ -128,14 +149,92 @@ export function initGame() {
   updateRankDisplay(maxScore, getRankImage(maxScore), getRankName(maxScore));
 }
 
-export function startNewGame() {
-  displayRandomPassage(); // Call displayRandomPassage here
+export async function startNewGame() { // Made async
+  gameState.hintCount = 3; // 모든 새 게임은 3개의 힌트로 시작하도록 강제 설정
+  
+  // NEW LOGIC: Select and display the passage once
+  const passages = await fetchPassages(); // Fetch passages once
+  let selectedPassage = { text: "", author: "" };
+
+  if (passages.length === 0) {
+    console.warn("passages.json 파일에 글귀가 없습니다. 빈 글귀로 진행합니다.");
+  } else {
+    const randomIndex = Math.floor(Math.random() * passages.length);
+    selectedPassage = passages[randomIndex];
+  }
+
+  // Display the selected passage at the top
+  const passageElement = document.getElementById('random-passage');
+  if (passageElement) {
+    passageElement.textContent = `"${selectedPassage.text}" - ${selectedPassage.author}`;
+  }
+  gameState.selectedPassage = selectedPassage; // Store the selected passage in gameState
+
+  // Control passage visibility based on difficulty
+  const showPassage = gameState.difficulty !== 'random'; // True for easy/medium/hard, false for random
+  setPassageVisibility(showPassage); // Call the new function
+
+
   gameState.solution = generateSudoku();
-  gameState.board = createPuzzle(gameState.solution, gameState.difficulty);
+  
+  if (gameState.difficulty === 'random') {
+    // Use the *already selected* passage for quoteChars
+    const processedText = selectedPassage.text.replace(/\s/g, '');
+    gameState.quoteChars = processedText.split(''); // Store characters
+    gameState.quoteLength = gameState.quoteChars.length;
+
+      // Ensure the number of empty cells is exactly quoteLength
+      const cellsToKeep = 81 - gameState.quoteLength;
+      gameState.board = createPuzzle(gameState.solution, cellsToKeep);
+      
+      // For random mode, hints might be confusing or not applicable
+
+
+      // --- NEW LOGIC: Create quoteCellMap ---
+      const emptyCells = [];
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (gameState.board[r][c] === 0) {
+            emptyCells.push({ row: r, col: c });
+          }
+        }
+      }
+
+      // Sort empty cells by their position to ensure correct quote character order
+      emptyCells.sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row;
+        return a.col - b.col;
+      });
+
+      gameState.quoteCellMap = new Map();
+      emptyCells.forEach((cell, index) => {
+        if (gameState.quoteChars[index]) {
+          gameState.quoteCellMap.set(`${cell.row}-${cell.col}`, gameState.quoteChars[index]);
+        }
+      });
+      // --- END NEW LOGIC ---
+  } else {
+    // For non-random difficulties, generate puzzle as usual
+    gameState.board = createPuzzle(gameState.solution, gameState.difficulty);
+    // Ensure quote specific states are cleared for non-random modes
+    delete gameState.quoteChars;
+    delete gameState.quoteLength;
+    delete gameState.quoteCellMap;
+  }
+
   gameState.cellImageVariants = Array(BOARD_SIZE)
     .fill()
     .map(() => Array(BOARD_SIZE).fill(null));
-  createBoard(gameState.board, gameState.theme, gameState.cellImageVariants);
+  
+  createBoard(
+    gameState.board,
+    gameState.theme,
+    gameState.cellImageVariants,
+    undefined, 
+    false, 
+    gameState.difficulty === 'random' ? gameState.quoteCellMap : undefined // Pass quoteCellMap
+  );
+
   resetScore();
   updateScoreDisplay(
     gameState.currentScore,
@@ -147,7 +246,8 @@ export function startNewGame() {
   );
   gameState.lastAchievedJokbo = [];
   gameState.penaltyScore = 0;
-  gameState.hintCount = 3;
+  // Hint count is set above for random, for others it remains 3 as defined in reset
+  // gameState.hintCount = 3; 
   gameState.lastScoreTier = 0;
   gameState.isFiveSetBonusAchieved = false;
   // 보너스 블록 무작위 선택
@@ -155,9 +255,9 @@ export function startNewGame() {
     row: Math.floor(Math.random() * 3), // 0, 1, 2
     col: Math.floor(Math.random() * 3), // 0, 1, 2
   };
-  highlightBonusBlock(gameState.bonusBlock); // ui.js에 추가 예정
+  highlightBonusBlock(gameState.bonusBlock); 
   gameState.isHintMode = false;
-  updateHintCount(gameState.hintCount);
+  updateHintCount(gameState.hintCount); // Ensure this is called AFTER setting hintCount correctly for each mode
   undimAllCells();
   clearAllHighlights();
   gameState.achievedSpecialistBonuses = [];
@@ -199,7 +299,6 @@ export function setCellValue(row, col, num) {
     }, 500);
   } else {
     cell.classList.add('user-filled');
-    cell.classList.add('fixed');
     updateHanafudaScore();
   }
   if (isBoardFull(gameState.board)) {
@@ -226,11 +325,13 @@ export function checkSolution() {
       const finalScoreValue = showCompletionModal(
         jokboScore,
         scoreData,
-        null,
+        null, // luckyBonusInfo
         gameState.difficulty,
         gameState.penaltyScore,
         gameState.achievedSpecialistBonuses,
-        jokboData
+        jokboData,
+        null, // showFortuneFn (implicitly undefined before, now explicitly null)
+        gameState.selectedPassage // Pass selectedPassage
       );
 
       setCurrentScore(finalScoreValue);
