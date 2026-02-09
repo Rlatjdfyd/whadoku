@@ -209,6 +209,11 @@
     background-color: transparent; /* Transparent background for items */
   }
 
+  /* 게임 완료 모달의 족보 섹션 반응형 조정 */
+  .completion-jokbo-sections .detail-section {
+    min-width: 120px; /* 작은 화면에서 2열 유지를 위해 최소 너비 감소 */
+  }
+
   .sudoku-block-menu-item[data-menu-id="logo"] {
     font-size: 1.5rem;
   }

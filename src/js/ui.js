@@ -296,6 +296,48 @@ export function hideRankModal() {
   rankModal.classList.add('hidden');
 }
 
+/**
+ * 족보 규칙 모달을 업데이트하고 표시합니다.
+ * @param {Array<object>} jokboData - 족보 데이터
+ */
+export function showJokboRulesModal(jokboData) {
+  const jokboRulesModal = document.getElementById('jokbo-rules-modal');
+  const jokboRulesGrid = document.getElementById('jokbo-rules-grid');
+  jokboRulesGrid.innerHTML = ''; // 이전 내용 초기화
+
+  // 족보 데이터를 기반으로 모달 내용을 생성
+  jokboData.forEach((entry) => {
+    const jokboEntry = document.createElement('div');
+    jokboEntry.classList.add('jokbo-rules-entry'); // 새로운 클래스 사용
+
+    // 족보 이름과 점수, 이미지 표시
+    jokboEntry.innerHTML = `
+      <div class="jokbo-rules-info">
+        <h4>${entry.name}</h4>
+        <div class="jokbo-rules-score-range">${entry.score.toLocaleString()}점</div>
+      </div>
+      ${entry.description ? `<p>${entry.description}</p>` : ''}
+      <div class="jokbo-visuals">
+        ${Array.isArray(entry.cards) && !entry.minCount
+          ? entry.cards.map(card => `<img src="public/images/hwatu/${card.num}-${card.variant}.png" alt="${entry.name} 카드" class="jokbo-contributing-card">`).join('')
+          : (entry.mainImage ? `<img src="public/images/hwatu/${entry.mainImage}" alt="${entry.name}" class="jokbo-rules-image">` : '')
+        }
+      </div>
+    `;
+    jokboRulesGrid.appendChild(jokboEntry);
+  });
+
+  jokboRulesModal.classList.remove('hidden'); // 모달 표시
+}
+
+/**
+ * 족보 규칙 모달을 숨깁니다.
+ */
+export function hideJokboRulesModal() {
+  const jokboRulesModal = document.getElementById('jokbo-rules-modal');
+  jokboRulesModal.classList.add('hidden');
+}
+
 
 
 /**

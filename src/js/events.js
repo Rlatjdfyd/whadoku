@@ -16,6 +16,8 @@ import {
   updateRankModal, // Added
   showRankModal,   // Added
   hideRankModal,   // Added
+  showJokboRulesModal, // Added for new jokbo modal
+  hideJokboRulesModal, // Added for new jokbo modal
   setPassageVisibility, // Added
 } from './ui.js';
 import {
@@ -44,6 +46,9 @@ export function initializeEventListeners() {
   // );
   // const jokboBtn = document.getElementById('jokbo-btn'); // Removed
 
+
+  const jokboRulesModal = document.getElementById('jokbo-rules-modal'); // New Jokbo Rules Modal
+  const jokboRulesCloseBtn = document.getElementById('jokbo-rules-close-btn'); // New Jokbo Rules Close Button
 
   const rankModal = document.getElementById('rank-modal');
   const rankCloseBtn = document.getElementById('rank-close-btn');
@@ -122,6 +127,16 @@ export function initializeEventListeners() {
     const col = parseInt(cell.dataset.col, 10);
     const cellNumber = gameState.board[row][col];
     const isHighlighted = cell.classList.contains('highlight-guide-glow');
+
+    // 현재 활성화된 셀을 다시 클릭했고, 미니 팔레트가 열려있는 경우
+    const isCurrentActiveCell = gameState.activeCell.row === row && gameState.activeCell.col === col;
+    const isMiniPaletteVisible = !miniPalette.classList.contains('hidden'); // 'hidden' 클래스로 미니 팔레트의 가시성 판단
+
+    if (isCurrentActiveCell && isMiniPaletteVisible) {
+        hideMiniPalette();
+        clearActiveCellSelection();
+        return; // 팔레트를 닫고 함수 종료
+    }
 
     // 1. 하이라이트 해제: 이미 하이라이트된 셀을 다시 클릭하면 모든 하이라이트를 끄고 종료.
     if (isHighlighted) {
@@ -218,6 +233,34 @@ export function initializeEventListeners() {
 
   // jokboBtn listener removed
 
+
+  if (jokboRulesCloseBtn) {
+    jokboRulesCloseBtn.addEventListener('click', () => {
+      hideJokboRulesModal();
+    });
+  }
+  if (jokboRulesModal) {
+    jokboRulesModal.addEventListener('click', (event) => {
+      if (event.target === jokboRulesModal) {
+        hideJokboRulesModal();
+      }
+      event.stopPropagation();
+    });
+  }
+
+  if (jokboRulesCloseBtn) {
+    jokboRulesCloseBtn.addEventListener('click', () => {
+      hideJokboRulesModal();
+    });
+  }
+  if (jokboRulesModal) {
+    jokboRulesModal.addEventListener('click', (event) => {
+      if (event.target === jokboRulesModal) {
+        hideJokboRulesModal();
+      }
+      event.stopPropagation();
+    });
+  }
 
   if (rankCloseBtn) {
     rankCloseBtn.addEventListener('click', () => {
@@ -343,6 +386,8 @@ export function initializeEventListeners() {
         showRankModal();
       } else if (action === 'show_info') {
         showInfoModal();
+      } else if (action === 'show_jokbo') {
+        showJokboRulesModal(jokboData); // Call the new modal function
       } else if (action === 'show_records') { // New: Handle '기록'
         showHighScoreModal(
           JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]')
@@ -642,7 +687,7 @@ export function initializeEventListeners() {
       { label: '안내', action: 'show_guide', index: 3 }, // Mid-left
       { label: '정보', action: 'show_info', index: 4, isMain: true }, // Center, main button for block
       { label: '랭크', action: 'show_ranking', index: 5 }, // Mid-right
-
+      { label: '족보', action: 'show_jokbo', index: 7 }, // Bottom-center
     ];
 
     consolidatedOptions.forEach((option) => {
