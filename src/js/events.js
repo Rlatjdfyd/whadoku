@@ -5,7 +5,6 @@
  */
 
 import {
-  updateJokboModal,
   showHighScoreModal,
   hideHighScoreModal,
   renderMiniPalette,
@@ -44,8 +43,8 @@ export function initializeEventListeners() {
   //   '#main-controls button[data-difficulty]'
   // );
   // const jokboBtn = document.getElementById('jokbo-btn'); // Removed
-  const jokboModal = document.getElementById('jokbo-modal');
-  const jokboCloseBtn = document.getElementById('jokbo-close-btn');
+
+
   const rankModal = document.getElementById('rank-modal');
   const rankCloseBtn = document.getElementById('rank-close-btn');
   const useHintBtn = document.getElementById('use-hint-btn');
@@ -218,17 +217,8 @@ export function initializeEventListeners() {
   });
 
   // jokboBtn listener removed
-  jokboCloseBtn.addEventListener('click', () =>
-    jokboModal.classList.add('hidden')
-  );
-  if (jokboModal) {
-    jokboModal.addEventListener('click', (event) => {
-      if (event.target === jokboModal) {
-        jokboModal.classList.add('hidden');
-      }
-      event.stopPropagation();
-    });
-  }
+
+
   if (rankCloseBtn) {
     rankCloseBtn.addEventListener('click', () => {
       hideRankModal();
@@ -353,9 +343,6 @@ export function initializeEventListeners() {
         showRankModal();
       } else if (action === 'show_info') {
         showInfoModal();
-      } else if (action === 'show_jokbo') {
-        updateJokboModal(gameState.theme, jokboData);
-        jokboModal.classList.remove('hidden');
       } else if (action === 'show_records') { // New: Handle '기록'
         showHighScoreModal(
           JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]')
@@ -655,7 +642,7 @@ export function initializeEventListeners() {
       { label: '안내', action: 'show_guide', index: 3 }, // Mid-left
       { label: '정보', action: 'show_info', index: 4, isMain: true }, // Center, main button for block
       { label: '랭크', action: 'show_ranking', index: 5 }, // Mid-right
-      { label: '족보', action: 'show_jokbo', index: 7 }, // Bottom-center
+
     ];
 
     consolidatedOptions.forEach((option) => {

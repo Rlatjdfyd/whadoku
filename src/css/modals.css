@@ -10,138 +10,7 @@
   - #info-modal: 정보 모달
 */
 
-/* 족보 모달 */
-#jokbo-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
 
-#jokbo-modal.hidden {
-  display: none;
-}
-
-#jokbo-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  width: 90%;
-  max-width: 340px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-#jokbo-content h2 {
-  margin-top: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.2rem;
-}
-
-#jokbo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 20px 0;
-  text-align: left;
-}
-
-.jokbo-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding: 12px 0;
-  gap: 12px;
-  transition: background 0.2s;
-}
-
-.jokbo-entry:hover {
-  background: rgba(25, 118, 210, 0.05);
-  border-radius: 8px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.jokbo-entry.achieved {
-  background: rgba(76, 175, 80, 0.1);
-  border-left: 4px solid #4caf50;
-  padding-left: 12px;
-}
-
-.jokbo-entry:last-child {
-  border-bottom: none;
-}
-
-.jokbo-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex-grow: 1; /* Allow to grow */
-  flex-shrink: 1; /* Allow to shrink */
-  /* Removed max-width: 50%; to give more space for text */
-}
-
-.jokbo-entry h4 {
-  margin: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 14px; /* 크기 증가 */
-  font-weight: bold;
-}
-
-.jokbo-score {
-  font-size: 12px; /* 크기 증가 */
-  color: #cccccc; /* 밝은 회색 */
-  margin-top: 4px; /* 간격 조정 */
-}
-
-.jokbo-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px; /* 간격 조정 */
-  justify-content: flex-end;
-  flex-grow: 0;
-  flex-shrink: 0; /* Prevent images container from shrinking too much */
-  width: 118px; /* Fixed width to allow 3 images (36px*3 + 5px*2) to wrap */
-}
-
-.jokbo-images img {
-  width: 36px; /* 크기 증가 */
-  height: 36px; /* 크기 증가 */
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-#jokbo-close-btn {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 (패턴 위에 덮이지 않도록) */
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
-}
-
-#jokbo-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-color: #424242;
-}
 
 /* 랭크 모달 */
 #rank-modal {
@@ -310,10 +179,27 @@
 
 /* 점수 상세 내역 컨테이너 */
 #completion-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex; /* Flexbox로 유지 */
+  flex-direction: column; /* 자식들을 세로로 정렬 */
+  gap: 12px; /* 각 섹션 사이의 간격 */
   text-align: left;
+}
+
+/* 족보 섹션을 2열로 표시하기 위한 스타일 (이 컨테이너 내부만 2열) */
+.completion-jokbo-sections {
+  display: flex;
+  flex-wrap: wrap; /* 좁은 화면에서 줄바꿈 허용 */
+  gap: 15px; /* 섹션들 사이의 간격 */
+  width: 100%; /* 부모 컨테이너 너비를 채우도록 */
+}
+
+.completion-jokbo-sections .detail-section {
+  flex: 1 1 calc(50% - 7.5px); /* 2열로 배치, gap 고려하여 너비 설정 */
+  min-width: 140px; /* 각 열의 최소 너비 설정 (데스크톱 기준) */
+  box-sizing: border-box; /* padding이 너비에 포함되도록 */
+  background-color: rgba(0, 0, 0, 0.1); /* 배경색 추가 */
+  padding: 10px;
+  border-radius: 8px;
 }
 
 /* 각 상세 섹션 */
@@ -456,7 +342,7 @@
   padding: 10px 20px;
   cursor: pointer;
   transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 #high-score-close-btn:hover {
@@ -537,14 +423,14 @@
   background-image: url('/public/images/btn/card_back_patten2.png');
   background-repeat: repeat;
   background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 */
+  background-color: #616161;
   color: #fff;
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
   cursor: pointer;
   transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 #help-close-btn:hover {
@@ -620,3 +506,4 @@
   background-image: url('/public/images/btn/card_back_patten.png');
   background-color: #424242;
 }
+

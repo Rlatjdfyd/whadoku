@@ -9,14 +9,14 @@ import {
   updateRankDisplay,
   createBoard,
   renderCell,
-  showJokboNotification,
+
   showPenaltyNotification,
   highlightJokboCards,
   updateHintCount,
   showCompletionModal,
   undimAllCells,
   clearAllHighlights,
-  showSpecialistBonusNotification,
+
   updateAchievedJokboDisplay,
   setPassageVisibility,
   displayRandomPassage, // Add this
@@ -377,9 +377,9 @@ export function updateHanafudaScore() {
   );
   if (newJokboDetailed.length > 0) {
     if (gameState.isSoundEnabled) {
-      document.getElementById('jokbo-sound').play();
+
     }
-    showJokboNotification(newJokboDetailed);
+
     highlightJokboCards(
       gameState.theme,
       newJokboDetailed,
@@ -410,7 +410,7 @@ export function updateHanafudaScore() {
           !gameState.achievedSpecialistBonuses.includes(jokboEntry.name)
         ) {
           gameState.achievedSpecialistBonuses.push(jokboEntry.name);
-          showSpecialistBonusNotification(jokboEntry.specialistTitle, 0);
+    
         }
       }
     });

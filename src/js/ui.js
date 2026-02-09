@@ -252,51 +252,7 @@ export function renderCell(row, col, num, currentTheme, cellImageVariants) {
   }
 }
 
-/**
- * 족보 모달의 내용을 현재 족보 데이터에 맞게 업데이트합니다.
- * @param {string} currentTheme - 현재 테마
- */
-export function updateJokboModal(currentTheme, jokboData) {
-  // jokboData added as parameter
-  const jokboGrid = document.getElementById('jokbo-grid');
-  jokboGrid.innerHTML = '';
 
-  if (currentTheme === 'hwatu') {
-    jokboData.forEach((entry) => {
-      const jokboEntry = document.createElement('div');
-      jokboEntry.classList.add('jokbo-entry');
-
-      let imageHTML = '';
-      if (entry.cards === 'pi') {
-        imageHTML =
-          '<img src="public/images/hwatu/1-3.png" alt="피"> <span style="font-size:12px;">등 피카드</span>';
-      } else if (entry.cards === 'tti') {
-        imageHTML =
-          '<img src="public/images/hwatu/1-2.png" alt="띠"> <span style="font-size:12px;">등 띠카드</span>';
-      } else if (entry.cards) {
-        imageHTML = entry.cards
-          .slice(0, 6)
-          .map(
-            (card) =>
-              `<img src="public/images/hwatu/${card.num}-${card.variant}.png" alt="${entry.name}">`
-          )
-          .join('');
-        if (entry.cards.length > 6) {
-          imageHTML += '<span style="font-size:10px; color:#666;">...</span>';
-        }
-      }
-
-      jokboEntry.innerHTML = `
-                <div class="jokbo-info">
-                    <h4>${entry.name === '끗' ? '끗 3장' : entry.name}</h4>
-                    <div class="jokbo-score">${entry.score.toLocaleString()}점</div>
-                </div>
-                <div class="jokbo-images">${imageHTML}</div>
-            `;
-      jokboGrid.appendChild(jokboEntry);
-    });
-  }
-}
 
 /**
  * 랭크 모달의 내용을 업데이트합니다.
@@ -340,41 +296,7 @@ export function hideRankModal() {
   rankModal.classList.add('hidden');
 }
 
-/**
- * 족보 달성 시 알림을 표시합니다.
- * @param {Array<object>} newJokbo - 새로 달성된 족보 목록
- */
-export function showJokboNotification(newJokboDetailed) {
-  if (newJokboDetailed.length === 0) return;
 
-  const notification = document.createElement('div');
-  notification.className = 'jokbo-notification';
-
-  // 새로 달성된 족보 이름들을 중복 없이 가져옴
-  const newJokboNames = newJokboDetailed
-    .map((j) => j.name)
-    .filter((value, index, self) => self.indexOf(value) === index);
-  // 새로 달성된 족보들의 총 점수를 합산
-  const newScore = newJokboDetailed.reduce((sum, j) => sum + j.score, 0);
-
-  notification.innerHTML = `
-        <div class="jokbo-notification-title">🎴 족보 달성!</div>
-        <div class="jokbo-notification-names">
-            ${newJokboNames.join(', ')}
-        </div>
-        <div class="jokbo-notification-score">
-            +${newScore.toLocaleString()}점
-        </div>
-    `;
-
-  document.body.appendChild(notification);
-
-  setTimeout(() => {
-    if (notification.parentNode) {
-      notification.parentNode.removeChild(notification);
-    }
-  }, 2000);
-}
 
 /**
  * 감점 알림을 표시합니다.
@@ -638,6 +560,9 @@ export function showCompletionModal(
       `;
     }
 
+    // 족보 섹션을 2열로 만들기 위한 컨테이너
+    detailsHTML += `<div class="completion-jokbo-sections">`;
+
     // 2. 족보 점수 섹션
     detailsHTML += `
       <div class="detail-section jokbo-summary">
@@ -661,6 +586,8 @@ export function showCompletionModal(
         </div>
       `;
     }
+
+    detailsHTML += `</div>`; // .completion-jokbo-sections 닫기
     
     // 4. 보너스 섹션 (난이도, 전문가, 행운)
     let bonusHTML = '';
@@ -827,37 +754,7 @@ export function undimAllCells() {
   });
 }
 
-/**
- * 전문가 보너스 달성 시 알림을 표시합니다.
- * @param {string} title - 전문가 칭호
- * @param {number} bonusAmount - 보너스 점수
- */
-export function showSpecialistBonusNotification(title, bonusAmount) {
-  const storageKey = `specialist-notification-shown-${title}`;
-  if (localStorage.getItem(storageKey)) {
-    return; // 이미 표시된 경우, 다시 표시하지 않음
-  }
 
-  const notification = document.createElement('div');
-  notification.className = 'specialist-bonus-notification';
-
-  notification.innerHTML = `
-        <div style="font-size: 1.2rem; margin-bottom: 8px;">🏆 전문가 보너스 달성!</div>
-        <div style="font-size: 1.4rem; font-weight: bold; color: #ffd600;">${title}</div>
-        <div style="font-size: 1.1rem; margin-top: 8px; color: #e0e0e0;">
-            +${bonusAmount.toLocaleString()}점
-        </div>
-    `;
-  localStorage.setItem(storageKey, 'true'); // 알림 표시 후 플래그 설정
-
-  document.body.appendChild(notification);
-
-  setTimeout(() => {
-    if (notification.parentNode) {
-      notification.parentNode.removeChild(notification);
-    }
-  }, 2500); // 2.5초 후 사라짐
-}
 
 /**
  * 달성된 족보를 메인 화면에 표시하고, 족보별 개수를 함께 보여줍니다.
