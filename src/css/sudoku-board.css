@@ -177,8 +177,8 @@
   background-image: url('/public/images/btn/card_back_patten4.png') !important; /* Use the specified image */
   background-repeat: repeat !important;
   background-size: 5px 5px !important; /* Match other pattern sizes */
-  color: #00ff00; /* Bright green text */
-  font-size: 0.8em; /* Smaller font size for characters */
+  color: #00ff0080; /* Bright green text */
+  font-size: 1em; /* Smaller font size for characters */
   font-weight: bold;
   cursor: pointer; /* Should be clickable to enter number */
   display: flex; /* Ensure text is centered */
