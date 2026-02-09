@@ -617,9 +617,14 @@ export function showCompletionModal(
 
   if (difficulty === 'random') {
     // Only show completed passage for random mode
+    const selectedTopicOption = THEME_OPTIONS_UI.find(
+        (option) => option.value === gameState.selectedPassageTopic
+    );
+    const topicLabel = selectedTopicOption ? selectedTopicOption.label : '선택된 주제'; // Fallback if not found
+
     detailsHTML += `
       <div class="detail-section passage-display">
-        <h4>완료된 글귀</h4>
+        <h4>주제: ${topicLabel} 편</h4>
         <p>"${selectedPassage.text}" - ${selectedPassage.author}</p>
       </div>
     `;
@@ -916,51 +921,62 @@ export function updateAchievedJokboDisplay(
   }
 }
 
-/**
- * 게임 보드에서 보너스 블록을 하이라이트합니다.
- * @param {object} bonusBlock - 보너스 블록의 {row, col} 인덱스 (0-2)
- */
-export function highlightBonusBlock(bonusBlock) {
-  // 기존 하이라이트 제거
-  document.querySelectorAll('.sudoku-block.bonus-block-highlight').forEach(block => {
-    block.classList.remove('bonus-block-highlight');
-  });
 
-  if (bonusBlock && bonusBlock.row !== -1 && bonusBlock.col !== -1) {
-    const targetBlock = document.querySelector(
-      `.sudoku-block[data-block-row="${bonusBlock.row}"][data-block-col="${bonusBlock.col}"]`
-    );
-    if (targetBlock) {
-      targetBlock.classList.add('bonus-block-highlight');
-    }
-  }
-}
+
+const THEME_OPTIONS_UI = [
+  { label: '성찰', value: '1_성찰.json' },
+  { label: '관계', value: '2_관계.json' },
+  { label: '지혜', value: '3_지혜.json' },
+  { label: '용기', value: '4_용기.json' },
+  { label: '겸손', value: '5_겸손.json' },
+  { label: '중용', value: '6_중용.json' },
+  { label: '현재', value: '7_현재.json' },
+  { label: '본질', value: '8_본질.json' },
+];
 
 /**
- * passages.json 파일을 불러와 랜덤 글귀를 화면에 표시하는 함수
+ * 랜덤 글귀를 화면에 표시하는 함수 (주제별 파일 사용)
  */
 export async function displayRandomPassage() {
   try {
-    // 1. passages.json 파일 가져오기
-    const response = await fetch('./public/data/passages.json');
+    // 1. 랜덤 주제 파일 또는 선택된 주제 파일 선택
+    let passageFileName;
+    let selectedOption; // 선택된 옵션 객체를 저장
+    if (gameState.selectedPassageTopic) {
+        // gameState.selectedPassageTopic은 value (파일 이름)
+        selectedOption = THEME_OPTIONS_UI.find(option => option.value === gameState.selectedPassageTopic);
+        passageFileName = selectedOption ? selectedOption.value : THEME_OPTIONS_UI[0].value; // 찾지 못하면 기본값
+    } else {
+        const randomThemeFileIndex = Math.floor(Math.random() * THEME_OPTIONS_UI.length);
+        selectedOption = THEME_OPTIONS_UI[randomThemeFileIndex];
+        passageFileName = selectedOption.value;
+    }
+    const passageFilePath = `./public/data/passages/${passageFileName}`;
+
+    // 2. 선택된 주제 파일 가져오기
+    const response = await fetch(passageFilePath);
     const passages = await response.json();
 
-    if (passages.length === 0) {
-      console.warn("passages.json 파일에 글귀가 없습니다.");
+    if (!passages || passages.length === 0) {
+      console.warn(`${passageFilePath} 파일에 글귀가 없습니다.`);
       return;
     }
 
-    // 2. 랜덤 글귀 선택하기
+    // 3. 랜덤 글귀 선택하기
     const randomIndex = Math.floor(Math.random() * passages.length);
     const randomPassage = passages[randomIndex];
 
-    // 3. HTML 요소에 글귀 표시하기
+    // 4. HTML 요소에 글귀 표시하기
     const passageElement = document.getElementById('random-passage');
     if (passageElement) {
-      passageElement.textContent = `"${randomPassage.text}" - ${randomPassage.author}`;
+      // author 필드가 비어있을 경우 표시하지 않도록 조건 추가
+      const authorText = randomPassage.author ? ` - ${randomPassage.author}` : '';
+      passageElement.textContent = `"${randomPassage.text}"${authorText}`;
     }
+    return randomPassage; // 새로 추가: 선택된 글귀를 반환
   } catch (error) {
     console.error('글귀를 불러오는 데 실패했습니다:', error);
+    return null; // 에러 발생 시 null 반환
   }
 }
 

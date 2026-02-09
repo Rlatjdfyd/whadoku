@@ -38,7 +38,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
   width: 90%;
-  max-width: 300px;
+  max-width: 340px;
   max-height: 70vh;
   overflow-y: auto;
 }
@@ -88,7 +88,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  flex: 1;
+  flex-grow: 1; /* Allow to grow */
+  flex-shrink: 1; /* Allow to shrink */
+  /* Removed max-width: 50%; to give more space for text */
 }
 
 .jokbo-entry h4 {
@@ -109,11 +111,14 @@
   flex-wrap: wrap;
   gap: 5px; /* 간격 조정 */
   justify-content: flex-end;
+  flex-grow: 0;
+  flex-shrink: 0; /* Prevent images container from shrinking too much */
+  width: 118px; /* Fixed width to allow 3 images (36px*3 + 5px*2) to wrap */
 }
 
 .jokbo-images img {
-  width: 32px; /* 크기 증가 */
-  height: 32px; /* 크기 증가 */
+  width: 36px; /* 크기 증가 */
+  height: 36px; /* 크기 증가 */
   border-radius: 4px;
   border: 1px solid #ddd;
   background-color: white;

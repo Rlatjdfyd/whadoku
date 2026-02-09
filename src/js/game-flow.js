@@ -18,8 +18,8 @@ import {
   clearAllHighlights,
   showSpecialistBonusNotification,
   updateAchievedJokboDisplay,
-  highlightBonusBlock,
-  setPassageVisibility, // Add this
+  setPassageVisibility,
+  displayRandomPassage, // Add this
 } from './ui.js';
 import {
   getRankName,
@@ -41,21 +41,6 @@ import {
   resetScore,
   BOARD_SIZE,
 } from './state.js';
-
-let allPassages = []; // To store passages once fetched
-
-async function fetchPassages() {
-  if (allPassages.length === 0) {
-    try {
-      const response = await fetch('./public/data/passages.json');
-      allPassages = await response.json();
-    } catch (error) {
-      console.error('Failed to fetch passages:', error);
-      allPassages = []; // Ensure it's an empty array on error
-    }
-  }
-  return allPassages;
-}
 
 // --- Helper Functions ---
 
@@ -116,7 +101,7 @@ export function initGame() {
   if (loadedState) {
         Object.assign(gameState, loadedState);
         gameState.isFiveSetBonusAchieved = loadedState.isFiveSetBonusAchieved || false;
-        gameState.bonusBlock = loadedState.bonusBlock || { row: -1, col: -1 };
+
         // Ensure quoteChars and quoteLength are reset or handled if loaded state was from random mode
         if (loadedState.difficulty !== 'random') {
           delete gameState.quoteChars;
@@ -152,34 +137,35 @@ export function initGame() {
 export async function startNewGame() { // Made async
   gameState.hintCount = 3; // 모든 새 게임은 3개의 힌트로 시작하도록 강제 설정
   
-  // NEW LOGIC: Select and display the passage once
-  const passages = await fetchPassages(); // Fetch passages once
-  let selectedPassage = { text: "", author: "" };
-
-  if (passages.length === 0) {
-    console.warn("passages.json 파일에 글귀가 없습니다. 빈 글귀로 진행합니다.");
+  // NEW LOGIC: ui.js의 displayRandomPassage를 호출하여 글귀를 화면에 표시하고,
+  // 반환된 글귀 정보를 gameState.selectedPassage에 저장
+  const selectedPassage = await displayRandomPassage(); // ui.js의 함수 호출
+  if (selectedPassage) {
+    gameState.selectedPassage = selectedPassage; // Store the selected passage in gameState
   } else {
-    const randomIndex = Math.floor(Math.random() * passages.length);
-    selectedPassage = passages[randomIndex];
+    gameState.selectedPassage = { text: "", author: "" }; // 글귀 로드 실패 시 기본값 설정
   }
-
-  // Display the selected passage at the top
-  const passageElement = document.getElementById('random-passage');
-  if (passageElement) {
-    passageElement.textContent = `"${selectedPassage.text}" - ${selectedPassage.author}`;
-  }
-  gameState.selectedPassage = selectedPassage; // Store the selected passage in gameState
-
-  // Control passage visibility based on difficulty
-  const showPassage = gameState.difficulty !== 'random'; // True for easy/medium/hard, false for random
-  setPassageVisibility(showPassage); // Call the new function
-
-
+  
+        // 난이도에 따라 글귀 표시 여부 제어 (랜덤 모드일 때만 숨김)
+        if (gameState.difficulty === 'random') {
+          setPassageVisibility(false); // 랜덤 모드면 글귀 숨김
+        } else {
+          setPassageVisibility(true); // 랜덤 모드가 아니면 글귀 표시
+        }
   gameState.solution = generateSudoku();
+
+  // Define valid difficulty levels for validation
+  const validDifficultyLevels = ['easy', 'medium', 'hard', 'random'];
+
+  // Ensure gameState.difficulty is a valid and known difficulty
+  if (!validDifficultyLevels.includes(gameState.difficulty)) {
+
+    gameState.difficulty = 'medium';
+  }
   
   if (gameState.difficulty === 'random') {
     // Use the *already selected* passage for quoteChars
-    const processedText = selectedPassage.text.replace(/\s/g, '');
+    const processedText = gameState.selectedPassage.text.replace(/\s/g, '');
     gameState.quoteChars = processedText.split(''); // Store characters
     gameState.quoteLength = gameState.quoteChars.length;
 
@@ -250,12 +236,7 @@ export async function startNewGame() { // Made async
   // gameState.hintCount = 3; 
   gameState.lastScoreTier = 0;
   gameState.isFiveSetBonusAchieved = false;
-  // 보너스 블록 무작위 선택
-  gameState.bonusBlock = {
-    row: Math.floor(Math.random() * 3), // 0, 1, 2
-    col: Math.floor(Math.random() * 3), // 0, 1, 2
-  };
-  highlightBonusBlock(gameState.bonusBlock); 
+ 
   gameState.isHintMode = false;
   updateHintCount(gameState.hintCount); // Ensure this is called AFTER setting hintCount correctly for each mode
   undimAllCells();

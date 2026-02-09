@@ -25,6 +25,7 @@ export const gameState = {
   lastScoreResult: null, // lastScoreResult 추가
   isFiveSetBonusAchieved: false,
   bonusBlock: { row: -1, col: -1 },
+  selectedPassageTopic: null, // 사용자가 선택한 글귀 주제 파일명 (예: '1_성찰.json')
   isSoundEnabled: JSON.parse(localStorage.getItem('isSoundEnabled')) ?? true, // Sound state
 };
 

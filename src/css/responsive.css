@@ -115,7 +115,7 @@
 
   #jokbo-content {
     padding: 16px;
-    max-width: 320px;
+    max-width: 340px;
   }
 
   .jokbo-entry h4 {
@@ -123,8 +123,8 @@
   }
 
   .jokbo-images img {
-    width: 20px;
-    height: 20px;
+    width: 36px;
+    height: 36px;
   }
 
   #high-score-content {

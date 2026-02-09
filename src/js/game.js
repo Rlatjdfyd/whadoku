@@ -169,7 +169,7 @@ export function createPuzzle(board, difficultyOrCluesCount) {
     cellsToKeep = difficultyOrCluesCount;
   } else {
     // Default or error handling
-    console.error("Invalid difficultyOrCluesCount provided to createPuzzle.");
+    console.error("Invalid difficultyOrCluesCount provided to createPuzzle. Defaulting to medium.");
     cellsToKeep = difficulties['medium']; // Fallback
   }
 

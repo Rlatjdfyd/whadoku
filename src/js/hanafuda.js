@@ -328,19 +328,6 @@ export function calculateScore(currentTheme, board, cellImageVariants, bonusBloc
       if (blockCards.length > 0) {
         const blockResult = calculateScoreForCards(blockCards);
 
-        // 보너스 블록 점수 2배 적용 로직
-        const currentBlockRow = blockRow / 3;
-        const currentBlockCol = blockCol / 3;
-        if (
-          bonusBlock &&
-          bonusBlock.row === currentBlockRow &&
-          bonusBlock.col === currentBlockCol &&
-          blockResult.totalScore > 0
-        ) {
-          blockResult.totalScore *= 2;
-          blockResult.achievedJokbo.forEach((jokbo) => (jokbo.score *= 2));
-        }
-
         finalTotalScore += blockResult.totalScore;
         blockTotalScore += blockResult.totalScore;
 

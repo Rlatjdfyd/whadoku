@@ -119,35 +119,33 @@ export function initializeEventListeners() {
   }
 
   function handleCellClick(cell) {
-    const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.col);
-    const wasActiveCell = (gameState.activeCell.row === row && gameState.activeCell.col === col);
-    const isFixed = cell.classList.contains('fixed');
-    // Capture whether the *clicked cell* was highlighted BEFORE clearing all highlights
-    const clickedCellWasHighlighted = cell.classList.contains('highlight-guide-glow'); 
+    const row = parseInt(cell.dataset.row, 10);
+    const col = parseInt(cell.dataset.col, 10);
+    const cellNumber = gameState.board[row][col];
+    const isHighlighted = cell.classList.contains('highlight-guide-glow');
 
-    clearAllHighlights(); // Always clear all existing highlights
-    clearActiveCellSelection(); // Always clear any previous active cell selection
-    hideMiniPalette(); // Always hide palette first
-
-    // If the clicked cell was:
-    // 1. The active cell (non-fixed), clicked again to deselect
-    // 2. Or a fixed cell that was already highlighted, clicked again to turn off its highlight
-    // Then simply return, leaving everything cleared.
-    if ( (wasActiveCell && !isFixed) || (clickedCellWasHighlighted && isFixed) ) {
-        return; 
+    // 1. 하이라이트 해제: 이미 하이라이트된 셀을 다시 클릭하면 모든 하이라이트를 끄고 종료.
+    if (isHighlighted) {
+      clearAllHighlights();
+      clearActiveCellSelection();
+      hideMiniPalette();
+      return;
     }
+    
+    // 이전에 선택된 셀이나 하이라이트가 있었다면 모두 초기화.
+    clearAllHighlights();
+    clearActiveCellSelection();
+    hideMiniPalette();
 
-    // If we reach here, it's a new selection, or re-highlighting a fixed cell that wasn't the active one.
-    // Apply highlighting
-    if (isFixed || gameState.board[row][col] !== 0) {
-      highlightGuideCells(row, col, gameState.board[row][col]);
+    // 2. 새로운 동작: 숫자가 있는 셀인가, 비어있는 셀인가?
+    if (cellNumber !== 0) {
+      // 숫자가 있는 셀: 하이라이트 활성화
+      highlightGuideCells(row, col, cellNumber);
+    } else {
+      // 비어있는 셀: 미니 팔레트 표시
+      selectNewCell(cell, row, col);
     }
-
-        // If the cell is empty (0), make it the active cell and show the palette
-        if (gameState.board[row][col] === 0) {
-          selectNewCell(cell, row, col);
-        }  }
+  }
 
   // handleDifficultyChange function removed
 
@@ -302,18 +300,19 @@ export function initializeEventListeners() {
       return; // Stop further execution
     }
 
-    // New: Handle direct clicks on theme sub-cells
-    const themeCell = e.target.closest('[data-theme-value]');
-    if (themeCell) {
-      const theme = themeCell.dataset.themeValue;
-      gameState.theme = theme;
-      updateThemeSelection();
+    // New: Handle direct clicks on topic sub-cells (formerly theme)
+    const topicCell = e.target.closest('[data-topic-value]');
+    if (topicCell) {
+      const topicValue = topicCell.dataset.topicValue;
+      gameState.selectedPassageTopic = topicValue; // gameState.selectedPassageTopic에 저장
+      updateTopicSelection(); // updateTopicSelection 호출
       if (gameState.isSoundEnabled) {
         document.getElementById('click-sound').play();
       }
       return; // Stop further execution
     }
 
+    // New: Handle direct clicks on settings sub-cells
     // New: Handle direct clicks on settings sub-cells
     const settingCell = e.target.closest('[data-setting-action]');
     if (settingCell) {
@@ -329,6 +328,13 @@ export function initializeEventListeners() {
           localStorage.clear();
           alert('모든 데이터가 초기화되었습니다. 게임을 다시 시작합니다.');
           location.reload();
+        }
+      } else if (action === 'exit_game') { // New: Handle '종료'
+        alert(
+          '게임을 종료합니다. (실제 앱에서는 앱이 종료되거나 백그라운드로 이동합니다.)'
+        );
+        if (gameState.isSoundEnabled) {
+          document.getElementById('click-sound').play(); // Add click sound
         }
       }
       return;
@@ -350,6 +356,12 @@ export function initializeEventListeners() {
       } else if (action === 'show_jokbo') {
         updateJokboModal(gameState.theme, jokboData);
         jokboModal.classList.remove('hidden');
+      } else if (action === 'show_records') { // New: Handle '기록'
+        showHighScoreModal(
+          JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]')
+        );
+      } else if (action === 'show_guide') { // New: Handle '안내'
+        helpModal.classList.remove('hidden');
       }
       return;
     }
@@ -364,39 +376,6 @@ export function initializeEventListeners() {
         document.getElementById('f5-sound').play();
       }
       startNewGame();
-      return;
-    }
-
-    // New: Handle direct clicks on exit sub-cell
-    const exitCell = e.target.closest('[data-exit-action]');
-    if (exitCell) {
-      alert(
-        '게임을 종료합니다. (실제 앱에서는 앱이 종료되거나 백그라운드로 이동합니다.)'
-      );
-      if (gameState.isSoundEnabled) {
-        document.getElementById('click-sound').play(); // Add click sound
-      }      return;
-    }
-
-    // New: Handle direct clicks on records sub-cell
-    const recordsCell = e.target.closest('[data-records-action]');
-    if (recordsCell) {
-      showHighScoreModal(
-        JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]')
-      );
-      if (gameState.isSoundEnabled) {
-        document.getElementById('click-sound').play();
-      }
-      return;
-    }
-
-    // New: Handle direct clicks on guide sub-cell
-    const guideCell = e.target.closest('[data-guide-action]');
-    if (guideCell) {
-      helpModal.classList.remove('hidden');
-      if (gameState.isSoundEnabled) {
-        document.getElementById('click-sound').play();
-      }
       return;
     }
 
@@ -486,6 +465,19 @@ export function initializeEventListeners() {
   function setupDifficultyBlock() {
     const difficultyBlock = document.querySelector('[data-menu-id="difficulty"]');
     const subCells = difficultyBlock.querySelectorAll('.menu-sub-cell');
+    
+    // Set the central cell (subCells[4]) as the "단계" button with active styling
+    const centerCell = subCells[4];
+    if (centerCell) {
+      centerCell.textContent = '단계';
+      // centerCell.dataset.difficultyLevel = 'main_button'; // Removed as it's not a difficulty level
+      centerCell.style.fontSize = '0.8rem';
+      centerCell.style.fontWeight = 'bold';
+      centerCell.style.color = '#000000'; // Active style text color
+      centerCell.style.backgroundColor = '#00ff00'; // Active style background color
+      centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
+    }
+
     const difficultyOptions = [
       { label: '초급', value: 'easy' },
       { label: '중급', value: 'medium' },
@@ -493,8 +485,8 @@ export function initializeEventListeners() {
       { label: '랜덤', value: 'random' },
     ];
 
-    // Place options in a plus-sign shape (indices 1, 3, 4, 5)
-    const cellIndices = [3, 4, 5, 1]; // 초급, 중급, 고급, 랜덤 순서
+    // Place options in their specific cells: 초급(3), 중급(7), 고급(5), 랜덤(1)
+    const cellIndices = [3, 7, 5, 1]; 
     difficultyOptions.forEach((option, index) => {
       const cell = subCells[cellIndices[index]];
       if (cell) {
@@ -506,7 +498,7 @@ export function initializeEventListeners() {
       }
     });
 
-    updateDifficultySelection(); // Set initial selection
+
   }
 
   function updateDifficultySelection() {
@@ -527,32 +519,70 @@ export function initializeEventListeners() {
     });
   }
 
-  function setupThemeBlock() {
-    const themeBlock = document.querySelector('[data-menu-id="theme"]');
-    const subCells = themeBlock.querySelectorAll('.menu-sub-cell');
-    const themeOptions = [
-      { label: '테마', value: 'hwatu' },
-    ];
+  const TOPIC_OPTIONS = [ // 글귀 주제 목록 (전역 변수로 이동)
+    { label: '성찰', value: '1_성찰.json' },
+    { label: '관계', value: '2_관계.json' },
+    { label: '지혜', value: '3_지혜.json' },
+    { label: '용기', value: '4_용기.json' },
+    { label: '겸손', value: '5_겸손.json' },
+    { label: '중용', value: '6_중용.json' },
+    { label: '현재', value: '7_현재.json' },
+    { label: '본질', value: '8_본질.json' },
+  ];
 
-    // Place the single option in the center cell (index 4)
-    const cell = subCells[4];
-    if (cell) {
-      cell.textContent = themeOptions[0].label;
-      cell.dataset.themeValue = themeOptions[0].value;
-      cell.style.fontSize = '0.8rem';
-      cell.style.color = '#00ff00';
-      cell.style.backgroundImage = 'none';
+  function setupTopicBlock() { // 함수명 변경
+    const topicBlock = document.querySelector('[data-menu-id="topic"]'); // data-menu-id 변경
+    if (!topicBlock) return; // 널 체크 추가
+
+    const subCells = topicBlock.querySelectorAll('.menu-sub-cell');
+    
+
+    // 중앙 셀에 '주제' 텍스트 표시 및 클릭 이벤트 추가
+    const centerCell = subCells[4];
+    if (centerCell) {
+        centerCell.textContent = '주제';
+        centerCell.style.fontSize = '0.8rem'; // 폰트 크기 0.8rem으로 수정
+        centerCell.style.fontWeight = 'bold';
+        centerCell.style.color = '#000000'; // 활성화된 셀처럼 검은색 글자
+        centerCell.style.backgroundColor = '#00ff00'; // 활성화된 셀처럼 녹색 배경
+        centerCell.style.backgroundImage = 'none';
+
+        // 중앙 '주제' 셀 클릭 이벤트 리스너 추가
+        centerCell.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * TOPIC_OPTIONS.length); // TOPIC_OPTIONS 사용
+            const randomTopic = TOPIC_OPTIONS[randomIndex].value;
+            gameState.selectedPassageTopic = randomTopic; // 랜덤 주제 설정
+            updateTopicSelection(); // UI 업데이트
+            if (gameState.isSoundEnabled) {
+                document.getElementById('click-sound').play();
+            }
+        });
     }
 
-    updateThemeSelection();
+    // 주변 8개 셀에 주제 라벨과 data-topic-value 설정
+    const cellIndices = [0, 1, 2, 3, 5, 6, 7, 8]; // 주변 8개 셀 인덱스
+    TOPIC_OPTIONS.forEach((option, index) => {
+      const cell = subCells[cellIndices[index]];
+      if (cell) {
+        cell.textContent = option.label;
+        cell.dataset.topicValue = option.value; // data-topic-value 설정
+        cell.style.fontSize = '0.75rem'; // 폰트 크기 조정
+        cell.style.color = '#00ff00';
+        cell.style.backgroundImage = 'none';
+      }
+    });
+
+    updateTopicSelection(); // 초기 선택 상태 업데이트
   }
 
-  function updateThemeSelection() {
-    const themeBlock = document.querySelector('[data-menu-id="theme"]');
-    const subCells = themeBlock.querySelectorAll('.menu-sub-cell');
+  function updateTopicSelection() { // 함수명 변경
+    const topicBlock = document.querySelector('[data-menu-id="topic"]'); // data-menu-id 변경
+    if (!topicBlock) return;
+
+    const subCells = topicBlock.querySelectorAll('.menu-sub-cell');
     subCells.forEach(cell => {
-      if (cell.dataset.themeValue) {
-        if (cell.dataset.themeValue === gameState.theme) {
+      if (cell.dataset.topicValue) { // data-topic-value 속성 확인
+        if (cell.dataset.topicValue === gameState.selectedPassageTopic) { // gameState.selectedPassageTopic 사용
           cell.classList.add('selected');
           cell.style.backgroundColor = '#00ff00';
           cell.style.color = '#000000';
@@ -582,29 +612,35 @@ export function initializeEventListeners() {
   function setupSettingsBlock() {
     const settingsBlock = document.querySelector('[data-menu-id="settings"]');
     const subCells = settingsBlock.querySelectorAll('.menu-sub-cell');
+
     const settingsOptions = [
-      { label: '소리', action: 'toggle_sound' },
-      { label: '지움', action: 'reset_data' },
+      { label: '소리', action: 'toggle_sound', index: 3 }, // Mid-left
+      { label: '지움', action: 'reset_data', index: 5 }, // Mid-right
+      { label: '종료', action: 'exit_game', index: 7 }, // Bottom-center (8th cell)
+      { label: '셋팅', action: 'show_settings_main', index: 4, isMain: true }, // Center, main button for block
     ];
 
-    // Place options in the middle row, leaving the center empty
-    const cellIndices = [3, 5]; // '소리' at index 3, '지움' at index 5
-    settingsOptions.forEach((option, index) => {
-      const cell = subCells[cellIndices[index]];
+    settingsOptions.forEach((option) => {
+      const cell = subCells[option.index];
       if (cell) {
-        // Set basic attributes
+        cell.textContent = option.label;
         cell.dataset.settingAction = option.action;
         cell.style.fontSize = '0.8rem';
         cell.style.backgroundImage = 'none';
 
-        // Apply specific styling and text for '소리'
+        if (option.isMain) { // Main '셋팅' button in the center
+          cell.style.color = '#000000'; // Black text for active main button
+          cell.style.backgroundColor = '#00ff00'; // Green background for active main button
+          cell.style.fontWeight = 'bold';
+          cell.classList.add('no-image-fill'); // Prevent image fill for main button
+        } else { // Other options (소리, 지움, 종료)
+          cell.style.color = '#00ff00'; // Green text for inactive options
+          cell.style.backgroundColor = 'transparent'; // Transparent background for inactive options
+        }
+
+        // Apply specific styling for '소리' initial state, needs to be done after base styling
         if (option.action === 'toggle_sound') {
           updateSoundToggleCell(); // Set initial state for sound
-        } else {
-          // Default styling for '지움'
-          cell.textContent = option.label;
-          cell.style.color = '#00ff00';
-          cell.style.backgroundColor = 'transparent';
         }
       }
     });
@@ -614,30 +650,38 @@ export function initializeEventListeners() {
     const infoBlock = document.querySelector('[data-menu-id="info"]');
     const subCells = infoBlock.querySelectorAll('.menu-sub-cell');
 
-    const infoOptions = [
-      { label: '랭크', action: 'show_ranking' }, // subCells[3]
-      { label: '정보', action: 'show_info' },    // subCells[4]
-      { label: '족보', action: 'show_jokbo' },    // subCells[5]
+    const consolidatedOptions = [
+      { label: '기록', action: 'show_records', index: 1 }, // Top-center
+      { label: '안내', action: 'show_guide', index: 3 }, // Mid-left
+      { label: '정보', action: 'show_info', index: 4, isMain: true }, // Center, main button for block
+      { label: '랭크', action: 'show_ranking', index: 5 }, // Mid-right
+      { label: '족보', action: 'show_jokbo', index: 7 }, // Bottom-center
     ];
 
-    infoOptions.forEach((option, index) => {
-      const cell = subCells[index + 3]; // Using indices 3, 4, 5
+    consolidatedOptions.forEach((option) => {
+      const cell = subCells[option.index];
       if (cell) {
         cell.textContent = option.label;
         cell.dataset.infoAction = option.action;
         cell.style.fontSize = '0.8rem';
-        cell.style.color = '#00ff00';
         cell.style.backgroundImage = 'none';
-        // Apply specific styling based on the action
-        if (option.action === 'show_info') {
-          cell.style.color = '#00ff00'; // Green text for '정보'
-          cell.style.backgroundColor = 'transparent'; // No background for '정보'
-        } else {
-          cell.style.color = '#000000'; // Black text for '랭크' and '족보'
-          cell.style.backgroundColor = '#00ff00'; // Green background for '랭크' and '족보'
+
+        if (option.isMain) { // Main '정보' button in the center
+          cell.style.color = '#000000'; // Black text for active main button
+          cell.style.backgroundColor = '#00ff00'; // Green background for active main button
+          cell.style.fontWeight = 'bold';
+        } else { // Other options (기록, 안내, 랭크, 족보)
+          cell.style.color = '#00ff00'; // Green text for inactive options
+          cell.style.backgroundColor = 'transparent'; // Transparent background for inactive options
         }
       }
     });
+
+    // Clear any remaining default image for the center cell if it's main and fillEmptyMenuCells would override
+    const mainInfoCell = subCells[4];
+    if (mainInfoCell && mainInfoCell.dataset.infoAction === 'show_info') {
+      mainInfoCell.classList.add('no-image-fill'); // Add a class to prevent fillEmptyMenuCells from adding image
+    }
   }
 
   function setupStartBlock() {
@@ -649,6 +693,7 @@ export function initializeEventListeners() {
       cell.textContent = '시작';
       cell.dataset.startAction = 'start_game';
       cell.style.fontSize = '0.8rem';
+      cell.style.fontWeight = 'bold';
       cell.style.color = '#000000'; // Make text black for contrast
       cell.style.backgroundColor = '#00ff00'; // Add background color
       cell.style.backgroundImage = 'none';
@@ -706,7 +751,7 @@ export function initializeEventListeners() {
       { text: '수', style: 'font-weight: bold; color: #00ff00;' }, // Index 1
       { text: '', style: '' }, // Index 2 (empty)
       { text: '화', style: 'font-weight: bold; color: #00ff00;' }, // Index 3
-      { text: '도', style: 'font-weight: bold; color: #00ff00;' }, // Index 4
+      { text: '도', style: 'font-weight: bold; color: #000000; background-color: #00ff00;' }, // Index 4 (active style)
       { text: '쿠', style: 'font-weight: bold; color: #00ff00;' }, // Index 5
       { text: '', style: '' }, // Index 6 (empty)
       { text: '쿠', style: 'font-weight: bold; color: #00ff00;' }, // Index 7
@@ -718,12 +763,13 @@ export function initializeEventListeners() {
       if (content.text !== '') { // Apply styles if there's text
         cell.textContent = content.text;
         cell.style.cssText = content.style; // Apply inline styles
-        cell.style.backgroundImage = 'none'; // Remove background for text cells
-        cell.style.backgroundColor = 'transparent'; // Remove background color for text cells
+        cell.style.backgroundImage = 'none'; // Explicitly remove default background image
         cell.style.display = 'flex'; // Ensure flex for centering text
         cell.style.alignItems = 'center';
         cell.style.justifyContent = 'center';
         cell.style.fontSize = '1.5rem'; // Consistent font size
+        // Add no-image-fill for cells with text to prevent fillEmptyMenuCells from overwriting
+        cell.classList.add('no-image-fill');
       } else { // Empty cells: let them inherit default pattern
         cell.textContent = '';
         cell.style.cssText = ''; // Clear any inline styles that might interfere
@@ -746,7 +792,8 @@ export function initializeEventListeners() {
     const allSubCells = document.querySelectorAll('#main-menu-screen .menu-sub-cell');
 
     allSubCells.forEach(cell => {
-      if (cell.innerHTML.trim() === '') {
+      // Skip cells that are already configured with text or have a specific class to prevent image fill
+      if (cell.innerHTML.trim() === '' && !cell.classList.contains('no-image-fill')) {
         const randomImage = fruitImages[Math.floor(Math.random() * fruitImages.length)];
         const img = document.createElement('img');
         img.src = `/public/images/hwatu/${randomImage}`;
@@ -761,13 +808,10 @@ export function initializeEventListeners() {
   }
 
   setupDifficultyBlock();
-  setupThemeBlock();
+  setupTopicBlock(); // setupThemeBlock -> setupTopicBlock
   setupSettingsBlock();
-  setupInfoBlock();
+  setupInfoBlock();  
   setupStartBlock();
-  setupExitBlock();
-  setupRecordsBlock();
-  setupGuideBlock();
   setupLogoBlock();
   fillEmptyMenuCells(); // Call the new function
 }
