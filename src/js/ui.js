@@ -731,6 +731,132 @@ export function hideHighScoreModal() {
 }
 
 /**
+ * 주제 목록 모달의 내용을 채웁니다.
+ * @param {Array<object>} topics - 주제 객체 배열 ({ id, label, value })
+ * @param {string} selectedTopicValue - 현재 선택된 주제의 value (filename)
+ */
+export function populateTopicListModal(topics, selectedTopicValue = null) {
+  const topicListUl = document.getElementById('topic-list');
+  topicListUl.innerHTML = ''; // 이전 내용 초기화
+
+  topics.forEach(topic => {
+    const listItem = document.createElement('li');
+    listItem.textContent = topic.label;
+    listItem.dataset.topicValue = topic.value; // 파일 이름을 값으로 사용
+    listItem.dataset.topicId = topic.id; // ID도 데이터 속성으로 저장
+
+    if (selectedTopicValue && topic.value === selectedTopicValue) {
+      listItem.classList.add('selected');
+    }
+    topicListUl.appendChild(listItem);
+  });
+}
+
+/**
+ * 주제 목록 모달을 표시합니다.
+ */
+export function showTopicListModal() {
+  const topicListModal = document.getElementById('topic-list-modal');
+  // gameState.passageTopics를 사용하여 모달 내용을 채웁니다.
+  populateTopicListModal(gameState.passageTopics, gameState.selectedPassageTopic);
+  topicListModal.classList.remove('hidden');
+  // 기본으로 첫 번째 주제의 글귀를 표시하거나, 이전에 선택된 주제의 글귀를 표시
+  if (gameState.passageTopics.length > 0) {
+    const initialTopic = gameState.selectedPassageTopic 
+                         ? gameState.passageTopics.find(t => t.value === gameState.selectedPassageTopic)
+                         : gameState.passageTopics[0];
+    if (initialTopic) {
+      displayPassagesForTopic(initialTopic.value);
+    }
+  }
+}
+
+/**
+ * 주제 목록 모달을 숨깁니다.
+ */
+export function hideTopicListModal() {
+  const topicListModal = document.getElementById('topic-list-modal');
+  topicListModal.classList.add('hidden');
+}
+
+/**
+ * 특정 주제의 글귀를 로드하고 `#passage-display-area`에 표시합니다.
+ * @param {string} topicValue - 선택된 주제의 파일 이름 (예: '1_성찰.json')
+ */
+export async function displayPassagesForTopic(topicValue) {
+  const passageDisplayArea = document.getElementById('passage-display-area');
+  passageDisplayArea.innerHTML = '로딩 중...'; // 로딩 표시
+
+  try {
+    const passageFilePath = `/public/data/passages/${topicValue}`;
+    const response = await fetch(passageFilePath);
+    const passages = await response.json();
+
+    // Store passages in gameState for pagination
+    gameState.currentViewedPassages = passages;
+    gameState.currentPage = 1; // Reset to first page when new topic is selected
+
+    renderPaginatedPassages(); // Render first page and pagination controls
+
+  } catch (error) {
+    console.error(`글귀를 불러오는 데 실패했습니다: ${topicValue}`, error);
+    passageDisplayArea.textContent = '글귀를 불러오는 중 오류가 발생했습니다.';
+  }
+}
+
+/**
+ * 현재 페이지에 해당하는 글귀를 렌더링하고 페이지네이션 컨트롤을 생성합니다.
+ */
+export function renderPaginatedPassages() {
+  const passageDisplayArea = document.getElementById('passage-display-area');
+  passageDisplayArea.innerHTML = ''; // 이전 내용 지우기
+
+  const { currentViewedPassages, currentPage, passagesPerPage } = gameState;
+  const totalPages = Math.ceil(currentViewedPassages.length / passagesPerPage);
+
+  const startIndex = (currentPage - 1) * passagesPerPage;
+  const endIndex = startIndex + passagesPerPage;
+  const passagesToDisplay = currentViewedPassages.slice(startIndex, endIndex);
+
+  if (passagesToDisplay.length === 0) {
+    passageDisplayArea.textContent = '해당 주제의 글귀가 없습니다.';
+    return;
+  }
+
+  // 글귀 렌더링
+  passagesToDisplay.forEach(passage => {
+    const passageEl = document.createElement('p');
+    const authorText = passage.author ? ` - ${passage.author}` : '';
+    passageEl.textContent = `"${passage.text}"${authorText}`;
+    passageDisplayArea.appendChild(passageEl);
+  });
+
+  // 페이지네이션 컨트롤 생성
+  if (totalPages > 1) {
+    const paginationNav = document.createElement('nav');
+    paginationNav.classList.add('pagination-controls');
+
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = '&#x25C0;'; // 이전 아이콘
+    prevButton.id = 'pagination-prev';
+    prevButton.disabled = currentPage === 1;
+    paginationNav.appendChild(prevButton);
+
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `${currentPage} / ${totalPages}`;
+    paginationNav.appendChild(pageInfo);
+
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = '&#x25B6;'; // 다음 아이콘
+    nextButton.id = 'pagination-next';
+    nextButton.disabled = currentPage === totalPages;
+    paginationNav.appendChild(nextButton);
+
+    passageDisplayArea.appendChild(paginationNav);
+  }
+}
+
+/**
  * 가이드 셀들을 하이라이트합니다.
  * @param {number} clickedRow - 클릭된 셀의 행
  * @param {number} clickedCol - 클릭된 셀의 열

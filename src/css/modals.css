@@ -650,3 +650,188 @@
   background-color: #424242;
 }
 
+/* Topic List Modal */
+#topic-list-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110; /* Help Modal과 동일한 z-index */
+}
+
+#topic-list-modal.hidden {
+  display: none;
+}
+
+#topic-list-content {
+  background-image: url('/public/images/btn/card_back_patten4.png'); /* 기존 모달과 동일한 배경 패턴 */
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0; /* 기존 모달과 동일한 배경색 */
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* 기존 모달과 동일한 그림자 */
+  text-align: center;
+  width: 90%;
+  max-width: 420px; /* 기존 모달과 유사한 최대 너비 */
+  max-height: 80vh; /* 기존 모달과 유사한 최대 높이 */
+  overflow-y: auto; /* 내용이 길어지면 스크롤 가능 */
+  display: flex; /* Flexbox 추가 */
+  flex-direction: column; /* 자식 요소들을 수직으로 정렬 */
+  gap: 8px; /* 버튼 컨테이너와 글귀 영역 사이 간격 */
+}
+
+#topic-buttons-container {
+  display: flex; /* 버튼들을 가로로 정렬 */
+  flex-wrap: wrap; /* 공간이 부족하면 다음 줄로 넘어가도록 */
+  justify-content: center; /* 아이템들을 중앙 정렬 */
+  gap: 8px; /* 버튼들 사이의 간격 */
+  padding: 0 5px 5px 5px; /* 아래쪽 여백 및 좌우 패딩 */
+  /* overflow-x: auto; 제거 */
+  /* -webkit-overflow-scrolling: touch; 제거 */
+  /* scrollbar-width: none; 제거 */
+  /* -ms-overflow-style: none; 제거 */
+}
+
+/* #topic-buttons-container::-webkit-scrollbar { 제거 */
+
+#topic-list {
+  list-style: none; /* 기본 리스트 스타일 제거 */
+  padding: 0;
+  margin: 0;
+  color: #cccccc; /* 텍스트 색상 */
+  font-size: 1rem;
+  display: flex; /* Flexbox 활성화 */
+  flex-wrap: wrap; /* 여러 줄로 감싸기 허용 */
+  justify-content: center; /* 아이템들을 중앙 정렬 */
+  gap: 8px; /* 아이템 사이의 간격 */
+  width: 100%; /* 부모 컨테이너 너비에 맞춤 */
+}
+
+#topic-list li {
+  padding: 4px 6px; /* 패딩 축소 */
+  margin-bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  border-radius: 5px; /* 둥근 모서리 유지 */
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+  flex-shrink: 1; /* 축소 허용 */
+  flex-grow: 1; /* 성장 허용 */
+  flex-basis: calc(50% - 4px); /* 기본 2열 레이아웃 */
+  text-align: center;
+  box-sizing: border-box;
+  font-weight: bold;
+  font-size: 0.7rem;
+  line-height: 1;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 420px) {
+  #topic-list li {
+    flex-basis: calc(25% - 6px); /* 4열 레이아웃 */
+    font-size: 0.8rem;
+    padding: 3px 5px;
+    height: 28px;
+  }
+}
+
+
+#topic-list li:hover {
+  background-color: #00ff00; /* 호버 시 배경색 변경 */
+  color: #000000; /* 호버 시 텍스트 색상 변경 */
+  transform: translateY(-2px); /* 약간 위로 떠오르는 효과 */
+}
+
+#topic-list li.selected {
+  background-color: #00ff00; /* 선택된 버튼 배경색 */
+  color: #000000; /* 선택된 버튼 텍스트 색상 */
+  box-shadow: 0 0 8px 2px rgba(0, 255, 0, 0.6); /* 선택 시 발광 효과 */
+}
+
+#passage-display-area {
+  padding: 10px 0;
+  color: #cccccc;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: left;
+  min-height: 100px; /* 최소 높이 설정 */
+}
+
+#topic-list-close-btn {
+  display: block;
+  width: 100px;
+  margin: 25px auto 0 auto;
+  background-image: url('/public/images/btn/card_back_patten2.png'); /* 기존 닫기 버튼과 동일한 배경 패턴 */
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161; /* 기존 닫기 버튼과 동일한 배경색 */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 기존 닫기 버튼과 동일한 그림자 */
+}
+
+#topic-list-close-btn:hover {
+  background-image: url('/public/images/btn/card_back_patten.png'); /* 기존 닫기 버튼 호버와 동일 */
+  background-color: #424242; /* 기존 닫기 버튼 호버와 동일 */
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  /* margin-top: 15px; 삭제 */
+}
+
+.pagination-controls button {
+  background-image: url('/public/images/btn/card_back_patten2.png'); /* 기존 버튼과 유사한 배경 */
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem; /* 아이콘 크기 */
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  min-width: 30px; /* 버튼 최소 너비 */
+  height: 30px; /* 버튼 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-image: url('/public/images/btn/card_back_patten.png');
+  background-color: #424242;
+  box-shadow: 0 0 8px 2px rgba(255, 215, 0, 0.6);
+}
+
+.pagination-controls button:disabled {
+  background-color: #424242;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination-controls span {
+  color: #00ff00; /* 페이지 정보 텍스트 색상 */
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+

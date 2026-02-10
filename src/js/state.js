@@ -27,7 +27,32 @@ export const gameState = {
   bonusBlock: { row: -1, col: -1 },
   selectedPassageTopic: null, // 사용자가 선택한 글귀 주제 파일명 (예: '1_성찰.json')
   isSoundEnabled: JSON.parse(localStorage.getItem('isSoundEnabled')) ?? true, // Sound state
+  passageTopics: [], // 명언 주제 목록을 저장할 배열
+  currentViewedPassages: [], // 현재 모달에 표시 중인 글귀 전체 목록
+  currentPage: 1, // 현재 페이지 번호
+  passagesPerPage: 5, // 페이지당 글귀 수
 };
+
+/**
+ * public/data/passages/ 폴더에서 명언 주제 이름을 로드합니다.
+ * 파일 이름에서 숫자와 확장자를 제외한 부분 (예: "성찰", "관계")을 추출합니다.
+ */
+export async function loadPassageTopics() {
+  const topics = [];
+  const passageFiles = [
+    '1_성찰.json', '2_관계.json', '3_지혜.json', '4_용기.json',
+    '5_겸손.json', '6_중용.json', '7_현재.json', '8_본질.json'
+  ];
+
+  passageFiles.forEach(filename => {
+    const topicId = filename.split('_')[0]; // e.g., '1'
+    const topicName = filename.split('_')[1].replace('.json', ''); // e.g., '성찰'
+    topics.push({ id: topicId, label: topicName, value: filename });
+  });
+
+  gameState.passageTopics = topics;
+  console.log("Loaded passage topics:", gameState.passageTopics);
+}
 
 /**
  * 게임의 현재 점수를 업데이트하고 최고 점수와 비교하여 갱신합니다.

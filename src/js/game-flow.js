@@ -40,6 +40,7 @@ import {
   setCurrentScore,
   resetScore,
   BOARD_SIZE,
+  loadPassageTopics, // Import loadPassageTopics
 } from './state.js';
 
 // --- Helper Functions ---
@@ -95,7 +96,9 @@ function saveDailyJokboCounts() {
 
 // --- Exported Game Flow Functions ---
 
-export function initGame() {
+export async function initGame() { // Made initGame async
+  await loadPassageTopics(); // Call loadPassageTopics at the beginning of initGame
+
   const loadedState = loadGameState();
 
   if (loadedState) {

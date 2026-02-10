@@ -19,6 +19,10 @@ import {
   showJokboRulesModal, // Added for new jokbo modal
   hideJokboRulesModal, // Added for new jokbo modal
   setPassageVisibility, // Added
+  showTopicListModal, // Import showTopicListModal
+  hideTopicListModal, // Import showTopicListModal
+  displayPassagesForTopic, // Import displayPassagesForTopic
+  renderPaginatedPassages, // Import renderPaginatedPassages
 } from './ui.js';
 import {
   jokboData,
@@ -66,6 +70,10 @@ export function initializeEventListeners() {
   const hintContainer = document.getElementById('hint-container');
   const infoModal = document.getElementById('info-modal');
   const infoCloseBtn = document.getElementById('info-close-btn');
+  const topicListModal = document.getElementById('topic-list-modal'); // Get the new modal
+  const topicListCloseBtn = document.getElementById('topic-list-close-btn'); // Get the new close button
+  const topicListUl = document.getElementById('topic-list'); // Get the topic list ul
+  const passageDisplayArea = document.getElementById('passage-display-area'); // Get the passage display area
   
 
   function showInfoModal() {
@@ -287,7 +295,6 @@ export function initializeEventListeners() {
     hintContainer.classList.add('hidden');
     document.getElementById('jokbo-display-container').classList.add('hidden');
     setPassageVisibility(false); // 상단 글귀 숨기기
-
     // Show main menu
     mainMenuScreen.classList.remove('hidden');
     // Clear any active cell selection
@@ -317,6 +324,54 @@ export function initializeEventListeners() {
       }
     });
   }
+
+  if (infoCloseBtn) {
+    infoCloseBtn.addEventListener('click', hideInfoModal);
+  }
+
+  if (infoModal) {
+    infoModal.addEventListener('click', (event) => {
+      if (event.target === infoModal) {
+        hideInfoModal();
+      }
+    });
+  }
+
+  // --- New Topic List Modal Event Listeners ---
+  if (topicListCloseBtn) {
+    topicListCloseBtn.addEventListener('click', () => {
+      hideTopicListModal();
+    });
+  }
+
+  if (topicListModal) {
+    topicListModal.addEventListener('click', (event) => {
+      if (event.target === topicListModal) { // Close if click is on the overlay
+        hideTopicListModal();
+      }
+    });
+  }
+
+  // Global Escape key listener for modals (NEW)
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      if (!topicListModal.classList.contains('hidden')) {
+        hideTopicListModal();
+      } else if (!rankModal.classList.contains('hidden')) { // Check other modals to close them first
+        hideRankModal();
+      } else if (!jokboRulesModal.classList.contains('hidden')) {
+        hideJokboRulesModal();
+      } else if (!completionModal.classList.contains('hidden')) {
+        completionModal.classList.add('hidden'); // Assuming it has a hidden class
+      } else if (!highScoreModal.classList.contains('hidden')) {
+        hideHighScoreModal();
+      } else if (!helpModal.classList.contains('hidden')) {
+        helpModal.classList.add('hidden'); // Assuming it has a hidden class
+      } else if (!infoModal.classList.contains('hidden')) {
+        hideInfoModal();
+      }
+    }
+  });
 
   // --- Main Menu Event Listeners ---
 
@@ -398,6 +453,16 @@ export function initializeEventListeners() {
       return;
     }
 
+    // New: Handle direct clicks on achievement sub-cell
+    const achievementCell = e.target.closest('[data-menu-id="achievement"]');
+    if (achievementCell) {
+      if (gameState.isSoundEnabled) {
+        document.getElementById('click-sound').play();
+      }
+      showTopicListModal(); // Open the topic list modal
+      return;
+    }
+
     // New: Handle direct clicks on start sub-cell
     const startCell = e.target.closest('[data-start-action]');
     if (startCell) {
@@ -458,6 +523,55 @@ export function initializeEventListeners() {
         break;
     }
   });
+
+  // Topic List items click listener
+  if (topicListUl) {
+    topicListUl.addEventListener('click', (e) => {
+      const clickedTopicItem = e.target.closest('li[data-topic-value]');
+      if (clickedTopicItem) {
+        const topicValue = clickedTopicItem.dataset.topicValue;
+
+        // Update selected state in UI
+        topicListUl.querySelectorAll('li').forEach(item => {
+          item.classList.remove('selected');
+        });
+        clickedTopicItem.classList.add('selected');
+
+        // Display passages for the selected topic
+        displayPassagesForTopic(topicValue);
+
+        if (gameState.isSoundEnabled) {
+          document.getElementById('click-sound').play();
+        }
+      }
+    });
+  }
+  
+  // Pagination controls click listener
+  if (passageDisplayArea) {
+    passageDisplayArea.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.id === 'pagination-prev') {
+        if (gameState.currentPage > 1) {
+          gameState.currentPage--;
+          renderPaginatedPassages();
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+        }
+      } else if (target.id === 'pagination-next') {
+        const totalPages = Math.ceil(gameState.currentViewedPassages.length / gameState.passagesPerPage);
+        if (gameState.currentPage < totalPages) {
+          gameState.currentPage++;
+          renderPaginatedPassages();
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+        }
+      }
+    });
+  }
+
 
   miniPalette.addEventListener('click', (e) => {
     // This listener now only handles the in-game number palette
@@ -774,6 +888,23 @@ export function initializeEventListeners() {
     }
   }
 
+  function setupAchievementBlock() {
+    const achievementBlock = document.querySelector('[data-menu-id="achievement"]');
+    if (!achievementBlock) return;
+
+    const subCells = achievementBlock.querySelectorAll('.menu-sub-cell');
+    const centerCell = subCells[4]; // Center cell
+    if (centerCell) {
+      centerCell.textContent = '달성';
+      centerCell.style.fontSize = '0.8rem';
+      centerCell.style.fontWeight = 'bold';
+      centerCell.style.color = '#000000'; // Black text for contrast
+      centerCell.style.backgroundColor = '#00ff00'; // Green background for active main button
+      centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
+      centerCell.classList.add('no-image-fill'); // Prevent fillEmptyMenuCells from adding image
+    }
+  }
+
   function setupLogoBlock() {
     const logoBlock = document.querySelector('[data-menu-id="logo"]');
     const subCells = logoBlock.querySelectorAll('.menu-sub-cell');
@@ -844,6 +975,7 @@ export function initializeEventListeners() {
   setupSettingsBlock();
   setupInfoBlock();  
   setupStartBlock();
+  setupAchievementBlock();
   setupLogoBlock();
   fillEmptyMenuCells(); // Call the new function
 }

@@ -23,8 +23,8 @@
 
     <main>
       <div id="main-menu-screen">
-        <!-- Position 1: Placeholder (was pos 4) -->
-        <div class="sudoku-block-menu-item">
+        <!-- Position 1: Achievement Button -->
+        <div class="sudoku-block-menu-item" data-menu-id="achievement">
           <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
           <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
           <div class="menu-sub-cell"></div><div class="menu-sub-cell"></div><div class="menu-sub-cell"></div>
@@ -190,6 +190,21 @@
         <p>아이디어: 공작왕님</p>
         <p>오픈소스 라이선스: MIT</p>
         <button id="info-close-btn">닫기</button>
+      </div>
+    </div>
+
+    <!-- Topic List Modal -->
+    <div id="topic-list-modal" class="hidden">
+      <div id="topic-list-content">
+        <div id="topic-buttons-container">
+          <ul id="topic-list">
+            <!-- Topic buttons will be dynamically loaded here -->
+          </ul>
+        </div>
+        <div id="passage-display-area">
+          <!-- Passages for the selected topic will be displayed here -->
+        </div>
+        <button id="topic-list-close-btn">닫기</button>
       </div>
     </div>
 
