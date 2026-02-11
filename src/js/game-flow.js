@@ -174,6 +174,7 @@ export async function initGame() { // Made initGame async
 
 export async function startNewGame() { // Made async
   gameState.hintCount = 3; // 모든 새 게임은 3개의 힌트로 시작하도록 강제 설정
+  gameState.selectedPassageTopic = null; // 새로운 게임 시작 시 주제 선택 상태 초기화 (강제 랜덤)
   
   // NEW LOGIC: ui.js의 displayRandomPassage를 호출하여 글귀를 화면에 표시하고,
   // 반환된 글귀 정보를 gameState.selectedPassage에 저장
