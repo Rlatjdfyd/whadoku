@@ -601,13 +601,16 @@ export function initializeEventListeners() {
   }
 
   // New: Collection Modal Pagination Controls click listener
-  if (collectionModal) { // 이벤트 위임 대상을 collectionModal로 변경
+  if (collectionModal) {
     collectionModal.addEventListener('click', (e) => {
       const target = e.target;
+      // collectionContentEl을 이벤트 리스너 스코프 내에서 가져옵니다.
+      const collectionContentEl = document.getElementById('collection-content'); 
+
       if (target.id === 'collection-pagination-prev') {
         if (gameState.collectionCurrentPage > 1) {
           gameState.collectionCurrentPage--;
-          renderPaginatedSavedPassages(gameState.currentViewedCollectionPassages); // 인자 전달
+          renderPaginatedSavedPassages(collectionContentEl); // collectionContentEl 전달
           if (gameState.isSoundEnabled) {
             document.getElementById('click-sound').play();
           }
@@ -616,7 +619,7 @@ export function initializeEventListeners() {
         const totalPages = Math.ceil(gameState.currentViewedCollectionPassages.length / gameState.collectionPassagesPerPage);
         if (gameState.collectionCurrentPage < totalPages) {
           gameState.collectionCurrentPage++;
-          renderPaginatedSavedPassages(gameState.currentViewedCollectionPassages); // 인자 전달
+          renderPaginatedSavedPassages(collectionContentEl); // collectionContentEl 전달
           if (gameState.isSoundEnabled) {
             document.getElementById('click-sound').play();
           }
