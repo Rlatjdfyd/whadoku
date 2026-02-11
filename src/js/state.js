@@ -36,6 +36,8 @@ export const gameState = {
   collectionCurrentPage: 1,
   collectionPassagesPerPage: 5, // 페이지당 글귀 수 (컬렉션 모달용)
   currentViewedCollectionPassages: [], // 현재 컬렉션 모달에 표시 중인 글귀 전체 목록 (페이지네이션용)
+  collectionFilterTopicLabel: null, // 컬렉션 모달에 적용된 현재 필터 주제 라벨
+
 
 
 };

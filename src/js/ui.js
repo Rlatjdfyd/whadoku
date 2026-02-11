@@ -1100,13 +1100,11 @@ function populateSavedPassagesListModal(passagesToRender, collectionListUl, curr
 
  * 저장된 글귀 목록을 페이지네이션하여 렌더링하고 페이지네이션 컨트롤을 생성합니다.
 
- * @param {string|null} currentFilterTopicLabel - 현재 적용된 필터 주제 라벨
-
  * @param {HTMLElement} collectionContentEl - 컬렉션 모달의 콘텐츠 영역 엘리먼트
 
  */
 
-export function renderPaginatedSavedPassages(currentFilterTopicLabel = null, collectionContentEl) {
+export function renderPaginatedSavedPassages(collectionContentEl) {
 
   const collectionListContainer = document.getElementById('collection-list-container');
 
@@ -1116,7 +1114,7 @@ export function renderPaginatedSavedPassages(currentFilterTopicLabel = null, col
 
 
 
-  const { collectionCurrentPage, collectionPassagesPerPage, currentViewedCollectionPassages } = gameState;
+  const { collectionCurrentPage, collectionPassagesPerPage, currentViewedCollectionPassages, collectionFilterTopicLabel } = gameState; // collectionFilterTopicLabel added
 
   const totalPages = Math.ceil(currentViewedCollectionPassages.length / collectionPassagesPerPage);
 
@@ -1130,7 +1128,7 @@ export function renderPaginatedSavedPassages(currentFilterTopicLabel = null, col
 
 
 
-  populateSavedPassagesListModal(passagesToRender, collectionListUl, currentFilterTopicLabel); // 헬퍼 함수 호출, 필터 라벨 전달
+  populateSavedPassagesListModal(passagesToRender, collectionListUl, collectionFilterTopicLabel); // gameState.collectionFilterTopicLabel used
 
 
 
@@ -1255,6 +1253,7 @@ export function showSavedPassagesListModal(filterTopicLabel = null) {
   gameState.currentViewedCollectionPassages = passagesToDisplay;
 
   gameState.collectionCurrentPage = 1; // 페이지네이션 초기화
+  gameState.collectionFilterTopicLabel = filterTopicLabel; // 필터 라벨 저장
 
 
 
@@ -1276,11 +1275,15 @@ export function showSavedPassagesListModal(filterTopicLabel = null) {
 
 
 
-  renderPaginatedSavedPassages(filterTopicLabel, collectionContentEl); // 페이지네이션 렌더링 시작, 필터 라벨 및 콘텐츠 요소 전달
+    renderPaginatedSavedPassages(collectionContentEl); // 페이지네이션 렌더링 시작, 콘텐츠 요소 전달 (필터는 gameState에서 가져옴)
 
-  collectionModal.classList.remove('hidden');
 
-}
+
+    collectionModal.classList.remove('hidden');
+
+
+
+  }
 
 /**
  * 저장된 글귀 목록 모달을 숨깁니다.
