@@ -144,7 +144,7 @@
 }
 
 #rank-close-btn {
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -158,7 +158,7 @@
 }
 
 #rank-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -247,7 +247,7 @@
 }
 
 #jokbo-rules-close-btn {
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -261,7 +261,7 @@
 }
 
 #jokbo-rules-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -384,7 +384,7 @@
 }
 
 #completion-close-btn {
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -399,7 +399,7 @@
 }
 
 #completion-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -475,7 +475,7 @@
 }
 
 #high-score-close-btn {
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 배경색 유지 */
@@ -489,7 +489,7 @@
 }
 
 #high-score-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -563,7 +563,7 @@
   display: block;
   width: 100px;
   margin: 25px auto 0 auto;
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161;
@@ -577,7 +577,7 @@
 }
 
 #help-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -632,7 +632,7 @@
   display: block;
   width: 100px;
   margin: 25px auto 0 auto;
-  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161;
@@ -646,7 +646,7 @@
 }
 
 #info-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png');
+  background-image: url('/public/images/btn/card_back_patten2.png');
   background-color: #424242;
 }
 
@@ -770,7 +770,7 @@
   display: block;
   width: 100px;
   margin: 25px auto 0 auto;
-  background-image: url('/public/images/btn/card_back_patten2.png'); /* 기존 닫기 버튼과 동일한 배경 패턴 */
+  background-image: url('/public/images/btn/card_back_patten.png'); /* 기존 닫기 버튼과 동일한 배경 패턴 */
   background-repeat: repeat;
   background-size: 5px 5px;
   background-color: #616161; /* 기존 닫기 버튼과 동일한 배경색 */
@@ -784,7 +784,7 @@
 }
 
 #topic-list-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten.png'); /* 기존 닫기 버튼 호버와 동일 */
+  background-image: url('/public/images/btn/card_back_patten2.png'); /* 기존 닫기 버튼 호버와 동일 */
   background-color: #424242; /* 기존 닫기 버튼 호버와 동일 */
 }
 
