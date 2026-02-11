@@ -19,7 +19,8 @@ import {
 
   updateAchievedJokboDisplay,
   setPassageVisibility,
-  displayRandomPassage, // Add this
+  displayRandomPassage,
+  THEME_OPTIONS_UI, // Import THEME_OPTIONS_UI
 } from './ui.js';
 import {
   getRankName,
@@ -94,6 +95,40 @@ function saveDailyJokboCounts() {
   );
 }
 
+/**
+ * 완료된 글귀를 로컬 스토리지에 저장합니다.
+ * @param {string} topicLabel - 글귀의 주제 라벨 (예: '성찰')
+ * @param {string} passageText - 글귀 내용
+ */
+function savePassageToLocalStorage(topicLabel, passageText) {
+  // 기존 저장된 글귀 목록 불러오기
+  const savedPassagesJSON = localStorage.getItem('completedPassages');
+  let savedPassages = savedPassagesJSON ? JSON.parse(savedPassagesJSON) : [];
+
+  // 새로운 글귀 객체 생성
+  const newPassage = {
+    topic: topicLabel,
+    passage: passageText,
+    timestamp: new Date().toISOString() // 저장 시점 추가 (옵션)
+  };
+
+  // --- 중복 확인 로직 추가 ---
+  const isDuplicate = savedPassages.some(
+    (p) => p.topic === newPassage.topic && p.passage === newPassage.passage
+  );
+
+  if (!isDuplicate) {
+    savedPassages.push(newPassage);
+    // 업데이트된 목록을 로컬 스토리지에 저장
+    localStorage.setItem('completedPassages', JSON.stringify(savedPassages));
+    console.log('글귀가 로컬 스토리지에 저장되었습니다:', newPassage);
+  } else {
+    console.log('이미 저장된 글귀입니다. 중복 저장하지 않습니다.');
+    // 중복이라면, 기존 글귀의 timestamp만 업데이트하는 옵션도 있지만, 일단은 저장만 건너뜁니다.
+    // localStorage.setItem('completedPassages', JSON.stringify(savedPassages)); // 이미 저장된 글귀가 있어도 저장해야 한다면 이 줄 주석 해제
+  }
+}
+
 // --- Exported Game Flow Functions ---
 
 export async function initGame() { // Made initGame async
@@ -149,12 +184,8 @@ export async function startNewGame() { // Made async
     gameState.selectedPassage = { text: "", author: "" }; // 글귀 로드 실패 시 기본값 설정
   }
   
-        // 난이도에 따라 글귀 표시 여부 제어 (랜덤 모드일 때만 숨김)
-        if (gameState.difficulty === 'random') {
-          setPassageVisibility(false); // 랜덤 모드면 글귀 숨김
-        } else {
-          setPassageVisibility(true); // 랜덤 모드가 아니면 글귀 표시
-        }
+        // 상단 글귀는 모든 난이도에서 숨김
+        setPassageVisibility(false);
   gameState.solution = generateSudoku();
 
   // Define valid difficulty levels for validation
@@ -166,6 +197,15 @@ export async function startNewGame() { // Made async
     gameState.difficulty = 'medium';
   }
   
+  // 사용자가 난이도를 명시적으로 선택하지 않았으나 랜덤 주제가 로드된 경우 (startNewGame 호출 시점)
+  // 난이도를 'random'으로 강제 설정하여 일관된 동작을 보장
+  if (
+    gameState.selectedPassageTopic !== null && // 랜덤 주제가 로드되었고
+    ['easy', 'medium', 'hard'].includes(gameState.difficulty) // 현재 난이도가 easy/medium/hard인 경우
+  ) {
+    gameState.difficulty = 'random';
+  }
+
   if (gameState.difficulty === 'random') {
     // Use the *already selected* passage for quoteChars
     const processedText = gameState.selectedPassage.text.replace(/\s/g, '');
@@ -296,6 +336,18 @@ export function checkSolution() {
     JSON.stringify(gameState.board) === JSON.stringify(gameState.solution);
   if (isCorrect) {
     const jokboScore = gameState.lastScoreResult?.totalScore || 0;
+
+    // 완성된 글귀를 로컬 스토리지에 저장 (게임 완료 시점)
+    if (gameState.selectedPassage && gameState.selectedPassageTopic) {
+      const foundTopicOption = THEME_OPTIONS_UI.find(
+        (option) => option.value === gameState.selectedPassageTopic
+      );
+      const topicLabel = foundTopicOption ? foundTopicOption.label : '알 수 없는 주제'; // 폴백
+      const passageText = gameState.selectedPassage.text;
+
+      savePassageToLocalStorage(topicLabel, passageText);
+    }
+
 
     setTimeout(() => {
       const scoreData = gameState.lastScoreResult || {

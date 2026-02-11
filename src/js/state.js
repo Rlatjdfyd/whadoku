@@ -31,6 +31,13 @@ export const gameState = {
   currentViewedPassages: [], // 현재 모달에 표시 중인 글귀 전체 목록
   currentPage: 1, // 현재 페이지 번호
   passagesPerPage: 5, // 페이지당 글귀 수
+
+  // Collection Modal Pagination States (컬렉션 모달 페이지네이션 상태)
+  collectionCurrentPage: 1,
+  collectionPassagesPerPage: 5, // 페이지당 글귀 수 (컬렉션 모달용)
+  currentViewedCollectionPassages: [], // 현재 컬렉션 모달에 표시 중인 글귀 전체 목록 (페이지네이션용)
+
+
 };
 
 /**

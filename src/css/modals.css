@@ -835,3 +835,106 @@
   font-size: 0.8rem;
 }
 
+/* Collection Modal (저장된 글귀 목록 모달) */
+#collection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110;
+}
+
+#collection-modal.hidden {
+  display: none;
+}
+
+#collection-content {
+  background-image: url('/public/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#collection-content h2 {
+  margin-top: 0;
+  color: #00ff00;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+#collection-list-container {
+  padding: 10px 0;
+  color: #cccccc;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: left;
+  min-height: 100px;
+}
+
+#collection-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#collection-list li {
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+#collection-list li span.topic-label {
+  font-weight: bold;
+  color: #00ff00;
+  display: block;
+  margin-bottom: 5px;
+}
+
+#collection-list li p {
+  margin: 0;
+  color: #cccccc;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+#collection-close-btn {
+  display: block;
+  width: 100px;
+  margin: 25px auto 0 auto;
+  background-image: url('/public/images/btn/card_back_patten.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #616161;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#collection-close-btn:hover {
+  background-image: url('/public/images/btn/card_back_patten2.png');
+  background-color: #424242;
+}
+
+

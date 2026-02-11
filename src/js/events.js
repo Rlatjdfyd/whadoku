@@ -23,6 +23,10 @@ import {
   hideTopicListModal, // Import showTopicListModal
   displayPassagesForTopic, // Import displayPassagesForTopic
   renderPaginatedPassages, // Import renderPaginatedPassages
+  showSavedPassagesListModal, // Import showSavedPassagesListModal
+  hideSavedPassagesListModal, // Import hideSavedPassagesListModal
+  renderPaginatedSavedPassages, // Import renderPaginatedSavedPassages
+  THEME_OPTIONS_UI, // Import THEME_OPTIONS_UI
 } from './ui.js';
 import {
   jokboData,
@@ -40,6 +44,9 @@ import {
   setCellValue,
   getUsedNumbersInBlock,
 } from './game-flow.js';
+
+// 각 주제별 최대 글귀 수 (100% 달성 기준)
+const MAX_PASSAGES_PER_TOPIC = 360;
 
 export function initializeEventListeners() {
   const sudokuBoard = document.getElementById('sudoku-board');
@@ -74,6 +81,9 @@ export function initializeEventListeners() {
   const topicListCloseBtn = document.getElementById('topic-list-close-btn'); // Get the new close button
   const topicListUl = document.getElementById('topic-list'); // Get the topic list ul
   const passageDisplayArea = document.getElementById('passage-display-area'); // Get the passage display area
+  const collectionModal = document.getElementById('collection-modal'); // New: Collection Modal
+  const collectionCloseBtn = document.getElementById('collection-close-btn'); // New: Collection Close Button
+  const collectionListContainer = document.getElementById('collection-list-container'); // New: Collection List Container
   
 
   function showInfoModal() {
@@ -337,6 +347,21 @@ export function initializeEventListeners() {
     });
   }
 
+  // --- New Collection Modal Event Listeners ---
+  if (collectionCloseBtn) {
+    collectionCloseBtn.addEventListener('click', () => {
+      hideSavedPassagesListModal();
+    });
+  }
+
+  if (collectionModal) {
+    collectionModal.addEventListener('click', (event) => {
+      if (event.target === collectionModal) {
+        hideSavedPassagesListModal();
+      }
+    });
+  }
+
   // --- New Topic List Modal Event Listeners ---
   if (topicListCloseBtn) {
     topicListCloseBtn.addEventListener('click', () => {
@@ -357,6 +382,8 @@ export function initializeEventListeners() {
     if (event.key === 'Escape') {
       if (!topicListModal.classList.contains('hidden')) {
         hideTopicListModal();
+      } else if (!collectionModal.classList.contains('hidden')) { // New: Check collectionModal
+        hideSavedPassagesListModal();
       } else if (!rankModal.classList.contains('hidden')) { // Check other modals to close them first
         hideRankModal();
       } else if (!jokboRulesModal.classList.contains('hidden')) {
@@ -453,15 +480,16 @@ export function initializeEventListeners() {
       return;
     }
 
-    // New: Handle direct clicks on achievement sub-cell
-    const achievementCell = e.target.closest('[data-menu-id="achievement"]');
-    if (achievementCell) {
-      if (gameState.isSoundEnabled) {
-        document.getElementById('click-sound').play();
-      }
-      showTopicListModal(); // Open the topic list modal
-      return;
-    }
+    // New: Handle direct clicks on achievement sub-cell (기존 로직 제거 - setupAchievementBlock에서 개별 처리)
+    // const achievementCell = e.target.closest('[data-menu-id="achievement"]');
+    // if (achievementCell) {
+    //   if (gameState.isSoundEnabled) {
+    //     document.getElementById('click-sound').play();
+    //   }
+    //   showTopicListModal(); // Open the topic list modal
+    //   return;
+    // }
+
 
     // New: Handle direct clicks on start sub-cell
     const startCell = e.target.closest('[data-start-action]');
@@ -564,6 +592,31 @@ export function initializeEventListeners() {
         if (gameState.currentPage < totalPages) {
           gameState.currentPage++;
           renderPaginatedPassages();
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+        }
+      }
+    });
+  }
+
+  // New: Collection Modal Pagination Controls click listener
+  if (collectionListContainer) {
+    collectionListContainer.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.id === 'collection-pagination-prev') {
+        if (gameState.collectionCurrentPage > 1) {
+          gameState.collectionCurrentPage--;
+          renderPaginatedSavedPassages();
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+        }
+      } else if (target.id === 'collection-pagination-next') {
+        const totalPages = Math.ceil(gameState.currentViewedCollectionPassages.length / gameState.collectionPassagesPerPage);
+        if (gameState.collectionCurrentPage < totalPages) {
+          gameState.collectionCurrentPage++;
+          renderPaginatedSavedPassages();
           if (gameState.isSoundEnabled) {
             document.getElementById('click-sound').play();
           }
@@ -902,7 +955,57 @@ export function initializeEventListeners() {
       centerCell.style.backgroundColor = '#00ff00'; // Green background for active main button
       centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
       centerCell.classList.add('no-image-fill'); // Prevent fillEmptyMenuCells from adding image
+
+      centerCell.addEventListener('click', () => {
+        showTopicListModal(); // 중앙 '달성' 버튼 클릭 시 주제 리스트 모달 표시
+        if (gameState.isSoundEnabled) {
+          document.getElementById('click-sound').play();
+        }
+      });
     }
+
+    // 로컬 스토리지에서 저장된 글귀 목록 불러오기 (한 번만)
+    const savedPassagesJSON = localStorage.getItem('completedPassages');
+    const savedPassages = savedPassagesJSON ? JSON.parse(savedPassagesJSON) : [];
+
+    // 주변 8개 셀에 주제 버튼 배치
+    const surroundingCellIndices = [0, 1, 2, 3, 5, 6, 7, 8];
+    THEME_OPTIONS_UI.forEach((option, index) => {
+      const cellIndex = surroundingCellIndices[index];
+      const cell = subCells[cellIndex];
+      if (cell) {
+        cell.textContent = option.label;
+        cell.dataset.topicLabel = option.label; // 저장된 글귀 필터링을 위해 주제 라벨 저장
+        cell.style.fontSize = '0.8rem';
+        cell.style.fontWeight = 'normal'; // Changed to normal
+        cell.style.color = '#00ff00';
+        cell.style.backgroundImage = 'none';
+        cell.classList.add('no-image-fill'); // 이미지 채우기 방지
+
+        // --- 진행률 계산 및 배경 채우기 로직 ---
+        const topicPassages = savedPassages.filter(p => p.topic === option.label);
+        const currentCount = topicPassages.length;
+        const percentage = Math.min(100, Math.round((currentCount / MAX_PASSAGES_PER_TOPIC) * 100)); // 100% 초과 방지
+        
+        // 배경색을 %에 따라 채웁니다. (아래에서 위로 채워지는 방식)
+        if (percentage > 0) {
+          cell.style.background = `linear-gradient(to top, rgba(0, 255, 0, 0.5) ${percentage}%, transparent ${percentage}%)`;
+          cell.style.backgroundSize = 'cover'; // 배경이 잘 채워지도록
+          cell.style.backgroundRepeat = 'no-repeat';
+        } else {
+          cell.style.background = 'transparent'; // 저장된 글귀가 없으면 투명
+        }
+        // 테두리는 제거
+
+        // 이벤트 리스너 추가
+        cell.addEventListener('click', () => {
+          showSavedPassagesListModal(option.label); // 해당 주제의 저장된 글귀 목록 모달 표시
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+        });
+      }
+    });
   }
 
   function setupLogoBlock() {

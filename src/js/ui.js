@@ -988,7 +988,7 @@ export function updateAchievedJokboDisplay(
 
 
 
-const THEME_OPTIONS_UI = [
+export const THEME_OPTIONS_UI = [
   { label: '성찰', value: '1_성찰.json' },
   { label: '관계', value: '2_관계.json' },
   { label: '지혜', value: '3_지혜.json' },
@@ -1015,6 +1015,7 @@ export async function displayRandomPassage() {
         const randomThemeFileIndex = Math.floor(Math.random() * THEME_OPTIONS_UI.length);
         selectedOption = THEME_OPTIONS_UI[randomThemeFileIndex];
         passageFileName = selectedOption.value;
+        gameState.selectedPassageTopic = selectedOption.value; // 랜덤 주제를 gameState에 저장
     }
     const passageFilePath = `./public/data/passages/${passageFileName}`;
 
@@ -1058,4 +1059,130 @@ export function setPassageVisibility(show) {
       passageElement.classList.add('hidden');
     }
   }
+}
+
+/**
+ * 저장된 글귀 목록 모달의 내용을 (페이지 단위로) 채웁니다.
+ * 이 함수는 renderPaginatedSavedPassages 내부에서 호출되는 헬퍼 함수입니다.
+ * @param {Array<object>} passagesToRender - 현재 페이지에 렌더링할 글귀 객체 배열
+ * @param {HTMLElement} collectionListUl - 글귀 목록을 표시할 UL 요소
+ * @param {string|null} currentFilterTopicLabel - 현재 적용된 필터 주제 라벨
+ */
+function populateSavedPassagesListModal(passagesToRender, collectionListUl, currentFilterTopicLabel) {
+  collectionListUl.innerHTML = ''; // 이전 내용 초기화
+
+  if (passagesToRender.length === 0) {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `<p>아직 저장된 글귀가 없습니다.</p>`;
+    collectionListUl.appendChild(listItem);
+    return;
+  }
+
+  passagesToRender.forEach(item => {
+    const listItem = document.createElement('li');
+    const topicLabel = item.topic || '알 수 없는 주제';
+    const passageText = item.passage || '내용 없음';
+
+    // 조건부로 주제 라벨 렌더링
+    const topicHtml = (currentFilterTopicLabel && currentFilterTopicLabel === topicLabel)
+                      ? '' // 이 주제로 필터링된 경우 표시 안 함
+                      : `<span class="topic-label">${topicLabel}</span>`;
+
+    listItem.innerHTML = `
+      ${topicHtml}
+      <p>» ${passageText}</p>
+    `;
+    collectionListUl.appendChild(listItem);
+  });
+}
+
+/**
+ * 저장된 글귀 목록을 페이지네이션하여 렌더링하고 페이지네이션 컨트롤을 생성합니다.
+ * @param {string|null} currentFilterTopicLabel - 현재 적용된 필터 주제 라벨
+ */
+export function renderPaginatedSavedPassages(currentFilterTopicLabel = null) {
+  const collectionListContainer = document.getElementById('collection-list-container');
+  const collectionListUl = document.getElementById('collection-list');
+  collectionListUl.innerHTML = ''; // 이전 내용 지우기
+
+  const { collectionCurrentPage, collectionPassagesPerPage, currentViewedCollectionPassages } = gameState;
+  const totalPages = Math.ceil(currentViewedCollectionPassages.length / collectionPassagesPerPage);
+
+  const startIndex = (collectionCurrentPage - 1) * collectionPassagesPerPage;
+  const endIndex = startIndex + collectionPassagesPerPage;
+  const passagesToRender = currentViewedCollectionPassages.slice(startIndex, endIndex);
+
+  populateSavedPassagesListModal(passagesToRender, collectionListUl, currentFilterTopicLabel); // 헬퍼 함수 호출, 필터 라벨 전달
+
+  // 페이지네이션 컨트롤 생성/업데이트
+  let paginationNav = collectionListContainer.querySelector('.pagination-controls');
+  if (!paginationNav) {
+    paginationNav = document.createElement('nav');
+    paginationNav.classList.add('pagination-controls');
+    collectionListContainer.appendChild(paginationNav);
+  } else {
+    paginationNav.innerHTML = ''; // 이전 컨트롤 초기화
+  }
+
+  if (totalPages > 1) {
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = '&#x25C0;'; // 이전 아이콘
+    prevButton.id = 'collection-pagination-prev'; // ID 변경
+    prevButton.disabled = collectionCurrentPage === 1;
+    paginationNav.appendChild(prevButton);
+
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `${collectionCurrentPage} / ${totalPages}`;
+    paginationNav.appendChild(pageInfo);
+
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = '&#x25B6;'; // 다음 아이콘
+    nextButton.id = 'collection-pagination-next'; // ID 변경
+    nextButton.disabled = collectionCurrentPage === totalPages;
+    paginationNav.appendChild(nextButton);
+  }
+}
+
+/**
+ * 저장된 글귀 목록 모달을 표시합니다.
+ * @param {string|null} filterTopicLabel - 특정 주제 라벨로 필터링할 경우 해당 라벨, 아니면 null (모든 글귀 표시)
+ */
+export function showSavedPassagesListModal(filterTopicLabel = null) {
+  const collectionModal = document.getElementById('collection-modal');
+  const collectionTitleEl = document.querySelector('#collection-content h2'); // 타이틀 요소 가져오기
+  const savedPassagesJSON = localStorage.getItem('completedPassages');
+  let savedPassages = savedPassagesJSON ? JSON.parse(savedPassagesJSON) : [];
+
+  let passagesToDisplay = savedPassages;
+
+  if (filterTopicLabel) {
+    passagesToDisplay = savedPassages.filter(item => item.topic === filterTopicLabel);
+  }
+  
+  // 최신순으로 정렬 (timestamp 기준) - 모든 페이지에 대해 정렬
+  passagesToDisplay.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  // 모든 저장 글귀를 저장 (페이지네이션용)
+  gameState.currentViewedCollectionPassages = passagesToDisplay;
+  gameState.collectionCurrentPage = 1; // 페이지네이션 초기화
+
+  // 모달 타이틀 동적 설정
+  if (collectionTitleEl) {
+    if (filterTopicLabel) {
+      collectionTitleEl.textContent = `'${filterTopicLabel}' 저장 목록`;
+    } else {
+      collectionTitleEl.textContent = '저장된 글귀 목록'; // 필터가 없을 경우 기본 타이틀
+    }
+  }
+
+  renderPaginatedSavedPassages(filterTopicLabel); // 페이지네이션 렌더링 시작, 필터 라벨 전달
+  collectionModal.classList.remove('hidden');
+}
+
+/**
+ * 저장된 글귀 목록 모달을 숨깁니다.
+ */
+export function hideSavedPassagesListModal() {
+  const collectionModal = document.getElementById('collection-modal');
+  collectionModal.classList.add('hidden');
 }
