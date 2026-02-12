@@ -51,7 +51,7 @@ export function initializeEventListeners() {
     jokboRulesModal, jokboRulesCloseBtn, rankModal, rankCloseBtn, helpModal, helpCloseBtn,
     completionModal, completionCloseBtn, highScoreModal, highScoreCloseBtn, infoModal, infoCloseBtn,
     topicListModal, topicListCloseBtn, topicListUl, passageDisplayArea, collectionModal, collectionCloseBtn,
-    collectionListContainer, collectionContentEl,
+    collectionListContainer, collectionContentEl, retryGameBtn,
   });
 
   initializeGameEventListeners({

@@ -39,7 +39,7 @@ export function initializeModalEventListeners(elements) {
     jokboRulesModal, jokboRulesCloseBtn, rankModal, rankCloseBtn, helpModal, helpCloseBtn,
     completionModal, completionCloseBtn, highScoreModal, highScoreCloseBtn, infoModal, infoCloseBtn,
     topicListModal, topicListCloseBtn, topicListUl, passageDisplayArea, collectionModal, collectionCloseBtn,
-    collectionListContainer, collectionContentEl, // Added collectionContentEl here
+    collectionListContainer, collectionContentEl, retryGameBtn, // Added retryGameBtn here
   } = elements;
 
   // Jokbo Rules Modal
@@ -81,9 +81,12 @@ export function initializeModalEventListeners(elements) {
 
   // Completion Modal
   if (completionCloseBtn) {
-    completionCloseBtn.addEventListener('click', () =>
-      completionModal.classList.add('hidden')
-    );
+    completionCloseBtn.addEventListener('click', () => {
+      completionModal.classList.add('hidden');
+      if (retryGameBtn) { // Ensure retryGameBtn exists
+        retryGameBtn.click(); // Trigger click on retry button
+      }
+    });
   }
 
   // High Score Modal
