@@ -4,7 +4,7 @@
  * - It imports the event listener setup and runs it once the DOM is ready.
  */
 
-import { initializeEventListeners } from './events.js';
+import { initializeEventListeners } from './events/index.js';
 import { initGame } from './game-flow.js'; // Import initGame
 
 // When the DOM is fully loaded, initialize all event listeners.

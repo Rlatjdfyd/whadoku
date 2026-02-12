@@ -184,7 +184,7 @@ export async function startNewGame() { // Made async
   }
   
         // 상단 글귀는 랜덤 난이도에서만 표시
-        setPassageVisibility(gameState.difficulty === 'random');
+        setPassageVisibility(false);
   gameState.solution = generateSudoku();
 
   // Define valid difficulty levels for validation
