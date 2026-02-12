@@ -676,8 +676,17 @@ export function initializeEventListeners() {
       centerCell.style.fontSize = '0.8rem';
       centerCell.style.fontWeight = 'bold';
       centerCell.style.color = '#000000'; // Active style text color
-      centerCell.style.backgroundColor = '#00ff00'; // Active style background color
+      centerCell.style.backgroundColor = '#ff9900'; // Active style background color
       centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
+
+      // 중앙 '단계' 셀 클릭 이벤트 리스너 추가 (난이도 초기화)
+      centerCell.addEventListener('click', () => {
+          gameState.difficulty = 'medium'; // 난이도 초기화 (기본값)
+          updateDifficultySelection(); // UI 업데이트
+          if (gameState.isSoundEnabled) {
+              document.getElementById('click-sound').play();
+          }
+      });
     }
 
     const difficultyOptions = [
@@ -696,7 +705,7 @@ export function initializeEventListeners() {
         cell.dataset.difficultyLevel = option.value;
         cell.style.fontSize = '0.8rem'; // Adjust font size
         cell.style.color = '#00ff00';
-        cell.style.backgroundImage = 'none'; // Remove default background
+
       }
     });
 
@@ -746,14 +755,12 @@ export function initializeEventListeners() {
         centerCell.style.fontSize = '0.8rem'; // 폰트 크기 0.8rem으로 수정
         centerCell.style.fontWeight = 'bold';
         centerCell.style.color = '#000000'; // 활성화된 셀처럼 검은색 글자
-        centerCell.style.backgroundColor = '#00ff00'; // 활성화된 셀처럼 녹색 배경
+        centerCell.style.backgroundColor = '#ff9900'; // 활성화된 셀처럼 녹색 배경
         centerCell.style.backgroundImage = 'none';
 
         // 중앙 '주제' 셀 클릭 이벤트 리스너 추가
         centerCell.addEventListener('click', () => {
-            const randomIndex = Math.floor(Math.random() * TOPIC_OPTIONS.length); // TOPIC_OPTIONS 사용
-            const randomTopic = TOPIC_OPTIONS[randomIndex].value;
-            gameState.selectedPassageTopic = randomTopic; // 랜덤 주제 설정
+            gameState.selectedPassageTopic = null; // 주제 선택 초기화
             updateTopicSelection(); // UI 업데이트
             if (gameState.isSoundEnabled) {
                 document.getElementById('click-sound').play();
@@ -770,7 +777,6 @@ export function initializeEventListeners() {
         cell.dataset.topicValue = option.value; // data-topic-value 설정
         cell.style.fontSize = '0.75rem'; // 폰트 크기 조정
         cell.style.color = '#00ff00';
-        cell.style.backgroundImage = 'none';
       }
     });
 
@@ -832,7 +838,7 @@ export function initializeEventListeners() {
 
         if (option.isMain) { // Main '셋팅' button in the center
           cell.style.color = '#000000'; // Black text for active main button
-          cell.style.backgroundColor = '#00ff00'; // Green background for active main button
+          cell.style.backgroundColor = '#ff9900'; // Green background for active main button
           cell.style.fontWeight = 'bold';
           cell.classList.add('no-image-fill'); // Prevent image fill for main button
         } else { // Other options (소리, 지움, 종료)
@@ -870,7 +876,7 @@ export function initializeEventListeners() {
 
         if (option.isMain) { // Main '정보' button in the center
           cell.style.color = '#000000'; // Black text for active main button
-          cell.style.backgroundColor = '#00ff00'; // Green background for active main button
+          cell.style.backgroundColor = '#ff9900'; // Green background for active main button
           cell.style.fontWeight = 'bold';
         } else { // Other options (기록, 안내, 랭크, 족보)
           cell.style.color = '#00ff00'; // Green text for inactive options
@@ -897,7 +903,7 @@ export function initializeEventListeners() {
       cell.style.fontSize = '0.8rem';
       cell.style.fontWeight = 'bold';
       cell.style.color = '#000000'; // Make text black for contrast
-      cell.style.backgroundColor = '#00ff00'; // Add background color
+      cell.style.backgroundColor = '#ff9900'; // Add background color
       cell.style.backgroundImage = 'none';
     }
   }
@@ -955,7 +961,7 @@ export function initializeEventListeners() {
       centerCell.style.fontSize = '0.8rem';
       centerCell.style.fontWeight = 'bold';
       centerCell.style.color = '#000000'; // Black text for contrast
-      centerCell.style.backgroundColor = '#00ff00'; // Green background for active main button
+      centerCell.style.backgroundColor = '#ff9900'; // Green background for active main button
       centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
       centerCell.classList.add('no-image-fill'); // Prevent fillEmptyMenuCells from adding image
 
@@ -1020,7 +1026,7 @@ export function initializeEventListeners() {
       { text: '수', style: 'font-weight: bold; color: #00ff00;' }, // Index 1
       { text: '', style: '' }, // Index 2 (empty)
       { text: '화', style: 'font-weight: bold; color: #00ff00;' }, // Index 3
-      { text: '도', style: 'font-weight: bold; color: #000000; background-color: #00ff00;' }, // Index 4 (active style)
+      { text: '도', style: 'font-weight: bold; color: #000000; background-color: #ff9900;' }, // Index 4 (active style)
       { text: '쿠', style: 'font-weight: bold; color: #00ff00;' }, // Index 5
       { text: '', style: '' }, // Index 6 (empty)
       { text: '쿠', style: 'font-weight: bold; color: #00ff00;' }, // Index 7
@@ -1071,6 +1077,11 @@ export function initializeEventListeners() {
         img.style.objectFit = 'cover';
         img.style.opacity = '0.3'; // Make images subtle
         img.style.borderRadius = '4px';
+
+        // 셀의 배경에 card_back_patten4.png 패턴 적용
+        cell.style.backgroundImage = 'url("public/images/btn/card_back_patten4.png")';
+        cell.style.backgroundSize = '5px 5px';
+        cell.style.backgroundRepeat = 'repeat';
         cell.appendChild(img);
       }
     });

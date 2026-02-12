@@ -174,8 +174,6 @@ export async function initGame() { // Made initGame async
 
 export async function startNewGame() { // Made async
   gameState.hintCount = 3; // 모든 새 게임은 3개의 힌트로 시작하도록 강제 설정
-  gameState.selectedPassageTopic = null; // 새로운 게임 시작 시 주제 선택 상태 초기화 (강제 랜덤)
-  
   // NEW LOGIC: ui.js의 displayRandomPassage를 호출하여 글귀를 화면에 표시하고,
   // 반환된 글귀 정보를 gameState.selectedPassage에 저장
   const selectedPassage = await displayRandomPassage(); // ui.js의 함수 호출
@@ -185,8 +183,8 @@ export async function startNewGame() { // Made async
     gameState.selectedPassage = { text: "", author: "" }; // 글귀 로드 실패 시 기본값 설정
   }
   
-        // 상단 글귀는 모든 난이도에서 숨김
-        setPassageVisibility(false);
+        // 상단 글귀는 랜덤 난이도에서만 표시
+        setPassageVisibility(gameState.difficulty === 'random');
   gameState.solution = generateSudoku();
 
   // Define valid difficulty levels for validation
@@ -198,14 +196,7 @@ export async function startNewGame() { // Made async
     gameState.difficulty = 'medium';
   }
   
-  // 사용자가 난이도를 명시적으로 선택하지 않았으나 랜덤 주제가 로드된 경우 (startNewGame 호출 시점)
-  // 난이도를 'random'으로 강제 설정하여 일관된 동작을 보장
-  if (
-    gameState.selectedPassageTopic !== null && // 랜덤 주제가 로드되었고
-    ['easy', 'medium', 'hard'].includes(gameState.difficulty) // 현재 난이도가 easy/medium/hard인 경우
-  ) {
-    gameState.difficulty = 'random';
-  }
+
 
   if (gameState.difficulty === 'random') {
     // Use the *already selected* passage for quoteChars
