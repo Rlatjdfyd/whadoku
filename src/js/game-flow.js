@@ -20,6 +20,7 @@ import {
   updateAchievedJokboDisplay,
   setPassageVisibility,
   displayRandomPassage,
+  renderStageMap,
   THEME_OPTIONS_UI, // Import THEME_OPTIONS_UI
 } from './ui.js';
 import {
@@ -42,6 +43,7 @@ import {
   resetScore,
   BOARD_SIZE,
   loadPassageTopics, // Import loadPassageTopics
+  saveJourneyProgress,
 } from './state.js';
 
 // --- Helper Functions ---
@@ -130,6 +132,32 @@ function savePassageToLocalStorage(topicLabel, passageText) {
 }
 
 // --- Exported Game Flow Functions ---
+
+/**
+ * Enters the stage selection mode for a given difficulty.
+ * @param {string} difficulty - The selected difficulty ('easy', 'medium', 'hard', 'random').
+ */
+export function enterStageMode(difficulty) {
+  gameState.difficulty = difficulty;
+
+  const mainMenuScreen = document.getElementById('main-menu-screen');
+  const sudokuBoard = document.getElementById('sudoku-board');
+  const scoreDisplay = document.getElementById('score-display');
+  const stagePageNav = document.getElementById('stage-page-navigation');
+
+  mainMenuScreen.classList.add('hidden');
+  sudokuBoard.classList.remove('hidden');
+  scoreDisplay.classList.remove('hidden');
+  document.body.classList.add('stage-map-mode');
+  stagePageNav.classList.remove('hidden'); // Show stage page navigation
+
+  // Initialize currentJourneyPage to the page containing the current progress
+  const progress = gameState.journeyProgress[difficulty];
+  gameState.currentJourneyPage[difficulty] = Math.max(1, Math.ceil(progress / 81));
+
+
+  renderStageMap(difficulty);
+}
 
 export async function initGame() { // Made initGame async
   await loadPassageTopics(); // Call loadPassageTopics at the beginning of initGame
@@ -330,7 +358,7 @@ export function checkSolution() {
     const jokboScore = gameState.lastScoreResult?.totalScore || 0;
 
     // 완성된 글귀를 로컬 스토리지에 저장 (게임 완료 시점)
-    if (gameState.selectedPassage && gameState.selectedPassageTopic) {
+    if (gameState.difficulty === 'random' && gameState.selectedPassage && gameState.selectedPassageTopic) {
       const foundTopicOption = THEME_OPTIONS_UI.find(
         (option) => option.value === gameState.selectedPassageTopic
       );
@@ -338,6 +366,15 @@ export function checkSolution() {
       const passageText = gameState.selectedPassage.text;
 
       savePassageToLocalStorage(topicLabel, passageText);
+    }
+
+    // --- Journey Mode Progress Update ---
+    if (gameState.currentStage !== null) {
+      const { difficulty, currentStage, journeyProgress } = gameState;
+      if (journeyProgress[difficulty] === currentStage) {
+        journeyProgress[difficulty]++;
+        saveJourneyProgress();
+      }
     }
 
 

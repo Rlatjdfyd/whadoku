@@ -24,6 +24,7 @@ import {
 import {
   gameState,
 } from '../state.js';
+import { enterStageMode } from '../game-flow.js';
 
 // Helper functions (remain local or moved if shared)
 function showInfoModal(infoModal) {
@@ -83,8 +84,16 @@ export function initializeModalEventListeners(elements) {
   if (completionCloseBtn) {
     completionCloseBtn.addEventListener('click', () => {
       completionModal.classList.add('hidden');
-      if (retryGameBtn) { // Ensure retryGameBtn exists
-        retryGameBtn.click(); // Trigger click on retry button
+
+      // Check if the game was a journey stage
+      if (gameState.currentStage !== null) {
+        enterStageMode(gameState.difficulty);
+        gameState.currentStage = null; // Reset after returning to map
+      } else {
+        // Original behavior for non-journey games
+        if (retryGameBtn) {
+          retryGameBtn.click();
+        }
       }
     });
   }

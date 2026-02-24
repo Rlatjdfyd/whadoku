@@ -44,6 +44,8 @@ export function createBoard(
 
           const cell = document.createElement('div');
           cell.classList.add('cell');
+          // Add difficulty-specific background class
+          cell.classList.add(`difficulty-bg-${gameState.difficulty}`);
 
           if (isInitial) {
             // 첫 화면일 경우: customMask 기반으로 위치에 따른 이미지 표시
@@ -999,6 +1001,13 @@ export const THEME_OPTIONS_UI = [
   { label: '본질', value: '8_본질.json' },
 ];
 
+const DIFFICULTY_BACKGROUNDS = {
+  easy: '/public/images/btn/card_back_patten4.png',
+  medium: '/public/images/btn/card_back_patten5.png',
+  hard: '/public/images/btn/card_back_patten6.png',
+  random: '/public/images/btn/card_back_patten7.png',
+};
+
 /**
  * 랜덤 글귀를 화면에 표시하는 함수 (주제별 파일 사용)
  */
@@ -1291,4 +1300,62 @@ export function showSavedPassagesListModal(filterTopicLabel = null) {
 export function hideSavedPassagesListModal() {
   const collectionModal = document.getElementById('collection-modal');
   collectionModal.classList.add('hidden');
+}
+
+/**
+ * Renders the stage map for the journey mode with virtual pagination.
+ * @param {string} difficulty - The selected difficulty.
+ */
+export function renderStageMap(difficulty) {
+  const sudokuBoard = document.getElementById('sudoku-board');
+  const prevBtn = document.getElementById('prev-stage-page-btn');
+  const nextBtn = document.getElementById('next-stage-page-btn');
+  const stagePageNav = document.getElementById('stage-page-navigation');
+
+
+  sudokuBoard.innerHTML = '';
+  sudokuBoard.classList.remove('stage-map'); // Clean up previous classes
+  sudokuBoard.classList.add('stage-map');
+
+  const journeyProgressForDifficulty = gameState.journeyProgress[difficulty];
+  let currentPage = gameState.currentJourneyPage[difficulty];
+
+  const fragment = document.createDocumentFragment();
+
+  const stagesPerPage = 81;
+  const startDisplayStageNum = (currentPage - 1) * stagesPerPage + 1;
+  const endDisplayStageNum = currentPage * stagesPerPage;
+
+  for (let i = 0; i < stagesPerPage; i++) {
+    const displayStageNumber = startDisplayStageNum + i;
+
+    const stageCell = document.createElement('div');
+    stageCell.classList.add('stage-cell');
+    stageCell.dataset.stageNumber = displayStageNumber;
+    stageCell.textContent = displayStageNumber;
+
+    // Apply classes based on progress
+    if (displayStageNumber < journeyProgressForDifficulty) {
+      stageCell.classList.add('stage-cleared');
+      stageCell.classList.add('clickable-stage');
+    } else if (displayStageNumber === journeyProgressForDifficulty) {
+      stageCell.classList.add('stage-unlocked');
+      stageCell.classList.add('clickable-stage');
+    } else {
+      stageCell.classList.add('stage-locked');
+    }
+    
+    fragment.appendChild(stageCell);
+  }
+
+  sudokuBoard.appendChild(fragment);
+
+  // Update navigation button visibility and disabled state
+  if (stagePageNav) {
+    stagePageNav.classList.remove('hidden');
+    prevBtn.disabled = currentPage === 1;
+    // Next button is disabled if the current progress is within the current page's stages
+    // meaning there are no stages past this page to unlock yet.
+    nextBtn.disabled = journeyProgressForDifficulty <= endDisplayStageNum;
+  }
 }

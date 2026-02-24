@@ -64,3 +64,22 @@
   align-items: center;
   justify-content: center; /* 내부 콘텐츠 중앙 정렬 */
 }
+
+/* --- Difficulty Selection Styling --- */
+.menu-sub-cell.difficulty-selected {
+  background-color: #00ff00; /* Green background */
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+.menu-sub-cell.difficulty-unselected {
+  background-color: transparent; /* Transparent background */
+  color: #00ff00; /* Green text */
+}
+
+.menu-sub-cell.difficulty-locked {
+  background-color: transparent; /* Transparent background */
+  color: #808080; /* Gray text */
+  cursor: not-allowed;
+  opacity: 0.6;
+}

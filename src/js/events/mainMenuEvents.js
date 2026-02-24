@@ -21,7 +21,8 @@ import {
   toggleSound,
 } from '../state.js';
 import {
-  startNewGame, // Used for the Start button
+  enterStageMode, // Used for the Start button
+  startNewGame,
 } from '../game-flow.js';
 import {
   jokboData, // Added
@@ -58,19 +59,30 @@ const TOPIC_OPTIONS = [ // 글귀 주제 목록 (전역 변수로 이동)
   { label: '본질', value: '8_본질.json' },
 ];
 
+const unlockRequirements = {
+  medium: 81, // 'easy' 여정 81단계 완료 시 'medium' 해제
+  hard: 41,   // 'medium' 여정 81단계 완료 시 'hard' 해제
+  random: 11, // 'hard' 여정 81단계 완료 시 'random' 해제
+};
+
+// UI Helper Functions (Moved here to ensure they are defined before usage by setup functions)
 function updateDifficultySelection() {
   const difficultyBlock = document.querySelector('[data-menu-id="difficulty"]');
   const subCells = difficultyBlock.querySelectorAll('.menu-sub-cell');
   subCells.forEach(cell => {
     if (cell.dataset.difficultyLevel) {
+      cell.classList.remove('difficulty-selected', 'difficulty-unselected'); // Remove existing state classes
+
+      // 잠긴 레벨은 선택 스타일을 적용하지 않음 (locked 클래스는 updateDifficultyBlockUI에서 관리)
+      if (cell.classList.contains('locked')) {
+        // 잠긴 상태는 그대로 유지 (회색)
+        return;
+      }
+
       if (cell.dataset.difficultyLevel === gameState.difficulty) {
-        cell.classList.add('selected'); // 'selected' class for styling
-        cell.style.backgroundColor = '#00ff00'; // Example selection style
-        cell.style.color = '#000000';
+        cell.classList.add('difficulty-selected'); // 'selected' class for styling
       } else {
-        cell.classList.remove('selected');
-        cell.style.backgroundColor = 'transparent';
-        cell.style.color = '#00ff00';
+        cell.classList.add('difficulty-unselected');
       }
     }
   });
@@ -120,6 +132,12 @@ function setupDifficultyBlock() {
         }
     });
   }
+  updateDifficultyBlockUI(); // Call the new function to set up the surrounding difficulty cells
+}
+
+export function updateDifficultyBlockUI() {
+  const difficultyBlock = document.querySelector('[data-menu-id="difficulty"]');
+  const subCells = difficultyBlock.querySelectorAll('.menu-sub-cell');
 
   const difficultyOptions = [
     { label: '초급', value: 'easy' },
@@ -136,8 +154,29 @@ function setupDifficultyBlock() {
       cell.textContent = option.label;
       cell.dataset.difficultyLevel = option.value;
       cell.style.fontSize = '0.8rem'; // Adjust font size
-      cell.style.color = '#00ff00';
+      
+      // Clear all existing difficulty state classes first
+      cell.classList.remove('locked', 'difficulty-locked', 'difficulty-selected', 'difficulty-unselected');
 
+      let isLocked = false;
+      if (option.value === 'medium' && gameState.journeyProgress.easy <= unlockRequirements.medium) {
+        isLocked = true;
+      } else if (option.value === 'hard' && gameState.journeyProgress.medium <= unlockRequirements.hard) {
+        isLocked = true;
+      } else if (option.value === 'random' && gameState.journeyProgress.hard <= unlockRequirements.random) {
+        isLocked = true;
+      }
+
+      if (isLocked) {
+        cell.classList.add('locked', 'difficulty-locked'); // Add generic 'locked' and specific 'difficulty-locked'
+      } else {
+        // If not locked, check if it's the currently selected difficulty
+        if (option.value === gameState.difficulty) {
+          cell.classList.add('difficulty-selected');
+        } else {
+          cell.classList.add('difficulty-unselected');
+        }
+      }
     }
   });
 }
@@ -332,7 +371,7 @@ function setupAchievementBlock() {
     centerCell.style.color = '#000000'; // Black text for contrast
     centerCell.style.backgroundColor = '#ff9900'; // Green background for active main button
     centerCell.style.backgroundImage = 'none'; // Ensure no random image covers it
-    centerCell.classList.add('no-image-fill'); // Prevent fillEmptyMenuCells from adding image
+    centerCell.classList.add('no-image-fill'); // 이미지 채우기 방지
 
 
   }
@@ -344,7 +383,6 @@ function setupAchievementBlock() {
   // 주변 8개 셀에 주제 버튼 배치
   const surroundingCellIndices = [0, 1, 2, 3, 5, 6, 7, 8];
   THEME_OPTIONS_UI.forEach((option, index) => {
-    const cellIndex = surroundingCellIndices[index];
     const cell = subCells[surroundingCellIndices[index]]; // Fixed here
     if (cell) {
       cell.textContent = option.label;
@@ -364,7 +402,6 @@ function setupAchievementBlock() {
       if (percentage > 0) {
         cell.style.background = `linear-gradient(to top, rgba(0, 255, 0, 0.5) ${percentage}%, transparent ${percentage}%)`;
         cell.style.backgroundSize = 'cover'; // 배경이 잘 채워지도록
-        cell.style.backgroundRepeat = 'repeat';
       } else {
         cell.style.background = 'transparent'; // 저장된 글귀가 없으면 투명
       }
@@ -438,7 +475,7 @@ function fillEmptyMenuCells() {
       img.src = `/public/images/hwatu/${randomImage}`;
       img.style.width = '100%';
       img.style.height = '100%';
-      img.style.objectFit = 'cover';
+      img.objectFit = 'cover';
       img.style.opacity = '0.3'; // Make images subtle
       img.style.borderRadius = '4px';
 
@@ -464,11 +501,33 @@ export function initializeMainMenuEventListeners(elements) {
   mainMenuScreen.addEventListener('click', (e) => {
     const difficultyCell = e.target.closest('[data-difficulty-level]');
     if (difficultyCell) {
-      const level = difficultyCell.dataset.difficultyLevel;
-      gameState.difficulty = level;
-      updateDifficultySelection();
       if (gameState.isSoundEnabled) {
         document.getElementById('click-sound').play();
+      }
+
+      const level = difficultyCell.dataset.difficultyLevel;
+      const progress = gameState.journeyProgress;
+
+      // Check if the difficulty is locked before allowing selection
+      let isLocked = false;
+      let alertMessage = '';
+
+      if (level === 'medium' && progress.easy <= unlockRequirements.medium) {
+        isLocked = true;
+        alertMessage = `초급 ${unlockRequirements.medium} 스테이지를 모두 완료해야 열립니다.`;
+      } else if (level === 'hard' && progress.medium <= unlockRequirements.hard) {
+        isLocked = true;
+        alertMessage = `중급 ${unlockRequirements.hard} 스테이지를 모두 완료해야 열립니다.`;
+      } else if (level === 'random' && progress.hard <= unlockRequirements.random) {
+        isLocked = true;
+        alertMessage = `고급 ${unlockRequirements.random} 스테이지를 모두 완료해야 랜덤이 열립니다.`;
+      }
+
+      if (isLocked) {
+        alert(alertMessage);
+      } else {
+        gameState.difficulty = level; // Only set difficulty, do not start game
+        updateDifficultySelection();
       }
       return;
     }
@@ -535,13 +594,11 @@ export function initializeMainMenuEventListeners(elements) {
 
     const startCell = e.target.closest('[data-start-action]');
     if (startCell) {
-      mainMenuScreen.classList.add('hidden');
-      scoreDisplay.classList.remove('hidden');
-      sudokuBoard.classList.remove('hidden');
       if (gameState.isSoundEnabled) {
         document.getElementById('f5-sound').play();
       }
-      startNewGame();
+      // Start button now leads to the stage map for the CURRENTLY SELECTED difficulty
+      enterStageMode(gameState.difficulty); 
       return;
     }
   });
@@ -549,6 +606,7 @@ export function initializeMainMenuEventListeners(elements) {
   // Main Menu Block-Specific Setup ---
 
   setupDifficultyBlock();
+  updateDifficultyBlockUI(); // Call the new UI update function
   setupTopicBlock(); // setupThemeBlock -> setupTopicBlock
   setupSettingsBlock();
   setupInfoBlock(elements); // Pass elements to setupInfoBlock

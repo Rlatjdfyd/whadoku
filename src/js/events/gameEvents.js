@@ -16,6 +16,9 @@ import {
   setCellValue,
   getUsedNumbersInBlock,
 } from '../game-flow.js';
+import {
+  updateDifficultyBlockUI
+} from './mainMenuEvents.js'; // Import the new function
 
 // Helper functions for game events
 function handleCellClick(cell, miniPalette) {
@@ -121,13 +124,19 @@ export function initializeGameEventListeners(elements) {
   });
 
   mainMenuBtn.addEventListener('click', () => { // Event listener for mainMenuBtn
+    const stagePageNav = document.getElementById('stage-page-navigation'); // Get reference here
     // Hide game elements
     scoreDisplay.classList.add('hidden');
     sudokuBoard.classList.add('hidden');
     hintContainer.classList.add('hidden');
     document.getElementById('jokbo-display-container').classList.add('hidden'); // Assuming this element is still valid
+    document.body.classList.remove('stage-map-mode'); // Remove stage map mode class
+    if (stagePageNav) { // Ensure it exists before trying to hide
+      stagePageNav.classList.add('hidden'); // Hide stage page navigation
+    }
     // Show main menu
     mainMenuScreen.classList.remove('hidden');
+    updateDifficultyBlockUI(); // Update difficulty block UI to reflect unlocked states
     // Clear any active cell selection
     clearActiveCellSelection();
     // Play sound if enabled

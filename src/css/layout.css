@@ -39,3 +39,47 @@ footer {
 #hint-container {
   display: none;
 }
+
+/* --- Stage Map Mode Specific Styles --- */
+body.stage-map-mode #current-score-display,
+body.stage-map-mode #retry-game-btn {
+  display: none;
+}
+
+/* Stage Page Navigation */
+#stage-page-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90vw; /* Match sudoku-board width */
+  max-width: 540px;
+  min-width: 320px;
+  margin: 10px auto 15px auto; /* Position below sudoku-board */
+}
+
+#stage-page-navigation.hidden {
+  display: none;
+}
+
+#stage-page-navigation button {
+  background-color: #00ff00; /* Green background */
+  color: #000000; /* Black text */
+  border: 1px solid #00ff00;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 1rem; /* Larger font for symbols */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#stage-page-navigation button:hover:not(:disabled) {
+  background-color: #00e600; /* Slightly darker green on hover */
+}
+
+#stage-page-navigation button:disabled {
+  background-color: #808080; /* Gray when disabled */
+  border-color: #808080;
+  cursor: not-allowed;
+  opacity: 0.6;
+}

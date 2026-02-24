@@ -37,7 +37,9 @@ export const gameState = {
   collectionPassagesPerPage: 5, // 페이지당 글귀 수 (컬렉션 모달용)
   currentViewedCollectionPassages: [], // 현재 컬렉션 모달에 표시 중인 글귀 전체 목록 (페이지네이션용)
   collectionFilterTopicLabel: null, // 컬렉션 모달에 적용된 현재 필터 주제 라벨
-
+  journeyProgress: null, // 여정 모드 진행 상태
+  currentStage: null, // 현재 진행 중인 여정 스테이지
+  currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1 }, // 난이도별 현재 여정 페이지
 
 
 };
@@ -98,4 +100,39 @@ export function toggleSound() {
   gameState.isSoundEnabled = !gameState.isSoundEnabled;
   localStorage.setItem('isSoundEnabled', JSON.stringify(gameState.isSoundEnabled));
   return gameState.isSoundEnabled;
+}
+
+/**
+ * 여정 모드 진행 상태를 불러옵니다. 없으면 새로 생성합니다.
+ */
+export function loadJourneyProgress() {
+  const savedProgress = localStorage.getItem('whadokuJourneyProgress');
+  if (savedProgress) {
+    const parsedProgress = JSON.parse(savedProgress);
+    gameState.journeyProgress = parsedProgress;
+    // Ensure currentJourneyPage is also loaded or initialized
+    gameState.currentJourneyPage = parsedProgress.currentJourneyPage || { easy: 1, medium: 1, hard: 1, random: 1 };
+  } else {
+    gameState.journeyProgress = {
+      easy: 1,
+      medium: 1,
+      hard: 1,
+      random: 1,
+    };
+    gameState.currentJourneyPage = { easy: 1, medium: 1, hard: 1, random: 1 };
+    saveJourneyProgress(); // Save the initial state
+  }
+}
+
+/**
+ * 현재 여정 모드 진행 상태를 저장합니다.
+ */
+export function saveJourneyProgress() {
+  if (gameState.journeyProgress) {
+    // Save both journeyProgress and currentJourneyPage together
+    localStorage.setItem('whadokuJourneyProgress', JSON.stringify({
+      ...gameState.journeyProgress,
+      currentJourneyPage: gameState.currentJourneyPage,
+    }));
+  }
 }
