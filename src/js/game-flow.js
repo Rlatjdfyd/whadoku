@@ -461,7 +461,34 @@ export function updateHanafudaScore() {
   );
   if (newJokboDetailed.length > 0) {
     if (gameState.isSoundEnabled) {
+      // 족보 이름과 오디오 ID 매핑
+      const soundMap = {
+        '삼광': 'sound-samkwang',
+        '고도리': 'sound-godori',
+        '홍단': 'sound-hongdan',
+        '청단': 'sound-chungdan',
+        '초단': 'sound-chodan',
+        '띠': 'sound-tti',
+        '끗': 'sound-kkut'
+      };
 
+      newJokboDetailed.forEach(jokbo => {
+        const soundId = soundMap[jokbo.name];
+        if (soundId) {
+          const audio = document.getElementById(soundId);
+          if (audio) {
+            audio.currentTime = 0; // 소리가 겹칠 때 처음부터 다시 재생
+            audio.play().catch(e => console.log('사운드 재생 실패:', e));
+          }
+        } else {
+          // 매핑되지 않은 기타 족보는 기본 족보 소리 재생
+          const defaultAudio = document.getElementById('jokbo-sound');
+          if (defaultAudio) {
+            defaultAudio.currentTime = 0;
+            defaultAudio.play().catch(e => console.log('기본 사운드 재생 실패:', e));
+          }
+        }
+      });
     }
 
     highlightJokboCards(
