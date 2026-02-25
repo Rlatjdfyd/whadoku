@@ -201,7 +201,7 @@ export async function initGame() { // Made initGame async
 }
 
 export async function startNewGame() { // Made async
-  gameState.hintCount = 3; // 모든 새 게임은 3개의 힌트로 시작하도록 강제 설정
+  gameState.hintCount = 1; // 모든 새 게임은 1개의 힌트로 시작하도록 설정 (보너스 힌트 시스템 도입으로 변경)
   // NEW LOGIC: ui.js의 displayRandomPassage를 호출하여 글귀를 화면에 표시하고,
   // 반환된 글귀 정보를 gameState.selectedPassage에 저장
   const selectedPassage = await displayRandomPassage(); // ui.js의 함수 호출
@@ -313,6 +313,25 @@ export async function startNewGame() { // Made async
     gameState.dailyBlockJokboCounts,
     jokboData
   );
+
+  // --- NEW: Bonus Hint Cell Setup ---
+  gameState.bonusHintCell = { row: -1, col: -1 };
+  // 30% 확률로 보너스 셀 생성 (매번 나오는 건 아니게)
+  if (Math.random() < 0.3) {
+    const emptyCells = [];
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        if (gameState.board[r][c] === 0) {
+          emptyCells.push({ row: r, col: c });
+        }
+      }
+    }
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      gameState.bonusHintCell = emptyCells[randomIndex];
+    }
+  }
+
   saveGameState();
 }
 
@@ -326,6 +345,26 @@ export function setCellValue(row, col, num) {
   const cell = document.querySelector(
     `.cell[data-row="${row}"][data-col="${col}"]`
   );
+
+  // --- NEW: Bonus Hint Correct Answer Detection ---
+  if (gameState.solution[row][col] === num && gameState.bonusHintCell.row === row && gameState.bonusHintCell.col === col) {
+    const bonusModal = document.getElementById('blog-bonus-modal');
+    if (bonusModal) {
+      bonusModal.classList.remove('hidden');
+      if (gameState.isSoundEnabled) {
+        document.getElementById('jokbo-sound').play(); // 신나는 소리!
+      }
+
+      // 5초 뒤 힌트 지급 및 모달 닫기
+      setTimeout(() => {
+        bonusModal.classList.add('hidden');
+        gameState.hintCount++;
+        updateHintCount(gameState.hintCount);
+        gameState.bonusHintCell = { row: -1, col: -1 }; // 한 번만 발동하게 초기화
+        saveGameState(); // 상태 저장
+      }, 5000);
+    }
+  }
 
   if (gameState.solution[row][col] !== num) {
     if (gameState.isSoundEnabled) {

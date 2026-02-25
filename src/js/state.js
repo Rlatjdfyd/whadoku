@@ -40,6 +40,7 @@ export const gameState = {
   journeyProgress: null, // 여정 모드 진행 상태
   currentStage: null, // 현재 진행 중인 여정 스테이지
   currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1 }, // 난이도별 현재 여정 페이지
+  bonusHintCell: { row: -1, col: -1 }, // 보너스 힌트 셀 좌표
 
 
 };
