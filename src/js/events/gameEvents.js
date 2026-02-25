@@ -116,11 +116,42 @@ export function initializeGameEventListeners(elements) {
   useHintBtn.addEventListener('click', handleUseHintClick);
   miniPalette.addEventListener('click', handlePaletteClick);
 
+  const pauseModal = document.getElementById('pause-modal');
+  const resumeBtn = document.getElementById('resume-game-btn');
+  const quitBtn = document.getElementById('quit-to-main-btn');
+
+  function togglePause(pauseState) {
+    gameState.isPaused = pauseState;
+    pauseModal.classList.toggle('hidden', !pauseState);
+    // 게임 보드 위에 투명한 오버레이를 추가/제거하여 클릭 방지
+    const boardOverlay = document.getElementById('board-overlay') || document.createElement('div');
+    boardOverlay.id = 'board-overlay';
+    if (pauseState) {
+      sudokuBoard.appendChild(boardOverlay);
+    } else {
+      if (boardOverlay.parentNode) {
+        boardOverlay.parentNode.removeChild(boardOverlay);
+      }
+    }
+  }
+
   retryGameBtn.addEventListener('click', () => {
     if (gameState.isSoundEnabled) {
-      document.getElementById('f5-sound').play();
+      document.getElementById('click-sound').play();
     }
-    startNewGame();
+    togglePause(true);
+  });
+
+  resumeBtn.addEventListener('click', () => {
+    if (gameState.isSoundEnabled) {
+      document.getElementById('click-sound').play();
+    }
+    togglePause(false);
+  });
+
+  quitBtn.addEventListener('click', () => {
+    togglePause(false); // 먼저 일시정지 상태를 해제하고
+    mainMenuBtn.click(); // 기존 메인메뉴 버튼 클릭 로직을 그대로 재활용
   });
 
   mainMenuBtn.addEventListener('click', () => { // Event listener for mainMenuBtn

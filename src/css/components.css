@@ -201,11 +201,31 @@
 }
 
 #retry-game-btn {
-  background-image: url('/public/images/btn/F5.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: white; /* Match the original F5 button style */
-  color: transparent; /* Hide text, show image */
+  background-image: none; /* 기존 이미지 제거 */
+  background-color: transparent;
+  border: 1px solid #00ff00;
+  position: relative; /* 자식 요소를 위한 기준점 */
+}
+
+/* 가상 요소를 사용해 일시정지 아이콘(두 개의 세로 막대) 생성 */
+#retry-game-btn::before,
+#retry-game-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px; /* 막대 두께 */
+  height: 16px; /* 막대 높이 */
+  background-color: #00ff00; /* 막대 색상 */
+  transform: translate(-50%, -50%);
+}
+
+#retry-game-btn::before {
+  transform: translate(-150%, -50%); /* 왼쪽 막대 위치 조정 */
+}
+
+#retry-game-btn::after {
+  transform: translate(50%, -50%); /* 오른쪽 막대 위치 조정 */
 }
 
 

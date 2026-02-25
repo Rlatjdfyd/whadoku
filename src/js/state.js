@@ -20,6 +20,7 @@ export const gameState = {
   hintCount: 0,
   lastScoreTier: 0,
   isHintMode: false,
+  isPaused: false, // 게임 일시정지 상태
   dailyJokboCounts: {},
   achievedSpecialistBonuses: [],
   lastScoreResult: null, // lastScoreResult 추가
