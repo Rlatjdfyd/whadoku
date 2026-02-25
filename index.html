@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>화도쿠</title>
+    
+    <!-- PWA 및 모바일 최적화 -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="화도쿠">
+    <link rel="apple-touch-icon" href="/favicon.png">
+
     <link rel="stylesheet" href="/src/css/base.css" />
     <link rel="stylesheet" href="/src/css/layout.css" />
     <link rel="stylesheet" href="/src/css/animations.css" />
@@ -228,6 +236,17 @@
     <div id="mini-palette" class="hidden"></div>
 
     <script type="module" src="/src/js/main.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then((registration) => {
+            console.log('SW registered');
+          }).catch((err) => {
+            console.log('SW registration failed', err);
+          });
+        });
+      }
+    </script>
     <audio id="click-sound" src="/public/sounds/click.mp3"></audio>
     <audio id="error-sound" src="/public/sounds/error.mp3"></audio>
     <audio id="f5-sound" src="/public/sounds/f5.mp3" preload="auto"></audio>

@@ -93,7 +93,7 @@
 }
 
 .cell.difficulty-bg-random {
-  background-image: url('/public/images/btn/card_back_patten8.png');
+  background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
 }

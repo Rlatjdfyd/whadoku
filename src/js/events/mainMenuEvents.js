@@ -19,6 +19,7 @@ import {
   gameState,
   getSoundEnabledState,
   toggleSound,
+  saveJourneyProgress,
 } from '../state.js';
 import {
   enterStageMode, // Used for the Start button
@@ -125,8 +126,9 @@ function setupDifficultyBlock() {
 
     // 중앙 '단계' 셀 클릭 이벤트 리스너 추가 (난이도 초기화)
     centerCell.addEventListener('click', () => {
-        gameState.difficulty = 'medium'; // 난이도 초기화 (기본값)
+        gameState.difficulty = 'easy'; // 난이도 초기화 (기본값)
         updateDifficultySelection(); // UI 업데이트
+        saveJourneyProgress(); // 저장
         if (gameState.isSoundEnabled) {
             document.getElementById('click-sound').play();
         }
@@ -528,6 +530,7 @@ export function initializeMainMenuEventListeners(elements) {
       } else {
         gameState.difficulty = level; // Only set difficulty, do not start game
         updateDifficultySelection();
+        saveJourneyProgress(); // Save the newly selected difficulty
       }
       return;
     }
@@ -559,11 +562,11 @@ export function initializeMainMenuEventListeners(elements) {
           location.reload();
         }
       } else if (action === 'exit_game') {
-        alert(
-          '게임을 종료합니다. (실제 앱에서는 앱이 종료되거나 백그라운드로 이동합니다.)'
-        );
-        if (gameState.isSoundEnabled) {
-          document.getElementById('click-sound').play();
+        if (confirm('게임을 종료하고 제작자의 블로그를 방문하시겠습니까?\n(모바일 앱은 홈 화면으로 나가서 종료해 주세요!)')) {
+          if (gameState.isSoundEnabled) {
+            document.getElementById('click-sound').play();
+          }
+          window.location.href = 'https://blog.naver.com/lnogardl';
         }
       }
       return;

@@ -9,7 +9,7 @@ export const BOARD_SIZE = 9;
 export const gameState = {
   board: [],
   solution: [],
-  difficulty: 'medium',
+  difficulty: 'easy',
   theme: 'hwatu',
   activeCell: { row: null, col: null },
   currentScore: 0,
@@ -110,7 +110,10 @@ export function loadJourneyProgress() {
   if (savedProgress) {
     const parsedProgress = JSON.parse(savedProgress);
     gameState.journeyProgress = parsedProgress;
-    // Ensure currentJourneyPage is also loaded or initialized
+    // Restore difficulty and currentJourneyPage
+    if (parsedProgress.lastDifficulty) {
+      gameState.difficulty = parsedProgress.lastDifficulty;
+    }
     gameState.currentJourneyPage = parsedProgress.currentJourneyPage || { easy: 1, medium: 1, hard: 1, random: 1 };
   } else {
     gameState.journeyProgress = {
@@ -129,10 +132,11 @@ export function loadJourneyProgress() {
  */
 export function saveJourneyProgress() {
   if (gameState.journeyProgress) {
-    // Save both journeyProgress and currentJourneyPage together
+    // Save journeyProgress, currentJourneyPage, and lastDifficulty together
     localStorage.setItem('whadokuJourneyProgress', JSON.stringify({
       ...gameState.journeyProgress,
       currentJourneyPage: gameState.currentJourneyPage,
+      lastDifficulty: gameState.difficulty,
     }));
   }
 }
