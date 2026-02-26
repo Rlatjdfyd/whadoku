@@ -265,7 +265,8 @@
 
     <script type="module" src="/src/js/main.js"></script>
     <script>
-      if ('serviceWorker' in navigator) {
+      // 프로덕션(빌드) 환경에서만 서비스 워커를 등록합니다.
+      if ('serviceWorker' in navigator && !import.meta.env.DEV) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then((registration) => {
             console.log('SW registered');

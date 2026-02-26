@@ -401,17 +401,32 @@ export function calculateScore(currentTheme, board, cellImageVariants, bonusBloc
   };
 }
 
+import { gameState } from './state.js'; // gameState import 추가
+
 /**
- * 최고 점수를 로컬 스토리지에 저장합니다.
- * @param {string} currentTheme - 현재 테마
+ * 난이도별 최고 점수를 로컬 스토리지에 저장합니다.
+ * @param {string} difficulty - 현재 난이도
+ * @param {number} score - 현재 점수
+ */
+export function saveDifficultyHighScore(difficulty, score) {
+  if (score > (gameState.highScores[difficulty] || 0)) {
+    gameState.highScores[difficulty] = score;
+    localStorage.setItem('whadokuHighScores', JSON.stringify(gameState.highScores));
+  }
+}
+
+/**
+ * 최고 점수 기록을 로컬 스토리지에 저장합니다. (기존 함수명 유지, 용도 변경)
+ * @param {string} currentTheme - 현재 테마 (이제 사용하지 않음)
  * @param {number} currentScore - 현재 점수
  * @param {string} currentDifficulty - 현재 난이도
  * @param {Array<object>} lastAchievedJokbo - 마지막으로 달성된 족보 목록
  */
 export function saveHighScore(currentTheme, currentScore, currentDifficulty, lastAchievedJokbo) {
-  if (currentTheme !== 'hwatu') return;
+  // currentTheme은 이제 사용하지 않으므로 제거하거나 무시합니다.
+  // if (currentTheme !== 'hwatu') return; // 이 조건은 필요 없거나, 제거할 수 있습니다.
 
-  const highScores = JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]');
+  const highScoresRecords = JSON.parse(localStorage.getItem('hanafuda-sudoku-scores') || '[]');
   const newRecord = {
     score: currentScore,
     difficulty: currentDifficulty,
@@ -419,9 +434,9 @@ export function saveHighScore(currentTheme, currentScore, currentDifficulty, las
     date: new Date().toISOString().split('T')[0],
   };
 
-  highScores.push(newRecord);
-  highScores.sort((a, b) => b.score - a.score);
-  highScores.splice(5); // 상위 5개만 저장
+  highScoresRecords.push(newRecord);
+  highScoresRecords.sort((a, b) => b.score - a.score);
+  highScoresRecords.splice(5); // 상위 5개만 저장 (혹은 더 많은 개수를 저장할 수 있습니다)
 
-  localStorage.setItem('hanafuda-sudoku-scores', JSON.stringify(highScores));
+  localStorage.setItem('hanafuda-sudoku-scores', JSON.stringify(highScoresRecords));
 }

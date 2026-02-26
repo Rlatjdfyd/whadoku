@@ -1338,6 +1338,16 @@ export function renderStageMap(difficulty) {
     stageCell.dataset.stageNumber = displayStageNumber;
     stageCell.textContent = displayStageNumber;
 
+    // 9의 배수 스테이지이고, 클리어되었을 경우 고사성어 표시
+    if (difficulty === 'challenge' && displayStageNumber % 9 === 0 && displayStageNumber <= safeJourneyProgress) {
+      const gosaIndex = (displayStageNumber / 9) - 1;
+      if (gameState.challengeGosas && gameState.challengeGosas[gosaIndex]) {
+        const gosa = gameState.challengeGosas[gosaIndex];
+        stageCell.innerHTML = `${gosa.substring(0, 2)}<br>${gosa.substring(2, 4)}`;
+        stageCell.classList.add('gosa-cleared'); // 하이라이트를 위한 클래스 추가
+      }
+    }
+
     // Apply classes based on progress
     if (displayStageNumber < safeJourneyProgress) {
       stageCell.classList.add('stage-cleared');

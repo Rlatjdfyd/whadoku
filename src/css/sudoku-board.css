@@ -305,3 +305,14 @@
     box-shadow: 0 0 15px 5px rgba(255, 153, 0, 0.7);
   }
 }
+
+/* 도전 모드에서 고사성어 클리어 시 적용될 스타일 */
+.stage-cell.gosa-cleared {
+  font-weight: bold;
+  font-size: 0.8rem; /* 셀 크기에 맞게 폰트 크기 조정 */
+  line-height: 1.2; /* 줄 간격 조정 */
+  color: #fff;
+  text-shadow: 0 0 5px gold, 0 0 10px gold; /* 금색 발광 효과 */
+  background-color: #1a2a1a; /* 살짝 어두운 배경으로 가독성 확보 */
+  border: 1px solid gold;
+}

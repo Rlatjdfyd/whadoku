@@ -153,14 +153,39 @@ export function enterStageMode(difficulty) {
 
   // Initialize currentJourneyPage to the page containing the current progress
   const progress = (gameState.journeyProgress && gameState.journeyProgress[difficulty]) || 1;
-  const safeProgress = isNaN(progress) ? 1 : progress;
-  gameState.currentJourneyPage[difficulty] = Math.max(1, Math.ceil(safeProgress / 81));
+    const safeProgress = isNaN(progress) ? 1 : progress;
+    gameState.currentJourneyPage[difficulty] = Math.max(1, Math.ceil(safeProgress / 81));
+  
+    // 난이도별 최고 점수를 화면에 반영
+    updateScoreDisplay(
+      gameState.currentScore, // 현재 점수는 보통 0
+      gameState.highScores[difficulty] || 0,
+      getRankName(gameState.currentScore),
+      getRankName(gameState.highScores[difficulty] || 0),
+      getRankImage(gameState.currentScore),
+      getRankImage(gameState.highScores[difficulty] || 0)
+    );
+  
+    renderStageMap(difficulty);
+  }
 
-  renderStageMap(difficulty);
+async function loadChallengeGosas() {
+  try {
+    const response = await fetch('/public/data/challenge_gosas.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    gameState.challengeGosas = await response.json();
+    console.log("도전 모드 고사성어 로드 완료:", gameState.challengeGosas);
+  } catch (error) {
+    console.error("도전 모드 고사성어를 불러오는 데 실패했습니다:", error);
+    gameState.challengeGosas = []; // 실패 시 빈 배열로 초기화
+  }
 }
 
 export async function initGame() { // Made initGame async
   await loadPassageTopics(); // Call loadPassageTopics at the beginning of initGame
+  await loadChallengeGosas(); // 도전 모드 고사성어 로드
 
   const loadedState = loadGameState();
 
@@ -175,21 +200,21 @@ export async function initGame() { // Made initGame async
           delete gameState.quoteCellMap;
         }
       }
+      
+  // 각 난이도별 최고 점수를 로컬 스토리지에서 로드합니다.
+  const savedHighScores = JSON.parse(localStorage.getItem('whadokuHighScores') || '{}');
+  Object.assign(gameState.highScores, savedHighScores);
 
-  const savedHighScore = localStorage.getItem('sudokuHighScore');
-
-  if (savedHighScore) {
-    gameState.highScore = parseInt(savedHighScore, 10);
-  }
-
+  // 최고 점수 표시를 업데이트합니다.
   updateScoreDisplay(
     gameState.currentScore,
-    gameState.highScore,
+    gameState.highScores[gameState.difficulty] || 0, // 현재 난이도의 최고 점수를 가져옵니다.
     getRankName(gameState.currentScore),
-    getRankName(gameState.highScore),
+    getRankName(gameState.highScores[gameState.difficulty] || 0),
     getRankImage(gameState.currentScore),
-    getRankImage(gameState.highScore)
+    getRankImage(gameState.highScores[gameState.difficulty] || 0)
   );
+
 
   const highScores = JSON.parse(
     localStorage.getItem('hanafuda-sudoku-scores') || '[]'
@@ -296,11 +321,11 @@ export async function startNewGame() { // Made async
   resetScore();
   updateScoreDisplay(
     gameState.currentScore,
-    gameState.highScore,
+    gameState.highScores[gameState.difficulty], // 현재 난이도의 최고 점수를 가져옵니다.
     getRankName(gameState.currentScore),
-    getRankName(gameState.highScore),
+    getRankName(gameState.highScores[gameState.difficulty]), // 현재 난이도의 최고 점수 랭크를 가져옵니다.
     getRankImage(gameState.currentScore),
-    getRankImage(gameState.highScore)
+    getRankImage(gameState.highScores[gameState.difficulty]) // 현재 난이도의 최고 점수 랭크 이미지를 가져옵니다.
   );
   gameState.lastAchievedJokbo = [];
   gameState.penaltyScore = 0;
@@ -454,6 +479,11 @@ export function checkSolution() {
       );
 
       setCurrentScore(finalScoreValue);
+      // 난이도별 최고 점수를 저장합니다.
+      import('./hanafuda.js').then(hanafudaModule => {
+        hanafudaModule.saveDifficultyHighScore(gameState.difficulty, finalScoreValue);
+      });
+      // 전체 기록을 저장합니다.
       saveHighScore(
         gameState.theme,
         finalScoreValue,
@@ -470,11 +500,11 @@ export function checkSolution() {
       updateRankDisplay(maxScore, getRankImage(maxScore), getRankName(maxScore));
       updateScoreDisplay(
         gameState.currentScore,
-        gameState.highScore,
+        gameState.highScores[gameState.difficulty], // 현재 난이도의 최고 점수를 표시
         getRankName(gameState.currentScore),
-        getRankName(gameState.highScore),
+        getRankName(gameState.highScores[gameState.difficulty]), // 현재 난이도의 최고 점수 랭크를 표시
         getRankImage(gameState.currentScore),
-        getRankImage(gameState.highScore)
+        getRankImage(gameState.highScores[gameState.difficulty]) // 현재 난이도의 최고 점수 랭크 이미지를 표시
       );
     }, 100);
   }
@@ -491,11 +521,11 @@ export function updateHanafudaScore() {
   gameState.lastScoreResult = scoreResult;
   updateScoreDisplay(
     gameState.currentScore,
-    gameState.highScore,
+    gameState.highScores[gameState.difficulty], // 현재 난이도의 최고 점수를 표시
     getRankName(gameState.currentScore),
-    getRankName(gameState.highScore),
+    getRankName(gameState.highScores[gameState.difficulty]), // 현재 난이도의 최고 점수 랭크를 표시
     getRankImage(gameState.currentScore),
-    getRankImage(gameState.highScore)
+    getRankImage(gameState.highScores[gameState.difficulty]) // 현재 난이도의 최고 점수 랭크 이미지를 표시
   );
   const highScores = JSON.parse(
     localStorage.getItem('hanafuda-sudoku-scores') || '[]'

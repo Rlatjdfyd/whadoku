@@ -13,7 +13,7 @@ export const gameState = {
   theme: 'hwatu',
   activeCell: { row: null, col: null },
   currentScore: 0,
-  highScore: 0,
+  highScores: { easy: 0, medium: 0, hard: 0, random: 0, challenge: 0 }, // 난이도별 최고 점수
   penaltyScore: 0,
   lastAchievedJokbo: [],
   cellImageVariants: [],
@@ -40,11 +40,10 @@ export const gameState = {
   collectionFilterTopicLabel: null, // 컬렉션 모달에 적용된 현재 필터 주제 라벨
   journeyProgress: null, // 여정 모드 진행 상태
   currentStage: null, // 현재 진행 중인 여정 스테이지
-  currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 }, // 난이도별 현재 여정 페이지
-  bonusHintCell: { row: -1, col: -1 }, // 보너스 힌트 셀 좌표
-
-
-};
+    currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 }, // 난이도별 현재 여정 페이지
+    bonusHintCell: { row: -1, col: -1 }, // 보너스 힌트 셀 좌표
+    challengeGosas: [], // 도전 모드용 고사성어 배열
+  };
 
 /**
  * public/data/passages/ 폴더에서 명언 주제 이름을 로드합니다.
