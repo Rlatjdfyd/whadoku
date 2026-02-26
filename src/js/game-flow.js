@@ -152,9 +152,9 @@ export function enterStageMode(difficulty) {
   stagePageNav.classList.remove('hidden'); // Show stage page navigation
 
   // Initialize currentJourneyPage to the page containing the current progress
-  const progress = gameState.journeyProgress[difficulty];
-  gameState.currentJourneyPage[difficulty] = Math.max(1, Math.ceil(progress / 81));
-
+  const progress = (gameState.journeyProgress && gameState.journeyProgress[difficulty]) || 1;
+  const safeProgress = isNaN(progress) ? 1 : progress;
+  gameState.currentJourneyPage[difficulty] = Math.max(1, Math.ceil(safeProgress / 81));
 
   renderStageMap(difficulty);
 }
@@ -211,22 +211,31 @@ export async function startNewGame() { // Made async
     gameState.selectedPassage = { text: "", author: "" }; // 글귀 로드 실패 시 기본값 설정
   }
   
-        // 상단 글귀는 랜덤 난이도에서만 표시
-        setPassageVisibility(false);
-  gameState.solution = generateSudoku();
-
   // Define valid difficulty levels for validation
-  const validDifficultyLevels = ['easy', 'medium', 'hard', 'random'];
+  const validDifficultyLevels = ['easy', 'medium', 'hard', 'random', 'challenge'];
 
   // Ensure gameState.difficulty is a valid and known difficulty
   if (!validDifficultyLevels.includes(gameState.difficulty)) {
-
     gameState.difficulty = 'medium';
   }
   
+  // --- Challenge Mode Logic: Randomly pick a REAL difficulty ---
+  let actualDifficulty = gameState.difficulty;
+  if (gameState.difficulty === 'challenge') {
+    const realDifficulties = ['easy', 'medium', 'hard', 'random'];
+    actualDifficulty = realDifficulties[Math.floor(Math.random() * realDifficulties.length)];
+    console.log(`Challenge Mode: Randomly selected difficulty - ${actualDifficulty}`);
+  }
+  
+  // 시각적 효과를 위해 실제 난이도를 별도로 기록 (디자인 적용용)
+  gameState.currentVisualDifficulty = actualDifficulty;
 
+  // 상단 글귀 표시 제어: 모든 경우에 상단 글귀는 숨김
+  setPassageVisibility(false);
+  
+  gameState.solution = generateSudoku();
 
-  if (gameState.difficulty === 'random') {
+  if (actualDifficulty === 'random') {
     // Use the *already selected* passage for quoteChars
     const processedText = gameState.selectedPassage.text.replace(/\s/g, '');
     gameState.quoteChars = processedText.split(''); // Store characters
@@ -264,7 +273,7 @@ export async function startNewGame() { // Made async
       // --- END NEW LOGIC ---
   } else {
     // For non-random difficulties, generate puzzle as usual
-    gameState.board = createPuzzle(gameState.solution, gameState.difficulty);
+    gameState.board = createPuzzle(gameState.solution, actualDifficulty);
     // Ensure quote specific states are cleared for non-random modes
     delete gameState.quoteChars;
     delete gameState.quoteLength;
@@ -281,7 +290,7 @@ export async function startNewGame() { // Made async
     gameState.cellImageVariants,
     undefined, 
     false, 
-    gameState.difficulty === 'random' ? gameState.quoteCellMap : undefined // Pass quoteCellMap
+    actualDifficulty === 'random' ? gameState.quoteCellMap : undefined // Pass quoteCellMap if actual is random
   );
 
   resetScore();
@@ -397,7 +406,7 @@ export function checkSolution() {
     const jokboScore = gameState.lastScoreResult?.totalScore || 0;
 
     // 완성된 글귀를 로컬 스토리지에 저장 (게임 완료 시점)
-    if (gameState.difficulty === 'random' && gameState.selectedPassage && gameState.selectedPassageTopic) {
+    if (gameState.currentVisualDifficulty === 'random' && gameState.selectedPassage && gameState.selectedPassageTopic) {
       const foundTopicOption = THEME_OPTIONS_UI.find(
         (option) => option.value === gameState.selectedPassageTopic
       );
@@ -409,11 +418,17 @@ export function checkSolution() {
 
     // --- Journey Mode Progress Update ---
     if (gameState.currentStage !== null) {
-      const { difficulty, currentStage, journeyProgress } = gameState;
-      if (journeyProgress[difficulty] === currentStage) {
-        journeyProgress[difficulty]++;
-        saveJourneyProgress();
+      const difficulty = gameState.difficulty;
+      const currentStage = gameState.currentStage;
+      
+      // 해당 난이도의 현재 진행 단계와 방금 깬 스테이지가 같다면 다음 단계 해제
+      if (gameState.journeyProgress[difficulty] === currentStage) {
+        gameState.journeyProgress[difficulty]++;
+        console.log(`${difficulty} 모드 스테이지 ${currentStage} 클리어! 다음 단계: ${gameState.journeyProgress[difficulty]}`);
+        saveJourneyProgress(); // 변경된 진행도 저장
       }
+      // 주의: 여기서 gameState.currentStage를 null로 만들지 않습니다. 
+      // modalEvents.js에서 지도를 다시 그린 후에 null로 만듭니다.
     }
 
 
@@ -430,7 +445,7 @@ export function checkSolution() {
         jokboScore,
         scoreData,
         null, // luckyBonusInfo
-        gameState.difficulty,
+        gameState.currentVisualDifficulty || gameState.difficulty, // 실제 플레이한 난이도 전달
         gameState.penaltyScore,
         gameState.achievedSpecialistBonuses,
         jokboData,

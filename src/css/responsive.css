@@ -217,4 +217,8 @@
   .sudoku-block-menu-item[data-menu-id="logo"] {
     font-size: 1.5rem;
   }
+
+  #game-controls-wrapper {
+    margin-top: 20px; /* 스도쿠 보드와 컨트롤러 사이의 간격 확보 */
+  }
 }

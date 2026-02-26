@@ -310,11 +310,11 @@
 }
 #completion-score .score-label {
   display: block;
-  font-size: 1.2rem;
+  font-size: 1.0rem; /* 기존 1.2rem에서 1.0rem으로 축소 */
   color: #aaa;
 }
 #completion-score .score-value {
-  font-size: 2rem;
+  font-size: 1.8rem; /* 기존 2rem에서 1.8rem으로 축소 */
   font-weight: bold;
   color: #00ff00; /* 밝은 녹색으로 강조 */
   line-height: 1.2;
@@ -347,7 +347,7 @@
 
 /* 각 상세 섹션 */
 .detail-section h4 {
-  font-size: 1rem;
+  font-size: 0.9rem; /* 기존 1rem에서 0.9rem으로 축소 */
   color: #ddd;
   margin-bottom: 8px;
   border-bottom: 1px solid #333;
@@ -355,7 +355,7 @@
 }
 .detail-section p,
 .detail-section li {
-  font-size: 1rem;
+  font-size: 0.85rem; /* 기존 1rem에서 0.85rem으로 축소 */
   color: #ccc;
   margin: 4px 0;
 }

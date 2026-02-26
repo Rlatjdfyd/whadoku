@@ -455,6 +455,23 @@ function setupLogoBlock() {
   });
 }
 
+function setupChallengeBlock() {
+  const challengeBlock = document.querySelector('[data-menu-id="challenge"]');
+  if (!challengeBlock) return;
+
+  const subCells = challengeBlock.querySelectorAll('.menu-sub-cell');
+  const centerCell = subCells[4]; // Center cell
+  if (centerCell) {
+    centerCell.textContent = '도전';
+    centerCell.style.fontSize = '0.8rem';
+    centerCell.style.fontWeight = 'bold';
+    centerCell.style.color = '#000000'; // Black text for contrast
+    centerCell.style.backgroundColor = '#ff9900'; // Green-ish active style
+    centerCell.style.backgroundImage = 'none';
+    centerCell.classList.add('no-image-fill'); // Prevent random image fill
+  }
+}
+
 // New function to fill empty menu cells with random fruit images
 function fillEmptyMenuCells() {
   const fruitImages = [
@@ -604,6 +621,17 @@ export function initializeMainMenuEventListeners(elements) {
       enterStageMode(gameState.difficulty); 
       return;
     }
+
+    // --- Challenge Mode Event Listener ---
+    const challengeBlock = e.target.closest('[data-menu-id="challenge"]');
+    if (challengeBlock) {
+      if (gameState.isSoundEnabled) {
+        document.getElementById('f5-sound').play(); // 도전 모드 입장 효과음
+      }
+      gameState.difficulty = 'challenge'; // 난이도를 challenge로 설정
+      enterStageMode('challenge');
+      return;
+    }
   });
 
   // Main Menu Block-Specific Setup ---
@@ -614,6 +642,7 @@ export function initializeMainMenuEventListeners(elements) {
   setupSettingsBlock();
   setupInfoBlock(elements); // Pass elements to setupInfoBlock
   setupStartBlock();
+  setupChallengeBlock(); // 새로 추가된 도전 모드 초기화
   setupAchievementBlock();
   setupLogoBlock();
   fillEmptyMenuCells(); // Call the new function

@@ -80,15 +80,19 @@ export function initializeModalEventListeners(elements) {
     );
   }
 
-  // Completion Modal
+// Completion Modal
   if (completionCloseBtn) {
     completionCloseBtn.addEventListener('click', () => {
       completionModal.classList.add('hidden');
 
       // Check if the game was a journey stage
       if (gameState.currentStage !== null) {
-        enterStageMode(gameState.difficulty);
-        gameState.currentStage = null; // Reset after returning to map
+        // --- 최신 진행도를 다시 불러와서 화면 동기화 ---
+        import('../state.js').then(stateModule => {
+          stateModule.loadJourneyProgress(); 
+          enterStageMode(gameState.difficulty);
+          gameState.currentStage = null; // Reset after returning to map
+        });
       } else {
         // Original behavior for non-journey games
         if (retryGameBtn) {

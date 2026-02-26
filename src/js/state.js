@@ -40,7 +40,7 @@ export const gameState = {
   collectionFilterTopicLabel: null, // 컬렉션 모달에 적용된 현재 필터 주제 라벨
   journeyProgress: null, // 여정 모드 진행 상태
   currentStage: null, // 현재 진행 중인 여정 스테이지
-  currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1 }, // 난이도별 현재 여정 페이지
+  currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 }, // 난이도별 현재 여정 페이지
   bonusHintCell: { row: -1, col: -1 }, // 보너스 힌트 셀 좌표
 
 
@@ -109,23 +109,43 @@ export function toggleSound() {
  */
 export function loadJourneyProgress() {
   const savedProgress = localStorage.getItem('whadokuJourneyProgress');
+  
+  // 모든 모드의 기본값 정의
+  const defaultProgress = { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 };
+  const defaultPages = { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 };
+
   if (savedProgress) {
-    const parsedProgress = JSON.parse(savedProgress);
-    gameState.journeyProgress = parsedProgress;
-    // Restore difficulty and currentJourneyPage
-    if (parsedProgress.lastDifficulty) {
-      gameState.difficulty = parsedProgress.lastDifficulty;
+    try {
+      const parsed = JSON.parse(savedProgress);
+      
+      // 1. 진행도(journeyProgress) 복구: 기존 데이터가 있으면 쓰고, 없으면 기본값(1) 사용
+      gameState.journeyProgress = {};
+      ['easy', 'medium', 'hard', 'random', 'challenge'].forEach(key => {
+        const val = parsed[key];
+        gameState.journeyProgress[key] = (typeof val === 'number' && !isNaN(val)) ? val : 1;
+      });
+
+      // 2. 현재 페이지(currentJourneyPage) 복구
+      gameState.currentJourneyPage = {};
+      const savedPages = parsed.currentJourneyPage || {};
+      ['easy', 'medium', 'hard', 'random', 'challenge'].forEach(key => {
+        const val = savedPages[key];
+        gameState.currentJourneyPage[key] = (typeof val === 'number' && !isNaN(val)) ? val : 1;
+      });
+
+      // 3. 마지막 난이도 복구
+      if (parsed.lastDifficulty) {
+        gameState.difficulty = parsed.lastDifficulty;
+      }
+    } catch (e) {
+      console.error("데이터 복구 실패, 초기화합니다.", e);
+      gameState.journeyProgress = { ...defaultProgress };
+      gameState.currentJourneyPage = { ...defaultPages };
     }
-    gameState.currentJourneyPage = parsedProgress.currentJourneyPage || { easy: 1, medium: 1, hard: 1, random: 1 };
   } else {
-    gameState.journeyProgress = {
-      easy: 1,
-      medium: 1,
-      hard: 1,
-      random: 1,
-    };
-    gameState.currentJourneyPage = { easy: 1, medium: 1, hard: 1, random: 1 };
-    saveJourneyProgress(); // Save the initial state
+    gameState.journeyProgress = { ...defaultProgress };
+    gameState.currentJourneyPage = { ...defaultPages };
+    saveJourneyProgress();
   }
 }
 

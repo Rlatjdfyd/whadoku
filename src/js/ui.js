@@ -44,8 +44,9 @@ export function createBoard(
 
           const cell = document.createElement('div');
           cell.classList.add('cell');
-          // Add difficulty-specific background class
-          cell.classList.add(`difficulty-bg-${gameState.difficulty}`);
+          // 현재 선택된 비주얼 난이도(도전 모드 포함)에 맞는 배경 클래스 적용
+          const visualDiff = gameState.currentVisualDifficulty || gameState.difficulty;
+          cell.classList.add(`difficulty-bg-${visualDiff}`);
 
           if (isInitial) {
             // 첫 화면일 경우: customMask 기반으로 위치에 따른 이미지 표시
@@ -1317,14 +1318,17 @@ export function renderStageMap(difficulty) {
   sudokuBoard.classList.remove('stage-map'); // Clean up previous classes
   sudokuBoard.classList.add('stage-map');
 
-  const journeyProgressForDifficulty = gameState.journeyProgress[difficulty];
-  let currentPage = gameState.currentJourneyPage[difficulty];
+  const journeyProgressForDifficulty = (gameState.journeyProgress && gameState.journeyProgress[difficulty]) || 1;
+  const safeJourneyProgress = isNaN(journeyProgressForDifficulty) ? 1 : journeyProgressForDifficulty;
+  
+  let currentPage = (gameState.currentJourneyPage && gameState.currentJourneyPage[difficulty]) || 1;
+  const safeCurrentPage = isNaN(currentPage) ? 1 : currentPage;
 
   const fragment = document.createDocumentFragment();
 
   const stagesPerPage = 81;
-  const startDisplayStageNum = (currentPage - 1) * stagesPerPage + 1;
-  const endDisplayStageNum = currentPage * stagesPerPage;
+  const startDisplayStageNum = (safeCurrentPage - 1) * stagesPerPage + 1;
+  const endDisplayStageNum = safeCurrentPage * stagesPerPage;
 
   for (let i = 0; i < stagesPerPage; i++) {
     const displayStageNumber = startDisplayStageNum + i;
@@ -1335,10 +1339,10 @@ export function renderStageMap(difficulty) {
     stageCell.textContent = displayStageNumber;
 
     // Apply classes based on progress
-    if (displayStageNumber < journeyProgressForDifficulty) {
+    if (displayStageNumber < safeJourneyProgress) {
       stageCell.classList.add('stage-cleared');
       stageCell.classList.add('clickable-stage');
-    } else if (displayStageNumber === journeyProgressForDifficulty) {
+    } else if (displayStageNumber === safeJourneyProgress) {
       stageCell.classList.add('stage-unlocked');
       stageCell.classList.add('clickable-stage');
     } else {
@@ -1353,9 +1357,9 @@ export function renderStageMap(difficulty) {
   // Update navigation button visibility and disabled state
   if (stagePageNav) {
     stagePageNav.classList.remove('hidden');
-    prevBtn.disabled = currentPage === 1;
+    prevBtn.disabled = safeCurrentPage === 1;
     // Next button is disabled if the current progress is within the current page's stages
     // meaning there are no stages past this page to unlock yet.
-    nextBtn.disabled = journeyProgressForDifficulty <= endDisplayStageNum;
+    nextBtn.disabled = safeJourneyProgress <= endDisplayStageNum;
   }
 }
