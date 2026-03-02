@@ -12,6 +12,40 @@
 
 
 
+/* 공통 모달 콘텐츠 스타일 (정보 블록 모달 통일) */
+#rank-content,
+#jokbo-rules-content,
+#high-score-content,
+#help-content,
+#info-content {
+  background-image: url('/public/images/btn/card_back_patten4.png');
+  background-repeat: repeat;
+  background-size: 5px 5px;
+  background-color: #e0e0e0;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  width: 90%;
+  max-width: 380px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 2px solid #00ff00; /* 화도쿠 시그니처 녹색 테두리 */
+}
+
+/* 공통 모달 제목 스타일 */
+#rank-content h2,
+#jokbo-rules-content h2,
+#high-score-content h2,
+#help-content h2,
+#info-content h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #00ff00;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
 /* 랭크 모달 */
 #rank-modal {
   position: fixed;
@@ -19,7 +53,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,31 +65,14 @@
 }
 
 #rank-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 90%;
-  max-width: 300px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-#rank-content h2 {
-  margin-top: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.2rem;
 }
 
 #rank-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin: 20px 0;
+  gap: 12px;
+  margin: 15px 0;
   text-align: left;
 }
 
@@ -63,17 +80,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding: 12px 0;
+  background-color: rgba(0, 0, 0, 0.15); /* 안내 모달과 같은 배경박스 */
+  border-radius: 8px;
+  padding: 10px 12px;
   gap: 12px;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  border-left: 3px solid #00ff00;
 }
 
 .rank-entry:hover {
-  background: rgba(25, 118, 210, 0.05);
-  border-radius: 8px;
-  padding-left: 8px;
-  padding-right: 8px;
+  background: rgba(0, 255, 0, 0.1);
+  transform: translateX(5px);
 }
 
 .rank-info {
@@ -85,81 +102,23 @@
 
 .rank-info h4 {
   margin: 0;
-  color: #015958;
-  font-size: 12px;
+  color: #00ff00;
+  font-size: 13px;
   font-weight: bold;
 }
 
 .rank-score-range {
   font-size: 10px;
-  color: #cccccc; /* 밝은 회색 */
+  color: #ffffff;
   margin-top: 2px;
 }
 
 .rank-image-display img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-/* 족보 규칙 모달 내 이미지 컨테이너 스타일 */
-.jokbo-visuals {
-    display: flex; /* 여러 이미지를 한 줄에 표시 */
-    gap: 5px; /* 개별 카드 사이의 간격 */
-    flex-wrap: wrap; /* 카드 수가 많을 경우 줄 바꿈 허용 */
-    justify-content: center; /* 이미지가 공간을 채우지 못할 경우 가운데 정렬 */
-    margin-top: 10px; /* 이미지 위 여백 */
-}
-
-/* 족보 규칙 모달 내 개별 이미지 스타일 (mainImage 및 구성 카드) */
-.jokbo-visuals img.jokbo-rules-image,
-.jokbo-visuals img.jokbo-contributing-card {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
-  object-fit: contain; /* 가로세로 비율 유지하며 컨테이너에 맞춤 */
-}
-
-
-/* 족보 규칙 모달 내 이미지 스타일 */
-.jokbo-rules-image-display img {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-/* 족보 규칙 모달 내 이미지 스타일 */
-.jokbo-rules-image-display img {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-#rank-close-btn {
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 */
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
-}
-
-#rank-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-color: #424242;
+  border: 1px solid #00ff00;
+  background-color: white; /* 투명/어두운 배경에서 흰색으로 변경 */
 }
 
 /* 족보 규칙 모달 (Jokbo Rules Modal) */
@@ -169,7 +128,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -181,31 +140,14 @@
 }
 
 #jokbo-rules-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 90%;
-  max-width: 300px; /* 랭크 모달과 유사하게 */
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-#jokbo-rules-content h2 {
-  margin-top: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.2rem;
 }
 
 #jokbo-rules-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin: 20px 0;
+  gap: 12px;
+  margin: 15px 0;
   text-align: left;
 }
 
@@ -213,17 +155,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding: 12px 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 10px 12px;
   gap: 12px;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  border-left: 3px solid #ff9900; /* 족보는 주황색 포인트 */
 }
 
 .jokbo-rules-entry:hover {
   background: rgba(25, 118, 210, 0.05);
-  border-radius: 8px;
-  padding-left: 8px;
-  padding-right: 8px;
+  transform: translateX(5px);
 }
 
 .jokbo-rules-info {
@@ -235,172 +177,31 @@
 
 .jokbo-rules-info h4 {
   margin: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 12px;
+  color: #ff9900;
+  font-size: 13px;
   font-weight: bold;
 }
 
 .jokbo-rules-score-range {
   font-size: 10px;
-  color: #cccccc; /* 밝은 회색 */
+  color: #ffffff;
   margin-top: 2px;
 }
 
-#jokbo-rules-close-btn {
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 */
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
+/* 족보 시각화 이미지 */
+.jokbo-visuals {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
-#jokbo-rules-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-color: #424242;
-}
-
-
-/* 완성 모달 */
-#completion-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
-
-#completion-modal.hidden {
-  display: none;
-}
-
-#completion-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  width: 90%;
-  max-width: 340px;
-  max-height: 80vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* 각 섹션 사이의 간격 */
-}
-
-/* 최종 점수 스타일 */
-#completion-score {
-  text-align: center;
-  border-bottom: 1px solid #444;
-  padding-bottom: 15px;
-}
-#completion-score .score-label {
-  display: block;
-  font-size: 1.0rem; /* 기존 1.2rem에서 1.0rem으로 축소 */
-  color: #aaa;
-}
-#completion-score .score-value {
-  font-size: 1.8rem; /* 기존 2rem에서 1.8rem으로 축소 */
-  font-weight: bold;
-  color: #00ff00; /* 밝은 녹색으로 강조 */
-  line-height: 1.2;
-}
-
-/* 점수 상세 내역 컨테이너 */
-#completion-details {
-  display: flex; /* Flexbox로 유지 */
-  flex-direction: column; /* 자식들을 세로로 정렬 */
-  gap: 12px; /* 각 섹션 사이의 간격 */
-  text-align: left;
-}
-
-/* 족보 섹션을 2열로 표시하기 위한 스타일 (이 컨테이너 내부만 2열) */
-.completion-jokbo-sections {
-  display: flex;
-  flex-wrap: wrap; /* 좁은 화면에서 줄바꿈 허용 */
-  gap: 15px; /* 섹션들 사이의 간격 */
-  width: 100%; /* 부모 컨테이너 너비를 채우도록 */
-}
-
-.completion-jokbo-sections .detail-section {
-  flex: 1 1 calc(50% - 7.5px); /* 2열로 배치, gap 고려하여 너비 설정 */
-  min-width: 140px; /* 각 열의 최소 너비 설정 (데스크톱 기준) */
-  box-sizing: border-box; /* padding이 너비에 포함되도록 */
-  background-color: rgba(0, 0, 0, 0.1); /* 배경색 추가 */
-  padding: 10px;
-  border-radius: 8px;
-}
-
-/* 각 상세 섹션 */
-.detail-section h4 {
-  font-size: 0.9rem; /* 기존 1rem에서 0.9rem으로 축소 */
-  color: #ddd;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #333;
-  padding-bottom: 5px;
-}
-.detail-section p,
-.detail-section li {
-  font-size: 0.85rem; /* 기존 1rem에서 0.85rem으로 축소 */
-  color: #ccc;
-  margin: 4px 0;
-}
-.detail-section ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* 보너스 및 감점 텍스트 강조 */
-.bonus-item {
-  font-weight: bold;
-}
-.difficulty-bonus {
-  color: #81d4fa; /* 하늘색 */
-}
-.specialist-bonus {
-  color: #ffd54f; /* 노란색 */
-}
-.lucky-bonus {
-  color: #abeb4b; /* 행운의 녹색 */
-}
-.penalty-score p {
-  color: #ff8a80; /* 붉은색 */
-  font-weight: bold;
-}
-
-#completion-close-btn {
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 */
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 10px; /* 위쪽 간격 조정 */
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-#completion-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-color: #424242;
+.jokbo-visuals img {
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: white; /* 투명 배경에서 흰색으로 변경 */
 }
 
 /* 최고 점수 모달 */
@@ -410,7 +211,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -422,118 +223,78 @@
 }
 
 #high-score-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 90%;
-  max-width: 340px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-#high-score-content h2 {
-  margin-top: 0;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.2rem;
 }
 
 #high-score-content table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-}
-
-#high-score-content th,
-#high-score-content td {
-  border-bottom: 1px solid #ccc;
-  padding: 10px 8px;
-  text-align: center;
-  font-size: 0.8rem;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* 행 사이 간격 */
+  margin: 15px 0;
 }
 
 #high-score-content th {
-  background-color: rgba(25, 118, 210, 0.1);
-  color: #00ff00; /* 밝은 녹색 */
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(0, 255, 0, 0.2);
+}
+
+#high-score-content tbody tr td {
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: 12px 8px;
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+
+#high-score-content tr td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  color: #00ff00;
   font-weight: bold;
 }
 
-#high-score-content td {
-  color: #cccccc; /* 밝은 회색 */
+#high-score-content tr td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
-#high-score-content tr:last-child td {
-  border-bottom: none;
-}
-
-#high-score-content tr:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-#high-score-close-btn {
+/* 닫기 버튼 공통 스타일 업데이트 */
+#rank-close-btn,
+#jokbo-rules-close-btn,
+#high-score-close-btn,
+#help-close-btn,
+#info-close-btn {
+  display: block;
+  width: 100px;
+  margin: 20px auto 0 auto;
   background-image: url('/public/images/btn/card_back_patten.png');
   background-repeat: repeat;
   background-size: 5px 5px;
-  background-color: #616161; /* 기존 배경색 유지 */
+  background-color: #616161;
   color: #fff;
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
 }
 
-#high-score-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
+#rank-close-btn:hover,
+#jokbo-rules-close-btn:hover,
+#high-score-close-btn:hover,
+#help-close-btn:hover,
+#info-close-btn:hover {
   background-color: #424242;
+  transform: scale(1.05);
 }
 
-/* 도움말 모달 */
-#help-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 110; /* 다른 모달보다 위에 표시 */
-}
-
-#help-modal.hidden {
-  display: none;
-}
-
+/* 도움말 모달 전용 추가 스타일 */
 #help-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0; /* 기존 배경색 유지 */
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   text-align: left;
-  width: 90%;
-  max-width: 380px;
-  max-height: 85vh;
-  overflow-y: auto;
-  border: 2px solid #00ff00;
-}
-
-#help-content h2 {
-  margin-top: 0;
-  text-align: center;
-  color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.5rem;
-  margin-bottom: 25px;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
 .guide-section {
@@ -545,7 +306,7 @@
 }
 
 #help-content h3 {
-  color: #ff9900; /* 주황색으로 강조 */
+  color: #ff9900;
   font-size: 1.05rem;
   margin-top: 0;
   margin-bottom: 10px;
@@ -559,17 +320,6 @@
   color: #ffffff;
 }
 
-#help-content ul {
-  padding-left: 15px;
-  list-style-type: '•';
-  margin: 5px 0;
-}
-
-#help-content li {
-  margin-bottom: 6px;
-  padding-left: 5px;
-}
-
 .guide-footer {
   text-align: center;
   font-weight: bold;
@@ -580,96 +330,19 @@
   padding-top: 15px;
 }
 
-#help-close-btn {
-  display: block;
-  width: 100px;
-  margin: 25px auto 0 auto;
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-#help-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-color: #424242;
-}
-
-/* Info Modal */
-#info-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 110;
-}
-
-#info-modal.hidden {
-  display: none;
-}
-
+/* 정보 모달 */
 #info-content {
-  background-image: url('/public/images/btn/card_back_patten4.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #e0e0e0;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 90%;
-  max-width: 360px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-#info-content h2 {
-  margin-top: 0;
-  color: #00ff00;
-  font-size: 1.4rem;
-  margin-bottom: 20px;
 }
 
 #info-content p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #cccccc;
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  border-radius: 8px;
   margin-bottom: 10px;
+  color: #ffffff;
 }
 
-#info-close-btn {
-  display: block;
-  width: 100px;
-  margin: 25px auto 0 auto;
-  background-image: url('/public/images/btn/card_back_patten.png');
-  background-repeat: repeat;
-  background-size: 5px 5px;
-  background-color: #616161;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-#info-close-btn:hover {
-  background-image: url('/public/images/btn/card_back_patten2.png');
-  background-color: #424242;
-}
 
 /* Topic List Modal */
 #topic-list-modal {
