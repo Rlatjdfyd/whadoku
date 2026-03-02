@@ -248,16 +248,12 @@
   width: 15%;
 }
 #high-score-content th:nth-child(2),
-#high-score-content tbody tr td:nth-child(2) { /* 모드 */
-  width: 20%;
+#high-score-content tbody tr td:nth-child(2) { /* 난이도 */
+  width: 25%;
 }
 #high-score-content th:nth-child(3),
 #high-score-content tbody tr td:nth-child(3) { /* 점수 */
-  width: 35%;
-}
-#high-score-content th:nth-child(4),
-#high-score-content tbody tr td:nth-child(4) { /* 날짜 */
-  width: 30%;
+  width: 60%;
 }
 
 #high-score-content th {

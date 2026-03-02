@@ -714,9 +714,8 @@ export function showHighScoreModal(highScores) {
 
       row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${record.score.toLocaleString()}점</td>
                 <td>${difficultyMap[record.difficulty] || '알 수 없음'}</td>
-                <td>${new Date(record.date).toLocaleDateString()}</td>
+                <td>${record.score.toLocaleString()}점</td>
             `;
       tableBody.appendChild(row);
     });
