@@ -69,6 +69,12 @@
     box-shadow: 0 0 8px #021a10;
   }
 
+  /* 스테이지 맵 모드일 때는 9열 그리드를 강제 적용 (아이폰 위치 어긋남 방지) */
+  #sudoku-board.stage-map {
+    grid-template-columns: repeat(9, 1fr) !important;
+    gap: 2px;
+  }
+
   .sudoku-block {
     border-radius: 4px;
     padding: 0px;
