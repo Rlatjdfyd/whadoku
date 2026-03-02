@@ -576,7 +576,7 @@ export function showCompletionModal(
 
   // --- 최종 점수 섹션 업데이트 ---
   completionScore.innerHTML = `
-    <span class="score-value">${finalScoreValue.toLocaleString()}점</span>
+    <h2>${finalScoreValue.toLocaleString()}점</h2>
   `;
 
   // --- 점수 상세 내역 HTML 생성 ---
@@ -623,11 +623,9 @@ export function showCompletionModal(
       detailsHTML += `
         <div class="detail-section jokbo-list">
           <h4>🏆 족보 상세</h4>
-          <ul>
             ${finalScoreData.achievedJokbo
-              .map((j) => `<li>• ${j.name}: ${j.score.toLocaleString()}점</li>`)
+              .map((j) => `<p>${j.name}: ${j.score.toLocaleString()}점</p>`)
               .join('')}
-          </ul>
         </div>
       `;
     }
@@ -641,7 +639,7 @@ export function showCompletionModal(
     }
     if (totalSpecialistBonus > 0) {
        specialistBonusDetails.forEach(detail => {
-          bonusHTML += `<p class="bonus-item specialist-bonus">✨ ${detail.title}: +${detail.amount.toLocaleString()}점</p>`;
+          bonusHTML += `<p class="bonus-item specialist-bonus">${detail.title}: +${detail.amount.toLocaleString()}점</p>`;
        });
     }
     if (luckyBonusAmount > 0) {
