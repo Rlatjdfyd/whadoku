@@ -79,6 +79,13 @@ export function initializeModalEventListeners(elements) {
       helpModal.classList.add('hidden')
     );
   }
+  if (helpModal) {
+    helpModal.addEventListener('click', (event) => {
+      if (event.target === helpModal) {
+        helpModal.classList.add('hidden');
+      }
+    });
+  }
 
 // Completion Modal
   if (completionCloseBtn) {

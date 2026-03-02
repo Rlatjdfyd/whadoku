@@ -518,45 +518,66 @@
   background-color: #e0e0e0; /* 기존 배경색 유지 */
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   text-align: left;
   width: 90%;
-  max-width: 360px;
-  max-height: 80vh;
+  max-width: 380px;
+  max-height: 85vh;
   overflow-y: auto;
+  border: 2px solid #00ff00;
 }
 
 #help-content h2 {
   margin-top: 0;
   text-align: center;
   color: #00ff00; /* 밝은 녹색 */
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.guide-section {
   margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #ff9900;
 }
 
 #help-content h3 {
-  color: #00ff00;
-  font-size: 1rem;
-  border-bottom: 2px solid #00ff00;
-  padding-bottom: 5px;
-  margin-top: 20px;
+  color: #ff9900; /* 주황색으로 강조 */
+  font-size: 1.05rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 #help-content p,
 #help-content ul {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   line-height: 1.6;
-  color: #cccccc;
+  color: #ffffff;
 }
 
 #help-content ul {
-  padding-left: 20px;
-  list-style-type: '🎴';
-  margin-left: 10px;
+  padding-left: 15px;
+  list-style-type: '•';
+  margin: 5px 0;
 }
 
 #help-content li {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  padding-left: 5px;
+}
+
+.guide-footer {
+  text-align: center;
+  font-weight: bold;
+  color: #00ff00 !important;
+  margin-top: 25px;
+  font-size: 0.9rem !important;
+  border-top: 1px solid rgba(0, 255, 0, 0.2);
+  padding-top: 15px;
 }
 
 #help-close-btn {

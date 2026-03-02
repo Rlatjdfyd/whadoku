@@ -405,14 +405,14 @@ export function setCellValue(row, col, num) {
         document.getElementById('jokbo-sound').play(); // 신나는 소리!
       }
 
-      // 5초 뒤 힌트 지급 및 모달 닫기
+      // 3초 뒤 힌트 지급 및 모달 닫기
       setTimeout(() => {
         bonusModal.classList.add('hidden');
         gameState.hintCount++;
         updateHintCount(gameState.hintCount);
         gameState.bonusHintCell = { row: -1, col: -1 }; // 한 번만 발동하게 초기화
         saveGameState(); // 상태 저장
-      }, 5000);
+      }, 3000);
     }
   }
 
