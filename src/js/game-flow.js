@@ -171,15 +171,24 @@ export function enterStageMode(difficulty) {
 
 async function loadChallengeGosas() {
   try {
-    const response = await fetch('/public/data/challenge_gosas.json');
+    const timestamp = new Date().getTime();
+    // Try without /public prefix first as it's common in modern dev environments
+    let response = await fetch(`/data/challenge_gosas.json?v=${timestamp}`);
+    
+    if (!response.ok) {
+      // Fallback to /public if the first attempt fails
+      response = await fetch(`/public/data/challenge_gosas.json?v=${timestamp}`);
+    }
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     gameState.challengeGosas = await response.json();
-    console.log("도전 모드 고사성어 로드 완료:", gameState.challengeGosas);
+    console.log("도전 모드 고사성어 로드 성공 (첫번째):", gameState.challengeGosas[0]);
+    console.log("전체 고사성어 개수:", gameState.challengeGosas.length);
   } catch (error) {
     console.error("도전 모드 고사성어를 불러오는 데 실패했습니다:", error);
-    gameState.challengeGosas = []; // 실패 시 빈 배열로 초기화
+    gameState.challengeGosas = []; 
   }
 }
 
@@ -190,7 +199,14 @@ export async function initGame() { // Made initGame async
   const loadedState = loadGameState();
 
   if (loadedState) {
+        // 백업: 서버에서 막 불러온 최신 고사성어 데이터를 임시 저장
+        const freshGosas = gameState.challengeGosas;
+        
         Object.assign(gameState, loadedState);
+        
+        // 복구: 로컬 스토리지 데이터에 포함된 구버전 고사성어를 최신 버전으로 교체
+        gameState.challengeGosas = freshGosas;
+
         gameState.isFiveSetBonusAchieved = loadedState.isFiveSetBonusAchieved || false;
 
         // Ensure quoteChars and quoteLength are reset or handled if loaded state was from random mode
@@ -405,8 +421,8 @@ export function setCellValue(row, col, num) {
       document.getElementById('error-sound').play();
     }
     cell.classList.add('error');
-    gameState.penaltyScore += 500;
-    showPenaltyNotification(500);
+    gameState.penaltyScore += 1000;
+    showPenaltyNotification(1000);
     setTimeout(() => {
       cell.classList.remove('error');
       gameState.board[row][col] = 0;

@@ -1351,7 +1351,7 @@ export function renderStageMap(difficulty) {
     // Apply classes based on progress
     if (displayStageNumber < safeJourneyProgress) {
       stageCell.classList.add('stage-cleared');
-      stageCell.classList.add('clickable-stage');
+      // 이미 클리어한 스테이지는 더 이상 클릭할 수 없도록 clickable-stage를 추가하지 않습니다.
     } else if (displayStageNumber === safeJourneyProgress) {
       stageCell.classList.add('stage-unlocked');
       stageCell.classList.add('clickable-stage');
