@@ -233,12 +233,40 @@
   margin: 15px 0;
 }
 
+#high-score-content th,
+#high-score-content tbody tr td {
+  padding: 12px 8px; /* 통일된 패딩 */
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트 ...으로 표시 */
+}
+
+#high-score-content th:nth-child(1),
+#high-score-content tbody tr td:nth-child(1) { /* 순위 */
+  width: 15%;
+}
+#high-score-content th:nth-child(2),
+#high-score-content tbody tr td:nth-child(2) { /* 모드 */
+  width: 20%;
+}
+#high-score-content th:nth-child(3),
+#high-score-content tbody tr td:nth-child(3) { /* 점수 */
+  width: 35%;
+}
+#high-score-content th:nth-child(4),
+#high-score-content tbody tr td:nth-child(4) { /* 날짜 */
+  width: 30%;
+}
+
 #high-score-content th {
   color: #00ff00;
   font-weight: bold;
   font-size: 0.85rem;
   padding-bottom: 10px;
   border-bottom: 2px solid rgba(0, 255, 0, 0.2);
+  white-space: nowrap; /* 헤더도 줄바꿈 방지 */
 }
 
 #high-score-content tbody tr td {
@@ -382,15 +410,16 @@
   background-color: #e0e0e0; /* 기존 모달과 동일한 배경색 */
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* 기존 모달과 동일한 그림자 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* 그림자도 업데이트 */
   text-align: center;
   width: 90%;
-  max-width: 420px; /* 기존 모달과 유사한 최대 너비 */
-  max-height: 80vh; /* 기존 모달과 유사한 최대 높이 */
+  max-width: 380px; /* 다른 모달과 통일 */
+  max-height: 85vh; /* 다른 모달과 통일 */
   overflow-y: auto; /* 내용이 길어지면 스크롤 가능 */
   display: flex; /* Flexbox 추가 */
   flex-direction: column; /* 자식 요소들을 수직으로 정렬 */
   gap: 8px; /* 버튼 컨테이너와 글귀 영역 사이 간격 */
+  border: 2px solid #00ff00; /* 시그니처 녹색 테두리 추가 */
 }
 
 #topic-buttons-container {
@@ -567,15 +596,16 @@
   background-color: #e0e0e0;
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* 그림자도 업데이트 */
   text-align: center;
   width: 90%;
-  max-width: 420px;
-  max-height: 80vh;
+  max-width: 380px; /* 다른 모달과 통일 */
+  max-height: 85vh; /* 다른 모달과 통일 */
   /* overflow-y: auto; 제거 */
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border: 2px solid #00ff00; /* 시그니처 녹색 테두리 추가 */
 }
 
 #collection-content h2 {
