@@ -3,32 +3,34 @@
 import {
   setPassageVisibility,
   THEME_OPTIONS_UI,
-  updateRankModal, // Added
-  showRankModal,   // Added
-  hideRankModal,   // Added
-  showJokboRulesModal, // Added
-  hideJokboRulesModal, // Added
-  showHighScoreModal, // Added
-  hideHighScoreModal, // Added
-  showTopicListModal, // Added
-  hideTopicListModal, // Added
-  showSavedPassagesListModal, // Added
-  hideSavedPassagesListModal, // Added
+  updateRankModal,
+  showRankModal,
+  hideRankModal,
+  showJokboRulesModal,
+  hideJokboRulesModal,
+  showHighScoreModal,
+  hideHighScoreModal,
+  showTopicListModal,
+  hideTopicListModal,
+  showSavedPassagesListModal,
+  hideSavedPassagesListModal,
 } from '../ui.js';
 import {
   gameState,
   getSoundEnabledState,
   toggleSound,
   saveJourneyProgress,
+  saveGameState,
+  loadGameState,
 } from '../state.js';
 import {
-  enterStageMode, // Used for the Start button
+  enterStageMode,
   startNewGame,
 } from '../game-flow.js';
 import {
-  jokboData, // Added
-  getRankImage, // Added
-  getRankRanges, // Added
+  jokboData,
+  getRankImage,
+  getRankRanges,
 } from '../hanafuda.js';
 
 
@@ -48,6 +50,7 @@ function updateSoundToggleCell() {
     soundCell.style.backgroundColor = isSoundEnabled ? '#00ff00' : 'transparent'; // Green background for ON, Transparent for OFF
   }
 }
+
 
 const TOPIC_OPTIONS = [ // 글귀 주제 목록 (전역 변수로 이동)
   { label: '성찰', value: '1_성찰.json' },
@@ -91,7 +94,7 @@ function updateDifficultySelection() {
 
 function updateTopicSelection() { // 함수명 변경
   const topicBlock = document.querySelector('[data-menu-id="topic"]'); // data-menu-id 변경
-  if (!topicBlock) return;
+  if (!topicBlock) return; // 널 체크 추가
 
   const subCells = topicBlock.querySelectorAll('.menu-sub-cell');
   subCells.forEach(cell => {
@@ -514,7 +517,25 @@ export function initializeMainMenuEventListeners(elements) {
     completionModal, completionCloseBtn, highScoreModal, highScoreCloseBtn, infoModal, infoCloseBtn,
     topicListModal, topicListCloseBtn, topicListUl, passageDisplayArea, collectionModal, collectionCloseBtn,
     collectionListContainer, collectionContentEl, // Added collectionContentEl here
+    // Difficulty Settings Modal Elements - THIS IS THE CORRECTED PART
+    difficultySettingsButton, difficultySettingsModal, saveDifficultySettingsBtn, cancelDifficultySettingsBtn,
+    easyDifficultyInput, mediumDifficultyInput, hardDifficultyInput,
   } = elements;
+
+  // Helper functions for Difficulty Settings Modal (now using elements from arguments)
+  function showDifficultySettingsModal() {
+    // Load current user difficulties or default values
+    easyDifficultyInput.value = gameState.userDifficulties.easy;
+    mediumDifficultyInput.value = gameState.userDifficulties.medium;
+    hardDifficultyInput.value = gameState.userDifficulties.hard;
+
+    difficultySettingsModal.classList.remove('hidden');
+  }
+
+  function hideDifficultySettingsModal() {
+    difficultySettingsModal.classList.add('hidden');
+  }
+
 
   // --- Main Menu Event Listeners ---
   mainMenuScreen.addEventListener('click', (e) => {
@@ -622,6 +643,14 @@ export function initializeMainMenuEventListeners(elements) {
       return;
     }
 
+    if (e.target.closest('#difficulty-settings-button')) { // Use passed element directly
+      if (gameState.isSoundEnabled) {
+        document.getElementById('click-sound').play();
+      }
+      showDifficultySettingsModal();
+      return;
+    }
+
     // --- Challenge Mode Event Listener ---
     const challengeBlock = e.target.closest('[data-menu-id="challenge"]');
     if (challengeBlock) {
@@ -633,6 +662,38 @@ export function initializeMainMenuEventListeners(elements) {
       return;
     }
   });
+
+  // Difficulty Settings Modal Event Listeners
+  if (saveDifficultySettingsBtn) {
+    saveDifficultySettingsBtn.addEventListener('click', () => { // Use passed element directly
+      if (gameState.isSoundEnabled) {
+        document.getElementById('click-sound').play();
+      }
+      const easy = parseInt(easyDifficultyInput.value, 10); // Use passed element directly
+      const medium = parseInt(mediumDifficultyInput.value, 10); // Use passed element directly
+      const hard = parseInt(hardDifficultyInput.value, 10); // Use passed element directly
+
+    // Basic validation (optional but good practice)
+    if (isNaN(easy) || isNaN(medium) || isNaN(hard) || easy < 10 || easy > 70 || medium < 20 || medium > 60 || hard < 30 || hard > 50) {
+      alert('유효한 난이도 값을 입력해주세요 (초급: 10~70, 중급: 20~60, 고급: 30~50).');
+      return;
+    }
+
+    gameState.userDifficulties = { easy, medium, hard };
+    saveGameState(); // Save updated difficulties
+    hideDifficultySettingsModal();
+    alert('난이도 설정이 저장되었습니다.');
+  });
+} // <-- Add this closing brace for the 'if (saveDifficultySettingsBtn)' block
+
+  if (cancelDifficultySettingsBtn) {
+    cancelDifficultySettingsBtn.addEventListener('click', () => { // Use passed element directly
+      if (gameState.isSoundEnabled) {
+        document.getElementById('click-sound').play();
+      }
+      hideDifficultySettingsModal();
+    });
+  }
 
   // Main Menu Block-Specific Setup ---
 

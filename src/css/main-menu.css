@@ -83,3 +83,29 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* Difficulty Settings Button (Hidden) */
+.sudoku-block-menu-item[data-menu-id="settings-difficulty"] {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  cursor: default !important; /* 블록 전체는 기본 커서 */
+  pointer-events: auto !important; /* 블록 전체가 클릭 이벤트를 받을 수 있도록 */
+  user-select: none; /* 텍스트 선택 방지 */
+}
+
+.sudoku-block-menu-item[data-menu-id="settings-difficulty"]:hover {
+  box-shadow: none !important;
+  border: none !important;
+  transform: none !important;
+}
+
+.sudoku-block-menu-item[data-menu-id="settings-difficulty"] .menu-sub-cell {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.sudoku-block-menu-item[data-menu-id="settings-difficulty"] .menu-sub-cell#difficulty-settings-button {
+  cursor: pointer !important; /* 설정 버튼 셀만 클릭 가능하도록 커서 변경 */
+  pointer-events: auto !important; /* 클릭 이벤트가 전달되도록 명시적 설정 */
+}

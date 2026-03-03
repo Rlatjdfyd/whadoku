@@ -75,6 +75,11 @@
     gap: 2px;
   }
 
+  /* 스테이지 셀 폰트 크기 조정 (아이폰 3자리 숫자 표시 문제 해결) */
+  .stage-cell {
+    font-size: 0.9rem;
+  }
+
   .sudoku-block {
     border-radius: 4px;
     padding: 0px;

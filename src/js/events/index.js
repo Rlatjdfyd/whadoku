@@ -14,6 +14,8 @@ import { renderStageMap } from '../ui.js'; // Import renderStageMap
 export function initializeEventListeners() {
   // Common elements that might be needed across modules or as central orchestrators
   const mainMenuScreen = document.getElementById('main-menu-screen');
+  console.log('mainMenuScreen (initial):', mainMenuScreen); // 추가: mainMenuScreen 초기 값 확인
+
   const sudokuBoard = document.getElementById('sudoku-board');
   const scoreDisplay = document.getElementById('score-display');
   const hintContainer = document.getElementById('hint-container');
@@ -45,6 +47,24 @@ export function initializeEventListeners() {
   const collectionCloseBtn = document.getElementById('collection-close-btn');
   const collectionListContainer = document.getElementById('collection-list-container');
   const collectionContentEl = document.getElementById('collection-content');
+
+  // Difficulty Settings Modal Elements
+  // mainMenuScreen이 null이 아닌지 확인 후 querySelector 호출
+  const difficultySettingsBlock = mainMenuScreen ? mainMenuScreen.querySelector('[data-menu-id="settings-difficulty"]') : null;
+  console.log('difficultySettingsBlock:', difficultySettingsBlock); // 추가: difficultySettingsBlock 값 확인
+
+  let difficultySettingsButton = null;
+  if (difficultySettingsBlock) {
+    difficultySettingsButton = difficultySettingsBlock.querySelector('#difficulty-settings-button');
+  }
+  console.log('difficultySettingsButton:', difficultySettingsButton); // 추가: difficultySettingsButton 값 확인
+
+  const difficultySettingsModal = document.getElementById('difficulty-settings-modal');
+  const saveDifficultySettingsBtn = document.getElementById('save-difficulty-settings-btn');
+  const cancelDifficultySettingsBtn = document.getElementById('cancel-difficulty-settings-btn');
+  const easyDifficultyInput = document.getElementById('easy-difficulty-input');
+  const mediumDifficultyInput = document.getElementById('medium-difficulty-input');
+  const hardDifficultyInput = document.getElementById('hard-difficulty-input');
 
 
   // Game elements
@@ -121,5 +141,8 @@ export function initializeEventListeners() {
     completionModal, completionCloseBtn, highScoreModal, highScoreCloseBtn, infoModal, infoCloseBtn,
     topicListModal, topicListCloseBtn, topicListUl, passageDisplayArea, collectionModal, collectionCloseBtn,
     collectionListContainer, collectionContentEl,
+    // Difficulty Settings Modal Elements
+    difficultySettingsButton, difficultySettingsModal, saveDifficultySettingsBtn, cancelDifficultySettingsBtn,
+    easyDifficultyInput, mediumDifficultyInput, hardDifficultyInput,
   });
 }

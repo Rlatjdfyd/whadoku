@@ -41,6 +41,7 @@ export const gameState = {
   journeyProgress: null, // 여정 모드 진행 상태
   currentStage: null, // 현재 진행 중인 여정 스테이지
     currentJourneyPage: { easy: 1, medium: 1, hard: 1, random: 1, challenge: 1 }, // 난이도별 현재 여정 페이지
+    userDifficulties: { easy: 50, medium: 40, hard: 35 }, // 사용자 정의 난이도 (빈 칸 개수)
     bonusHintCell: { row: -1, col: -1 }, // 보너스 힌트 셀 좌표
     challengeGosas: [], // 도전 모드용 고사성어 배열
   };
@@ -101,6 +102,40 @@ export function toggleSound() {
   gameState.isSoundEnabled = !gameState.isSoundEnabled;
   localStorage.setItem('isSoundEnabled', JSON.stringify(gameState.isSoundEnabled));
   return gameState.isSoundEnabled;
+}
+
+/**
+ * 로컬 스토리지에서 게임 상태를 불러옵니다.
+ * @returns {void}
+ */
+export function loadGameState() {
+  const savedState = localStorage.getItem('savedGameState');
+  if (savedState) {
+    const parsedState = JSON.parse(savedState);
+
+    // 저장된 상태를 gameState에 병합 (userDifficulties는 별도 처리)
+    Object.assign(gameState, parsedState);
+
+    // userDifficulties는 기본값과 병합하여 설정 (저장된 값이 없거나 유효하지 않을 경우 초기값 사용)
+    gameState.userDifficulties = {
+      easy: parsedState.userDifficulties?.easy ?? 50,
+      medium: parsedState.userDifficulties?.medium ?? 40,
+      hard: parsedState.userDifficulties?.hard ?? 35,
+    };
+  }
+  // 만약 savedState가 없거나 userDifficulties가 로드되지 않았다면,
+  // gameState에 정의된 초기 userDifficulties 값을 사용하게 됩니다.
+}
+
+/**
+ * 현재 게임 상태를 로컬 스토리지에 저장합니다.
+ */
+export function saveGameState() {
+  // isSoundEnabled는 게임 진행 상태가 아닌 앱 설정이므로, 저장에서 제외합니다.
+  // userDifficulties는 사용자가 설정한 난이도이므로 게임 상태에 포함되어 저장됩니다.
+  // 이렇게 하면 게임 상태를 불러올 때 사용자의 소리 설정을 덮어쓰지 않습니다.
+  const { isSoundEnabled, ...stateToSave } = gameState;
+  localStorage.setItem('savedGameState', JSON.stringify(stateToSave));
 }
 
 /**

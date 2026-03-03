@@ -162,8 +162,14 @@ export function createPuzzle(board, difficultyOrCluesCount) {
   let cellsToKeep;
 
   if (typeof difficultyOrCluesCount === 'string') {
-    // If it's a difficulty string, look up in difficulties map
-    cellsToKeep = difficulties[difficultyOrCluesCount];
+    // If it's a difficulty string, first check user-defined difficulties
+    const userDefinedClues = gameState.userDifficulties[difficultyOrCluesCount];
+    if (typeof userDefinedClues === 'number' && !isNaN(userDefinedClues)) {
+      cellsToKeep = userDefinedClues;
+    } else {
+      // Fallback to default difficulties map
+      cellsToKeep = difficulties[difficultyOrCluesCount];
+    }
   } else if (typeof difficultyOrCluesCount === 'number') {
     // If it's a number, use it directly as cellsToKeep
     cellsToKeep = difficultyOrCluesCount;
