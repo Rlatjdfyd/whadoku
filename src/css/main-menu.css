@@ -101,7 +101,6 @@
 }
 
 .sudoku-block-menu-item[data-menu-id="settings-difficulty"] .menu-sub-cell {
-  border: none !important;
   background-color: transparent !important;
 }
 
