@@ -999,6 +999,7 @@
   font-size: 1rem;
   text-align: center;
   -moz-appearance: textfield; /* Firefox hides spinner arrows */
+  appearance: textfield;
 }
 
 /* Hide spinner arrows for Webkit browsers (Chrome, Safari) */
