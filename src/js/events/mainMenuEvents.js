@@ -35,7 +35,7 @@ import {
 
 
 // 각 주제별 최대 글귀 수 (100% 달성 기준)
-const MAX_PASSAGES_PER_TOPIC = 360;
+const MAX_PASSAGES_PER_TOPIC = 100;
 
 // Helper function to update the '소리' toggle cell's display
 function updateSoundToggleCell() {
