@@ -244,7 +244,7 @@ export async function initGame() { // Made initGame async
 export async function startNewGame() { // Made async
   // Challenge mode: Reset the selected passage topic at the start of each new stage.
   // This ensures that if the stage's actual difficulty becomes 'random', a new theme is chosen.
-  if (gameState.difficulty === 'challenge') {
+  if (gameState.difficulty === 'challenge' || gameState.difficulty === 'random') {
     gameState.selectedPassageTopic = null;
   }
 
