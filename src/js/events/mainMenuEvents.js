@@ -567,12 +567,15 @@ export function initializeMainMenuEventListeners(elements) {
         alert(alertMessage);
       } else {
         gameState.difficulty = level; // Only set difficulty, do not start game
+        // Reset selected passage topic only when 'random' difficulty is selected
+        if (level === 'random') {
+          gameState.selectedPassageTopic = null;
+        }
         updateDifficultySelection();
         saveJourneyProgress(); // Save the newly selected difficulty
       }
       return;
-    }
-
+      }
     const topicCell = e.target.closest('[data-topic-value]');
     if (topicCell) {
       const topicValue = topicCell.dataset.topicValue;
