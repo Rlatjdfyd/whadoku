@@ -242,9 +242,10 @@ export async function initGame() { // Made initGame async
 }
 
 export async function startNewGame() { // Made async
-  // Challenge mode: Reset the selected passage topic at the start of each new stage.
-  // This ensures that if the stage's actual difficulty becomes 'random', a new theme is chosen.
-
+  // Challenge mode: Reset selected passage topic to ensure fresh random theme for challenge's random sub-difficulty.
+  if (gameState.difficulty === 'challenge') {
+    gameState.selectedPassageTopic = null;
+  }
 
   gameState.hintCount = 1; // 모든 새 게임은 1개의 힌트로 시작하도록 설정 (보너스 힌트 시스템 도입으로 변경)
   // NEW LOGIC: ui.js의 displayRandomPassage를 호출하여 글귀를 화면에 표시하고,
